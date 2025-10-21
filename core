@@ -1,0 +1,79 @@
+Enunciado:
+
+Desenvolver uma aplicação web completa, com frontend responsivo e backend estruturado em arquitetura MVC, implementando funcionalidades de cadastro, edição, consulta e exclusão com uso adequado de banco de dados relacional e autenticação de usuários.
+  
+Funcionalidade de Cadastro (CRUD - Create)
+
+A aplicação deve permitir ao menos 3 cadastros distintos. Exemplos possíveis:
+Cadastro de usuários (com login e senha)
+Cadastro de saves
+Cadastro de vendas
+
+Funcionalidade de Edição (CRUD - Update)
+A aplicação deve permitir ao menos 3 tipos de edição, sendo que pelo menos uma dessas edições deve envolver relacionamento entre tabelas (uso de chave estrangeira). Exemplos:
+Editar sua senha
+atualizar o save
+renomear save
+
+Funcionalidade de Consulta (CRUD - Read)
+A aplicação deve implementar ao menos 3 tipos de consultas, das quais pelo menos 2 devem envolver consultas com junção de tabelas (JOIN ou uso de chaves estrangeiras). Exemplos:
+
+Listar o inventário
+Exibir apenas consumíveis no combate
+exibir os produtos da loja
+
+Funcionalidade de Exclusão (CRUD - Delete)
+A aplicação deve permitir ao menos 3 tipos de exclusão, sendo que pelo menos uma deve envolver exclusão que afete dados relacionados por chave estrangeira. Exemplos:
+Excluir os itens
+Excluir save
+Excluir usuário
+
+Autenticação e Segurança
+Implementar autenticação de usuário com sessão (session-based auth).
+Criptografar senhas de usuários antes de armazenar no banco de dados (ex: bcrypt).
+
+  
+Arquitetura e Organização
+Utilizar o padrão de arquitetura MVC (Model-View-Controller).
+
+Roteamento estruturado seguindo o padrão RESTful.
+
+Frontend
+Utilizar EJS para renderização de páginas dinâmicas.
+Utilizar partials com EJS para componentes reutilizáveis (ex: header, footer, navbar).
+
+Layout baseado em grid de 12 colunas, com responsividade para diferentes tamanhos de tela (desktop, tablet, smartphone).
+
+Possibilidade de utilizar Bootstrap.
+Design limpo e intuitivo:
+
+Uso adequado de cores
+
+Tipografia legível
+
+Ícones coerentes
+
+Espaçamentos adequados
+
+Banco de Dados
+Utilizar um SGBD relacional (MySQL, PostgreSQL, SQLite, etc.)
+As tabelas devem ser relacionadas com uso de chaves estrangeiras.
+O modelo relacional deve refletir os requisitos funcionais do sistema.
+
+ Tecnologias
+ 
+Backend: Node.js com Express.js
+Frontend: HTML, CSS, JavaScritp, EJS
+Banco de Dados: MySQL (ou outro relacional)
+Autenticação: express-session, bcrypt
+Controle de versão: Git + Github
+Documentação e Entrega
+Incluir um arquivo README.md (no GitHub) com:
+
+Descrição do projeto
+
+Integrantes do grupo
+
+Instruções de instalação e execução
+
+O projeto deve estar hospedado no GitHub com todos os commits dos membros.
