@@ -1,0 +1,16 @@
+{
+  "name": "rpg-web-project",
+  "version": "1.0.0",
+  "description": "rpgweb",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "David, Joseph, McCaveira, Fcec",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2",
+    "express-session": "^1.18.0"
+  }
+}
