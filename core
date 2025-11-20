@@ -18,6 +18,7 @@ renomear save
 Funcionalidade de Consulta (CRUD - Read)
 A aplicação deve implementar ao menos 3 tipos de consultas, das quais pelo menos 2 devem envolver consultas com junção de tabelas (JOIN ou uso de chaves estrangeiras). Exemplos:
 
+listar saves
 Listar o inventário
 Exibir apenas consumíveis no combate
 exibir os produtos da loja
