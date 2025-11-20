@@ -1,0 +1,52 @@
+<html lang="en">
+<head>
+    <%- include('partials/head') %>
+</head>
+<body>
+    <div class="row">
+    <div class="col-4 col-s-2"></div> 
+
+    <div class="col-4 col-s-8">
+    <form action="/registro" method="POST" novalidate class="form-cadastro">
+        <fieldset>
+            <h1> Autenticação do usário </h1>
+            
+            <label for="name"> Nome do Jogador </label>
+            <input id="name" name="nome" type="text" required autocomplete="nome">
+            
+            <label> E-mail </label>
+            <input type= "email" name= "email">
+
+            <label> Senha </label>
+            <input type="password" name="senha">
+
+            <label> Confirmar Senha </label>
+            <input type="password" name="confirmarSenha">
+            
+            <button type="submit"> Criar Cadastro </button>
+            
+        </fieldset>
+
+
+
+    
+    </form>
+     <div class="col-4 col-s-2"></div>
+
+    
+    <main>
+
+
+
+
+
+
+
+    </main>
+
+    <%- include('partials/footer') %>
+</body>
+<script>
+    setInterval(() => location.reload(), 2000);
+</script>
+</html>
