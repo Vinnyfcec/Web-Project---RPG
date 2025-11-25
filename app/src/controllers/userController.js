@@ -19,7 +19,8 @@ class userController {
             //criar save incial aqui dps
 
             res.redirect('/login?//sucesso');
-            // res.render('../view/home', <variaveis do usuario criado pra usar no ejs>)
+        
+            //res.render('../view/home', <variaveis do usuario criado pra usar no ejs>)
 
         } catch (error) {
             console.error(error);

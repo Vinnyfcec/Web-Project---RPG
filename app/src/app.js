@@ -12,7 +12,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'senha_cookie',
+  secret: 'senha_cookie',
   resave: false,
   saveUninitialized: true,
   cookie: { secure: false }
@@ -29,7 +29,17 @@ app.use('/', saveRoutes);
 app.use('/', lojaRoutes);
 
 app.get('/', (req, res) => {
-  res.render('home', { titulo: 'pagina inuail rpg' }); //é render k7, n sf /
+  res.render('saves', { titulo: 'pagina inuail rpg' }); //é render k7, n sf /
+});
+
+req.session.usuario = 'nome'
+
+app.get('/saves', (req, res) => {
+    if (req.session.usuario) {
+        res.send(`Olá, ${req.session.usuario}!`);
+    } else {
+        res.send('Você não está logado.');
+    }
 });
 
 module.exports = app;

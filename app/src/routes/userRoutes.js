@@ -9,4 +9,4 @@ router.get("/login", userController.showLoginForm);
 router.post("/logout", userController.logoutUser);
 router.get("/logout", userController.logoutUser);
 
-module.exports = router;
+module.exports = router; 

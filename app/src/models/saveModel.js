@@ -24,9 +24,11 @@ class saveModel {
         const [rows] = await db.execute(query, [save_id]);
         return rows;
     }
+    static async buscarsavecompleto(save_id){
+        const query = `SELECT * FROM saves WHERE save_id = ?`
+        const [save] = await db.execute(query, [save_id])
 
-
-//SELECT i.id as inventario_id, i.quantidade, i.equipado, ib.nome, ib.tipo, ib.raridade, ib.descricao, ib.atributo_ataque, ib.atributo_defesa
-//FROM inventario i JOIN itens_base id ON i.item_base_id = ib.id WHERE i.save_id = ?
+        return save.length > 0 ? {...save[0]} : null;
+    }
 
 }
