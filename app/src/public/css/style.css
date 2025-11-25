@@ -176,3 +176,49 @@
 .row {
     width: 100%;
 }
+
+.container-grid {
+    display: grid;
+    grid-template-rows: 1fr auto;
+    min-height: 100vh;
+}
+
+.content{
+    padding: 20px;
+}
+
+.footer{
+    grid-row: 2;
+    width: 100%;    
+}
+
+.container{
+    background-color: #7f3004;
+    display: grid;
+    place-items: center;
+} 
+.Savecard{
+    display: grid;
+    margin-top: 10px;  
+    padding: 15px;
+    border-color: brown;
+    border-radius: 10px;
+    cursor: pointer;
+    width: 200px;
+    height: 200px;
+    place-items: center;     
+}
+
+.deletar1{
+    display: grid;
+    width: 40px;
+    height: 40px;
+    place-items: center;
+    border-color: brown;
+    border-radius: 10px;
+    top: -220px;
+    left: 150px;
+    cursor: pointer;
+    padding: 2px 6px;
+    position: relative; 
+}
