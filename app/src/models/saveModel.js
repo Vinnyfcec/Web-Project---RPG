@@ -4,6 +4,10 @@ class saveModel {
 
     static async criarSaveInicial(usuario_id, nome_save) {
         const query = 'INSERT INTO saves (usuario_id, nome_save, dinheiro, nivel, itens_adquiridos) VALUES (?, `myfirstsave`, 10, 1, 0)';
+        const [result] = await db.execute(query, usuario_id);
+        const save_id = result.insertId;
+
+        const inventario = 'INSERT INTO inventario (save_id)'
     }
     static async atualizarSave(nome_save, dinheiro, nivel, itens_adquiridos) {
         const query = 'UPDATE saves SET dinheiro = ?, nivel = ?, itens_adquiridos = ? WHERE id = ?';

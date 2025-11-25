@@ -29,7 +29,7 @@ app.use('/', saveRoutes);
 app.use('/', lojaRoutes);
 
 app.get('/', (req, res) => {
-  res.render('home', { titulo: 'pagina inuail rpg' }); //é render k7, n sf
+  res.render('home', { titulo: 'pagina inuail rpg' }); //é render k7, n sf /
 });
 
 module.exports = app;
