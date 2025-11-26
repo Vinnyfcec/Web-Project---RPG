@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
 CREATE TABLE IF NOT EXISTS `saves` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `usuario_id` INT NOT NULL,
-  `nome_save` VARCHAR(100) NOT NULL,
+  `nome_save` VARCHAR(100) NOT NULL DEFAULT 'myfirstsave',
   `dinheiro` INT NOT NULL DEFAULT 10,
   `nivel` INT NOT NULL DEFAULT 1,
   `itens_adquiridos` INT NOT NULL DEFAULT 0,

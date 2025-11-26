@@ -2,12 +2,13 @@ const db = require('../config/db');
 
 class saveModel {
 
-    static async criarSaveInicial(usuario_id, nome_save) {
-        const query = 'INSERT INTO saves (usuario_id, nome_save, dinheiro, nivel, itens_adquiridos) VALUES (?, `myfirstsave`, 10, 1, 0)';
-        const [result] = await db.execute(query, usuario_id);
+    static async criarSaveInicial(usuario_id) {
+        const query = "INSERT INTO saves (usuario_id, nome_save, dinheiro, nivel, itens_adquiridos) VALUES (?, 'myfirstsave', 10, 1, 0)";
+        const [result] = await db.execute(query, [usuario_id]);
         const save_id = result.insertId;
+        
 
-        const inventario = 'INSERT INTO inventario (save_id)'
+        return save_id;
     }
     static async atualizarSave(nome_save, dinheiro, nivel, itens_adquiridos) {
         const query = 'UPDATE saves SET dinheiro = ?, nivel = ?, itens_adquiridos = ? WHERE id = ?';
@@ -24,11 +25,13 @@ class saveModel {
         const [rows] = await db.execute(query, [save_id]);
         return rows;
     }
-    static async buscarsavecompleto(save_id){
-        const query = `SELECT * FROM saves WHERE save_id = ?`
+    static async buscarSaveCompleto(save_id){
+        const query = `SELECT * FROM saves WHERE id = ?`
         const [save] = await db.execute(query, [save_id])
 
         return save.length > 0 ? {...save[0]} : null;
     }
 
 }
+
+module.exports = saveModel;

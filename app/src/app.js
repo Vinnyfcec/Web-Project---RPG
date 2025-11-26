@@ -5,21 +5,24 @@ require('dotenv').config();
 
 const app = express();
 
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-
 app.use(session({
   secret: 'senha_cookie',
   resave: false,
   saveUninitialized: true,
   cookie: { secure: false }
 }));
+
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+
+app.use((req, res, next) => {
+    res.locals.usuario = req.session.usuario;
+    res.locals.save = req.session.save;
+    next();
+});
 
 const userRoutes = require('./routes/userRoutes');
 const saveRoutes = require('./routes/saveRoutes');
@@ -29,17 +32,8 @@ app.use('/', saveRoutes);
 app.use('/', lojaRoutes);
 
 app.get('/', (req, res) => {
-  res.render('saves', { titulo: 'pagina inuail rpg' }); //é render k7, n sf /
+  res.render('home', { titulo: 'pagina inuail rpg' }); //é render k7, n sf /
 });
 
-req.session.usuario = 'nome'
-
-app.get('/saves', (req, res) => {
-    if (req.session.usuario) {
-        res.send(`Olá, ${req.session.usuario}!`);
-    } else {
-        res.send('Você não está logado.');
-    }
-});
 
 module.exports = app;

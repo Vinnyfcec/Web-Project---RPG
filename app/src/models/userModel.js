@@ -2,13 +2,13 @@ const db = require('../config/db');
 
 class userModel {
     
-        static async criarUsuario(nome, email, senha, confirmarSenha) {
-            const query = 'INSERT INTO usuarios (nome, email, senha, confirmar_senha) VALUES (?, ?, ?, ?)';
-            const [result] = await db.execute(query, [nome, email, senha, confirmarSenha]);
-            return result;
+        static async criarUsuario(nome_usuario, email, senha) {
+            const query = 'INSERT INTO usuarios (nome_usuario, email, senha_hash) VALUES (?, ?, ?)';
+            const [result] = await db.execute(query, [nome_usuario, email, senha]);
+            return result.insertId;
         }
         static async buscarUsuarioporIdentificador(identificador) {
-            const query = 'SELECT * FROM usuarios WHERE email = ? OR nome = ?';
+            const query = 'SELECT * FROM usuarios WHERE email = ? OR nome_usuario = ?';
             const [rows] = await db.execute(query, [identificador, identificador]);
             return rows[0];
         }

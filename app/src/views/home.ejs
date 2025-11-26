@@ -7,11 +7,19 @@
 
         <h1> Olá, Novato!</h1> <!-- ok -->
         <h2> seja bem-vindo ao mundo de Mochileiro </h2>
-        
+        <% if (!usuario) { %>
+            <p> Para começar a sua jornada, você precisa criar um cadastro ou fazer login. </p>
+            <a href="/login"> Clique aqui para fazer login </a>
+            <br></br>
+            <a href="/cadastro"> Clique aqui para criar um cadastro </a>
+        <% } else { %>
+            <p> Você já está logado como <strong><%= usuario.nome %></strong>. </p>
+            <a href="/saves"> Clique aqui para continuar sua aventura </a>
+        <% } %>
     </main>
     <%- include('partials/footer') %>
 </body>
 <script>
-    setInterval(() => location.reload(), 2000);
+    //setInterval(() => location.reload(), 2000);
 </script>
 </html>

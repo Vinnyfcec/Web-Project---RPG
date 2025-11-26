@@ -7,21 +7,21 @@
     <div class="col-4 col-s-2"></div> 
 
     <div class="col-4 col-s-8">
-    <form action="/registro" method="POST" novalidate class="form-cadastro">
+    <form action="/cadastro" method="POST" class="form-cadastro">
         <fieldset>
             <h1> Autenticação do usário </h1>
             
-            <label for="name"> Nome do Jogador </label>
-            <input id="name" name="nome" type="text" required autocomplete="nome">
+            <label for="nome_usuario"> Nome do Jogador </label>
+            <input id="nome_usuario" name="nome_usuario" type="text" id="nome_usuario" required>
             
-            <label> E-mail </label>
-            <input type= "email" name= "email">
+            <label for="email"> E-mail </label>
+            <input type= "email" name= "email" id="email" required>
 
-            <label> Senha </label>
-            <input type="password" name="senha">
+            <label for="senha_hash"> Senha </label>
+            <input type="password" name="senha" id="senha" required>
 
-            <label> Confirmar Senha </label>
-            <input type="password" name="confirmarSenha">
+            <label for="confirmarSenha"> Confirmar Senha </label>
+            <input type="password" name="confirmarSenha" id="confirmarSenha" required>
             
             <button type="submit"> Criar Cadastro </button>
             
@@ -47,6 +47,6 @@
     <%- include('partials/footer') %>
 </body>
 <script>
-    setInterval(() => location.reload(), 2000);
+    //setInterval(() => location.reload(), 2000);
 </script>
 </html>

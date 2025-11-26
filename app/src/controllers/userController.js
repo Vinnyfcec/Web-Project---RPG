@@ -4,27 +4,32 @@ const saveModel = require('../models/saveModel');
 
 class userController {
     static mostrarCadastro(req, res) {
-        res.render("cadastro");
+        res.render("cadastro", { erro: req.query.erro });
     }
 
     static async cadastrarUsuario(req, res) {
-        const { nome, email, senha, confirmarSenha } = req.body;
+        const { nome_usuario, email, senha, confirmarSenha } = req.body;
         
         if (senha !== confirmarSenha) {
             return res.redirect('/cadastro?erro=As senhas não coincidem.');
         }
 
         try {
-            const novoUsuarioId = await userModel.criarUsuario(nome, email, senha, confirmarSenha);
-            //criar save incial aqui dps
+            const novoUsuarioId = await userModel.criarUsuario(nome_usuario, email, senha);
+            await saveModel.criarSaveInicial(novoUsuarioId);
+            console.log(req.body);
 
             res.redirect('/login?//sucesso');
+            console.log(req.body);
+
         
             //res.render('../view/home', <variaveis do usuario criado pra usar no ejs>)
 
         } catch (error) {
             console.error(error);
             res.redirect(`/cadastro?erro=${encodeURIComponent(error.message)}`);
+            console.log(req.body);
+
         }
     }
 
@@ -38,11 +43,12 @@ class userController {
         try {
             const usuario = await userModel.buscarUsuarioporIdentificador(identificador);
 
-            if (!usuario || !(await userModel.verificarSenha(senha, usuario.senha_hash))) { //mudar para hash dps
-                return res.redirect('/login?erro=Ocorreu um erro no servidor.');
-            }
+            //if (!usuario || !(await userModel.verificarSenha(senha, usuario.senha_hash))) { //mudar para hash dps
+                //return res.redirect('/login?erro=Ocorreu um erro no servidor.');
+            //}
             
-            req.session.usuarioId = usuario.id;
+            req.session.usuario = { id: usuario.id, nome: usuario.nome_usuario };
+            res.redirect('/saves');
             
         } catch (error) {
             console.error(error);

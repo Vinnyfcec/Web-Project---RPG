@@ -1,5 +1,5 @@
-saveModel = require('../models/saveModel');
-userModel = require('../models/userModel');
+const saveModel = require('../models/saveModel');
+const userModel = require('../models/userModel');
 
 class saveController {
     static isAuth(req, res, next) {
@@ -12,23 +12,26 @@ class saveController {
     static async loadSave(req, res, next) {
         if (req.session.save_id) {
             try {
-                const saveCompleto = await saveModel.buscarsavecompleto(req.session.save_id);
+                const saveCompleto = await saveModel.buscarSaveCompleto(req.session.save_id);
                 req.session.save = saveCompleto;
-
                 res.locals.save = saveCompleto;
-                
-                res.locals.save_nome = 'saveCompleto.nome_save' || 'Nome do Save não encontrado';
-                
-                return next(); 
             } catch (error) {
                 console.error("Erro ao carregar o save:", error);
                 req.session.save_id = null;
                 req.session.save = null;
             }
         }
-        return next();
+        next();
+    }
+
+    static async listarSaves(req, res) {
+        try {
+            const saves = await saveModel.listarSavesporUsuario(req.session.usuario.id);
+            res.render('saves', { saves: saves, erro: req.query.erro });
+        } catch (error) {
+            res.render('saves', { saves: [], erro: 'Erro ao listar saves.' });
+        }
     }
 }
-
 
 module.exports = saveController

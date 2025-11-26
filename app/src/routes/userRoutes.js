@@ -2,11 +2,11 @@ const express = require("express");
 const router = express.Router();
 const userController = require("../controllers/userController");
 
-router.post("/registro", userController.registerUser);
-router.post("/login", userController.loginUser);
-router.get("/registro", userController.showRegistrationForm);
-router.get("/login", userController.showLoginForm);
-router.post("/logout", userController.logoutUser);
-router.get("/logout", userController.logoutUser);
+router.post("/cadastro", userController.cadastrarUsuario);
+router.post("/login", userController.fazerLogin);
+router.get("/cadastro", userController.mostrarCadastro);
+router.get("/login", userController.mostrarLogin);
+router.post("/logout", userController.fazerLogout);
+//router.get("/logout", userController.fazerLogout);
 
 module.exports = router; 
