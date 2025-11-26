@@ -3,7 +3,7 @@ const router = express.Router();
 const lojaController = require('../controllers/lojaController');
 const saveController = require('../controllers/saveController');
 
-//router.use(saveController.isLogged);
+//router.use(saveController.isAuth);
 router.use(saveController.loadSave);
 
 //router.get('/loja', lojaController.mostrarLoja);

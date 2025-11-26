@@ -40,20 +40,20 @@ CREATE TABLE IF NOT EXISTS `itens_base` (
 ) ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS `inventario` (
-  'id' INT NOT NULL AUTO_INCREMENT,
-  'save_id' INT NOT NULL,
-  'item_base_id' INT NOT NULL,
-  'quantidade' INT NOT NULL DEFAULT 1,
-  'equipado' BOOLEAN NOT NULL DEFAULT FALSE,
-  PRIMARY KEY ('id'),
-  UNIQUE KEY 'uk_save_item' ('save_id', 'item_base_id'),
-  CONSTRAINT 'fk_inventario_saves'
-    FOREIGN KEY ('save_id')
-    REFERENCES 'saves' ('id')
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `save_id` INT NOT NULL,
+  `item_base_id` INT NOT NULL,
+  `quantidade` INT NOT NULL DEFAULT 1,
+  `equipado` BOOLEAN NOT NULL DEFAULT FALSE,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_save_item` (`save_id`, `item_base_id`),
+  CONSTRAINT `fk_inventario_saves`
+    FOREIGN KEY (`save_id`)
+    REFERENCES `saves` (`id`)
     ON DELETE CASCADE,
-  CONSTRAINT 'fk_inventario_itens_base'
-    FOREIGN KEY ('item_base_id')
-    REFERENCES 'itens_base' ('id')
+  CONSTRAINT `fk_inventario_itens_base`
+    FOREIGN KEY (`item_base_id`)
+    REFERENCES `itens_base` (`id`)
     ON DELETE RESTRICT
     ON UPDATE CASCADE
 ) ENGINE = InnoDB;

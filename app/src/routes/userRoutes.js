@@ -7,6 +7,5 @@ router.post("/login", userController.fazerLogin);
 router.get("/cadastro", userController.mostrarCadastro);
 router.get("/login", userController.mostrarLogin);
 router.post("/logout", userController.fazerLogout);
-//router.get("/logout", userController.fazerLogout);
 
 module.exports = router; 

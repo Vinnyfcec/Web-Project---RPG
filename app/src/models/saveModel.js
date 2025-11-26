@@ -6,7 +6,8 @@ class saveModel {
         const query = "INSERT INTO saves (usuario_id, nome_save, dinheiro, nivel, itens_adquiridos) VALUES (?, 'myfirstsave', 10, 1, 0)";
         const [result] = await db.execute(query, [usuario_id]);
         const save_id = result.insertId;
-        
+        const attrQuery = 'INSERT INTO atributos_personagem (save_id) VALUES (?)';
+        await db.execute(attrQuery, [save_id]);
 
         return save_id;
     }
@@ -26,10 +27,14 @@ class saveModel {
         return rows;
     }
     static async buscarSaveCompleto(save_id){
-        const query = `SELECT * FROM saves WHERE id = ?`
-        const [save] = await db.execute(query, [save_id])
+        const query = `SELECT * FROM saves WHERE id = ?`;
+        const [save] = await db.execute(query, [save_id]);
+        if (save.length === 0) {return null;}
 
-        return save.length > 0 ? {...save[0]} : null;
+        const attrQuery = `SELECT * FROM atributos_personagem WHERE save_id = ?`;
+        const [atributos] = await db.execute(attrQuery, [save_id]);
+
+        return {...save[0], atributos: atributos.length > 0 ? atributos[0] : {} };
     }
 
 }

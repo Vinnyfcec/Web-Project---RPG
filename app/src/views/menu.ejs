@@ -4,26 +4,23 @@
 </head>
 <body>
 <div class="row">
-    <div class="col-4 col-s-2"></div> 
+    <h1> Bem-vindo mochileiro</h1>
+    <h3> Save atual: <%= save.nome_save %></h3>
+</div>
 
-    <div class="col-4 col-s-8">
-    <h1> 
-
-
-    </h1>
-
-    <div id="main=menu" class="menus" >
-        
-        <button> Jogar </button>
-        <button>  </button>
-        <button> Sair </button>
-
+    <div id="atrbt" class="menus" >
+        <p> Nivel: <%= save.atributos.nivel %></p>
+        <p> Vida: <%= save.atributos.vida_atual %> / <%= save.atributos.vida_maxima %></p>
+        <p> Ataque: <%= save.atributos.ataque %></p>
+        <p> Defesa: <%= save.atributos.defesa %></p>
+        <p> Dinheiro: <%= save.dinheiro %></p>
     </div>
-    
+    <div id="menu" class="menus">
+        <a href="/loja"><button>Loja</button></a>
+        <a href="/inventario"><button>Inventario</button></a>
+    </div>
+
     <div class="col-4 col-s-2"></div>
     <%- include('partials/footer') %>
 </body>
-<script>
-    //setInterval(() => location.reload(), 2000);
-</script>
 </html>

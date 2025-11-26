@@ -32,6 +32,26 @@ class saveController {
             res.render('saves', { saves: [], erro: 'Erro ao listar saves.' });
         }
     }
+
+    static async selecionarSave(req, res) {
+        const save_id = req.params.id;
+        req.session.save_id = save_id;
+        req.session.save(err => {
+            if (err) {
+                console.error('Erro ao salvar sessão:', err);
+                return res.redirect('/saves');
+            }
+            res.redirect('/menu');
+        });
+    }
+
+    static async mostrarMenu(req, res) {
+        if (!req.session.save) {
+            return res.redirect('/saves');
+        }
+        res.render('menu', { erro: req.query.erro });
+    }
+
 }
 
 module.exports = saveController
