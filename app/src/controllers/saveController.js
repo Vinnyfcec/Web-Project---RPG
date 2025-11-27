@@ -52,6 +52,22 @@ class saveController {
         res.render('menu', { erro: req.query.erro });
     }
 
+    static async tirarVida(req, res) {
+        if (!req.session.save) {
+            return res.redirect('/saves');
+        }
+        try {
+            let novaVida = req.session.save.atributos.vida_atual - 10;
+            if (novaVida < 0) novaVida = 0;
+            const query = 'UPDATE atributos_personagem SET vida_atual = ? WHERE save_id = ?';
+            await saveModel.atualizarAtributoPersonagem(query, [novaVida, req.session.save_id]);
+            req.session.save.atributos.vida_atual = novaVida;
+            res.redirect('/menu');
+        } catch (error) {
+            console.error('Erro ao tirar sua vida:', error);
+            res.redirect('/menu');
+        }
+    }
 }
 
 module.exports = saveController

@@ -3,46 +3,25 @@
     <%- include('partials/head') %>
 </head>
 <body>
-
-    <header> 
-
-
-
-    </header>
-
-    <div class="menu"> 
-
-        <!-- mudar todos para forms e mandar o ssv para jogo-->
-         <div class="container mt-5">
-            <div class="1saveCompleto">
-                <button class="Savecard"> lckus </button>
-                <button class="renomear"> CdoI </button>
-                <button class="deletar"> 🗑️ </button>
-                <form action="/saves/1/selecionar" method="POST" class="d-inline">
-                    <button type="submit">Continuar</button>
-                </form>
-            </div>
-
-            <div class="2saveCompleto">
-                <button class="Savecard"> billson </button>
-                <button class="renomear"> lebb </button>
-                <button class="deletar"> AAAA </button>
-                <button> Continuar </button>
-            </div>
-
-            <div class="3saveCompleto">
-                <button class ="Savecard"> RM </button>
-                <button class ="renomear"> jj </button>
-                <button class="deletar"> chorar </button>
-                <button> Continuar </button>
-            </div>
-        </div>
-
+    <div class="menu">
+        <h1> Seleção de Save </h1>
+        <% if (saves && saves.length > 0) { %>
+            <p> Escolhe um save ai: </p>
+            <% saves.forEach(save => { %>
+                <div class="saveCompleto">
+                    <button class="Savecard"> <%= save.nome_save %> </button>
+                    <form action="/saves/<%= save.id%>/renomear" class="renomear"> Renomear </form>
+                    <form action="/saves/<%= save.id%>/deletar" class="deletar"> Deletar </form>
+                    <form action="/saves/<%= save.id %>/selecionar" method="POST" class="d-inline">
+                        <button type="submit">Continuar</button>
+                    </form>
+                </div>
+            <% }) %>
+        <% } else { %>
+            <p> Não foi encontrado save. Crie um novo. </p>
+        <% } %>
     </div>
 
     <%- include('partials/footer') %>
 </body>
-<script>
-    //setInterval(() => location.reload(), 1000);
-</script>
 </html>
