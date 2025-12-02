@@ -17,19 +17,13 @@ class userController {
         try {
             const novoUsuarioId = await userModel.criarUsuario(nome_usuario, email, senha);
             await saveModel.criarSaveInicial(novoUsuarioId);
-            console.log(req.body);
-
             res.redirect('/login?//sucesso');
-            console.log(req.body);
-
         
             //res.render('../view/home', <variaveis do usuario criado pra usar no ejs>)
 
         } catch (error) {
             console.error(error);
             res.redirect(`/cadastro?erro=${encodeURIComponent(error.message)}`);
-            console.log(req.body);
-
         }
     }
 
