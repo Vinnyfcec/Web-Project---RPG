@@ -1,0 +1,59 @@
+CRUD:
+
+- CREATE:
+
+- CADASTROS - 3
+-- Usuários OK
+-- Saves
+-- Vendas
+
+- UPDATE:
+
+- Renomear save
+- Renomear personagem
+- Alterar classe
+
+- READ:
+
+- Listar saves OK
+- Listar inventário
+- Listar loja com filtro
+
+- DELETE:
+
+- Excluir save
+- Descartar item
+- Excluir usuário
+
+Uso de sessão (session-based auth) OK
+Uso de bcrypt
+
+MVC:
+- Models: OK
+- Controllers: OK
+- Views: OK
+
+RESTfull
+
+render EJS OK
+
+partials com EJS:
+- Header
+- Footer
+- Head OK
+
+DESIGN:
+- ícones coerentes
+- uso adequado de cores
+- tipografia legível
+- espaçamentos adequados
+
+Grid 12 columns com reponsividade
+
+Banco de dados:
+- Mysql OK
+- Chave estrangeira OK
+- Script pronto OK
+
+
+
