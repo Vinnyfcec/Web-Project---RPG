@@ -1,0 +1,8 @@
+<div class="saveCompleto">
+    <button class="Savecard"> <%= save.nome_save %> </button>
+    <form action="/saves/<%= save.id%>/renomear" class="renomear"> Renomear </form>
+    <button action="/saves/<%= save.id%>/deletar" class="deletar"> 🗑️ </button>
+    <form action="/saves/<%= save.id %>/selecionar" method="POST" class="d-inline">
+        <button type="submit">Continuar</button>
+    </form>
+</div>

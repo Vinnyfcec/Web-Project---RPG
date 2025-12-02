@@ -3,25 +3,33 @@
     <%- include('partials/head') %>
 </head>
 <body>
+    <div class="row">
+    <div class="col-4 col-s-2"></div> 
+
+    <div class="col-4 col-s-8">
     <div class="menu">
         <h1> Seleção de Save </h1>
         <% if (saves && saves.length > 0) { %>
-            <p> Escolhe um save ai: </p>
-            <% saves.forEach(save => { %>
+            for(let = 1; i < 5; i++){
+                if( save.length <= i)
                 <div class="saveCompleto">
+
                     <button class="Savecard"> <%= save.nome_save %> </button>
                     <form action="/saves/<%= save.id%>/renomear" class="renomear"> Renomear </form>
-                    <form action="/saves/<%= save.id%>/deletar" class="deletar"> Deletar </form>
+                    <button action="/saves/<%= save.id%>/deletar" class="deletar"> 🗑️ </button>
                     <form action="/saves/<%= save.id %>/selecionar" method="POST" class="d-inline">
                         <button type="submit">Continuar</button>
                     </form>
+
                 </div>
-            <% }) %>
-        <% } else { %>
-            <p> Não foi encontrado save. Crie um novo. </p>
+                
         <% } %>
     </div>
+    <div class="col-4 col-s-2"></div>
 
     <%- include('partials/footer') %>
 </body>
+<script>
+    setInterval(() => location.reload(), 2000);
+</script>
 </html>
