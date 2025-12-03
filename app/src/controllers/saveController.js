@@ -27,7 +27,7 @@ class saveController {
     static async listarSaves(req, res) {
         try {
             const saves = await saveModel.listarSavesporUsuario(req.session.usuario.id);
-            res.render('saves', { saves: saves, erro: req.query.erro });
+            res.render('saves', { saves: saves, erro: req.query.erro});
         } catch (error) {
             res.render('saves', { saves: [], erro: 'Erro ao listar saves.' });
         }
@@ -66,6 +66,41 @@ class saveController {
         } catch (error) {
             console.error('Erro ao tirar sua vida:', error);
             res.redirect('/menu');
+        }
+    }
+
+    static async criarSave(req, res) {
+        const usuario_id = req.session.usuario.id;
+        const save_name = `save_${Date.now()}`;
+        try {
+            const novoSaveId = await saveModel.criarSaveInicial(usuario_id, save_name);
+            res.redirect('/saves');
+        } catch (error) {
+            console.error('Erro ao criar novo save:', error);
+            res.redirect('/saves?erro=Erro ao criar novo save.');
+        }
+    }
+
+    static async renomearSave(req, res) {
+        const saveId = req.params.id;
+        const novoNome = req.body.novo_nome;
+        if (!novoNome || novoNome.trim() === '') {
+                return res.status(400).json({ erro: 'Nome legal, só falta um nome' });}
+        try {
+            await saveModel.renomearSave(saveId, novoNome);
+            res.redirect('/saves?sucesso=Save renomeado com sucesso!');
+        } catch (error) {
+            res.redirect(`/saves?erro=Erro ao renomear save: ${error.message}`);
+        }
+    }
+
+    static async excluirSave(req, res) {
+        const saveId = req.params.id;
+        try {
+            await saveModel.excluirSave(saveId);
+            res.redirect('/saves?sucesso=Save deletado com sucesso!');
+        } catch (error) {
+            res.redirect(`/saves?erro=Erro ao deletar save: ${error.message}`);
         }
     }
 }
