@@ -12,7 +12,7 @@
 [class*="col-"]{
     width: 100%;
     float: left;
-    padding: 40px;
+    padding: 5px;
     
 }
 @media only screen and (min-width:600px){
@@ -218,7 +218,7 @@
     place-items: center;
     background-color: #cf763b;
     box-shadow: 4px 2px 4px 4px grey;
-    z-index: 0;
+    z-index: 1;
 }
 
 .deletar{
@@ -231,10 +231,10 @@
     cursor: pointer;
     padding: 2px 6px;
     z-index: 1;
-    top: -183%;
-    left: 40%
+    top: -70px;
+    background: rgb(255, 240, 189);
+    border: none;
 }
-
 .renomear{
     position:relative;
     display: grid;
@@ -245,12 +245,12 @@
     cursor: pointer;
     padding: 2px 6px;
     z-index: 1;
-    top: 5%;
-    left: 40%;
+    top: -60px;
+    border: none;
+    background: rgb(255, 240, 189);
 }
 
 .selecionar{
-    display:grid;
     position: absolute;
     top: 70%;
 }
@@ -265,6 +265,7 @@
     cursor: pointer;
     justify-self: center; 
     align-self: center;
+    z-index: 0;
 }
 
 .saveVazio{
@@ -272,5 +273,14 @@
 }
 
 .opcoes-save{
-    display: none;
+    display: none !important;
+}
+
+.saveCompleto{
+    display:grid;
+    place-items: center;
+}
+
+.save-display-mode {
+    width: 100%;
 }
