@@ -3,23 +3,31 @@
     <%- include('partials/head') %>
 </head>
 <body>
-<div class="row">
-    <h1> Bem-vindo mochileiro</h1>
-    <h3> Save atual: <%= save.nome_save %> ID:<%= save.id %></h3>
-</div>
+    <main class="container mt-4">
+        <div class="row">
+            <h1> Bem-vindo mochileiro</h1>
+            <h3> Save atual: <%= save.nome_save %> ID:<%= save.id %></h3>
+        </div>
 
-    <div id="atrbt" class="menus" >
-        <p> Nivel: <%= save.atributos.nivel %></p>
-        <p> Vida: <%= save.atributos.vida_atual %> / <%= save.atributos.vida_maxima %></p>
-        <p> Ataque: <%= save.atributos.ataque %></p>
-        <p> Defesa: <%= save.atributos.defesa %></p>
-        <p> Dinheiro: <%= save.dinheiro %></p>
-        <form action="/saves/<%= save.id %>/tirarvida" method="POST"> <button> Tirar Vida </button> </form>
-    </div>
-    <div id="menu" class="menus">
-        <a href="/loja"><button>Loja</button></a>
-        <a href="/inventario"><button>Inventario</button></a>
-    </div>
+        <div class="row mt-4">
+            <div id="atrbt" class="menus save-display-menu col-md-4" >
+                <p> Nome: <% save.atributos.nome %></p>
+                <p> Nivel: <%= save.atributos.nivel %></p>
+                <p> Vida: <%= save.atributos.vida_atual %> / <%= save.atributos.vida_maxima %></p>
+                <p> Ataque: <%= save.atributos.ataque %></p>
+                <p> Defesa: <%= save.atributos.defesa %></p>
+                <p> Dinheiro: <%= save.dinheiro %></p>
+                <form action="/saves/<%= save.id %>/tirarvida" method="POST"> <button> Tirar Vida </button> </form>
+            </div>
+            <div id="menu" class="menus opcoes-menu col-md-8">
+                <a href="/loja"><button>Loja</button></a>
+            </div>
+
+
+            <%-include('partials/inventario') %>
+
+        </div>
+    </main>
 
     <div class="col-4 col-s-2"></div>
     <%- include('partials/footer') %>

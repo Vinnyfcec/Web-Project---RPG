@@ -2,9 +2,9 @@ const db = require('../config/db');
 
 class saveModel {
 
-    static async criarSaveInicial(usuario_id, nome_save = 'mysave') {
+    static async criarSaveInicial(usuario_id, nomesave) {
         const query = "INSERT INTO saves (usuario_id, nome_save, dinheiro, nivel, itens_adquiridos) VALUES (?, ?, 10, 1, 0)";
-        const [result] = await db.execute(query, [usuario_id, nome_save]);
+        const [result] = await db.execute(query, [usuario_id, nomesave]);
         const save_id = result.insertId;
         const attrQuery = 'INSERT INTO atributos_personagem (save_id) VALUES (?)';
         await db.execute(attrQuery, [save_id]);

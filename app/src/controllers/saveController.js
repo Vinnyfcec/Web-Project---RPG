@@ -68,12 +68,17 @@ class saveController {
             res.redirect('/menu');
         }
     }
-
+    
     static async criarSave(req, res) {
         const usuario_id = req.session.usuario.id;
-        const save_name = `save_${Date.now()}`;
+        const nomesave = req.body.nomesave; 
+
+        if (!nomesave || nomesave.trim() === '') {
+            return res.redirect('/saves?erro=O nome do save não pode ser vazio.');
+        }
+
         try {
-            const novoSaveId = await saveModel.criarSaveInicial(usuario_id, save_name);
+            await saveModel.criarSaveInicial(usuario_id, nomesave);
             res.redirect('/saves');
         } catch (error) {
             console.error('Erro ao criar novo save:', error);

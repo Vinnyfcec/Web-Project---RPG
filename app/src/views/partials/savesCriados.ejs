@@ -1,17 +1,10 @@
-<!--<div class="Savecard">
-    <p class="saveCompleto"> <%= save.nome_save %> </p>
-    <label class="renomear"> <button class="btn-save" type="submit" onclick="mostrarRenomear()">🖊️</button> </label>
-    <form action="/saves/<%= save.id%>/deletar" method="POST" class="deletar"> <button class="btn-save" type="submit">🗑️</button> </form>
-    <form action="/saves/<%= save.id %>/selecionar" class="selecionar" method="POST" class="d-inline">
-        <button class="btn-save" type="submit">Continuar</button>
-    </form>
-</div> -->
-
 <div class="Savecard" data-save-id="<%= save.id %>">
     <div class="save-display-mode">
         <p class="saveCompleto"> <%= save.nome_save %> </p>
-        <button class="btn-save btn-rename-toggle" type="button">🖊️</button>
+        <button class="btn-delete-toggle deletar" type="button">🗑️</button>
+        <button class="btn-rename-toggle renomear" type="button">🖊️</button>
     </div>
+    
 
     <form action="/saves/<%= save.id %>/renomear" method="POST" class="renomear-form opcoes-save">
         <input type="text" name="novo_nome" value="<%= save.nome_save %>" required>
@@ -19,16 +12,13 @@
         <button class="btn-save btn-rename-toggle" type="button">Cancelar</button>
     </form>
 
-    <div class="save-display-mode">
-        <button class="btn-save btn-delete-toggle" type="button">🗑️</button>
-    </div>
-
     <form action="/saves/<%= save.id%>/deletar" method="POST" class="deletar-form opcoes-save">
         <p> Tem certeza que deseja deletar seu save? </p>
         <button class="btn-save" type="submit">Sim</button>
         <button class="btn-save btn-delete-toggle" type="button">Cancelar</button>
     </form>
-    <form action="/saves/<%= save.id %>/selecionar" class="selecionar" method="POST" class="d-inline">
+
+    <form action="/saves/<%= save.id %>/selecionar" class="selecionar" method="POST">
         <button class="btn-save" type="submit">Continuar</button>
     </form>
 </div>
