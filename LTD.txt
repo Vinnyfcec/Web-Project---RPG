@@ -4,24 +4,24 @@ CRUD:
 
 - CADASTROS - 3
 -- Usuários OK
--- Saves
--- Vendas
+-- Saves OK
+-- Pet OK
 
 - UPDATE:
 
-- Renomear save
+- Renomear save OK
 - Renomear personagem
-- Alterar classe
+- Renomear pet
 
 - READ:
 
 - Listar saves OK
 - Listar inventário
-- Listar loja com filtro
+- Listar inventário com filtro
 
 - DELETE:
 
-- Excluir save
+- Excluir save OK
 - Descartar item
 - Excluir usuário
 
@@ -48,12 +48,9 @@ DESIGN:
 - tipografia legível
 - espaçamentos adequados
 
-Grid 12 columns com reponsividade
+Grid 12 columns com reponsividade OK
 
 Banco de dados:
 - Mysql OK
 - Chave estrangeira OK
 - Script pronto OK
-
-
-
