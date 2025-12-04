@@ -43,7 +43,14 @@ class saveModel {
         const attrQuery = `SELECT * FROM atributos_personagem WHERE save_id = ?`;
         const [atributos] = await db.execute(attrQuery, [save_id]);
 
-        return {...save[0], atributos: atributos.length > 0 ? atributos[0] : {} };
+        const petQuery = `SELECT * FROM pets WHERE save_id = ?`;
+        const [pets] = await db.execute(petQuery, [save_id]);
+
+        return {
+            ...save[0], 
+            atributos: atributos.length > 0 ? atributos[0] : {},
+            pet: pets.length > 0 ? pets[0] : null
+        };
     }
 
     static async listarSavesporUsuario(usuario_id) {
@@ -84,6 +91,23 @@ class saveModel {
 
         const [rows] = await db.execute(query, [save_id]);
         return rows[0];
+    }
+
+    static async adotarPet(save_id, nome_pet) {
+
+        const checkQuery = 'SELECT * FROM pets WHERE save_id = ?';
+        const [petExistente] = await db.execute(checkQuery, [save_id]);
+        
+        if (petExistente.length > 0) {
+            throw new Error('Este save já possui um pet. Delete o pet anterior para adotar um novo.');
+        }
+        
+        const query = 'INSERT INTO pets (save_id, nome) VALUES (?, ?)';
+        const [result] = await db.execute(query, [save_id, nome_pet]);
+        
+        const petQuery = 'SELECT * FROM pets WHERE id = ?';
+        const [pet] = await db.execute(petQuery, [result.insertId]);
+        return pet[0];
     }
 }
 

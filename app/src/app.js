@@ -26,10 +26,8 @@ app.use((req, res, next) => {
 
 const userRoutes = require('./routes/userRoutes');
 const saveRoutes = require('./routes/saveRoutes');
-const lojaRoutes = require('./routes/lojaRoutes');
 app.use('/', userRoutes);
 app.use('/', saveRoutes);
-app.use('/', lojaRoutes);
 
 app.get('/', (req, res) => {
   res.render('home', { titulo: 'pagina inuail rpg' });

@@ -73,3 +73,16 @@ CREATE TABLE IF NOT EXISTS `atributos_personagem` (
     ON DELETE CASCADE
     ON UPDATE CASCADE
 ) ENGINE = InnoDB;
+
+CREATE TABLE IF NOT EXISTS `pets` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `save_id` INT NOT NULL,
+  `nome` VARCHAR(100) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_save_pet` (`save_id`),
+  CONSTRAINT `fk_pets_saves`
+    FOREIGN KEY (`save_id`)
+    REFERENCES `saves` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+) ENGINE = InnoDB;

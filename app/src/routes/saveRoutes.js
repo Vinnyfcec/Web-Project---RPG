@@ -10,6 +10,7 @@ router.get('/menu', saveController.isAuth, saveController.mostrarMenu);
 router.post('/saves/criar', saveController.isAuth, saveController.criarSave);
 router.post('/saves/:id/renomear', saveController.renomearSave);
 router.post('/saves/:id/deletar', saveController.isAuth, saveController.excluirSave);
+router.post('/saves/:id/adotarpet', saveController.isAuth, saveController.adotarPet);
 //router.post('/saves/:id/abririnventario', saveController.isAuth, saveController.abrirInventario);
 //router.get('/inventario', saveController.isAuth, saveController.mostrarInventario);
 //router.post('/saves/:id/pegaritem', saveController.isAuth, saveController.pegarItem);

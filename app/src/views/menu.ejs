@@ -18,6 +18,7 @@
                 <p> Defesa: <%= save.atributos.defesa %></p>
                 <p> Dinheiro: <%= save.dinheiro %></p>
                 <form action="/saves/<%= save.id %>/tirarvida" method="POST"> <button> Tirar Vida </button> </form>
+                <%- include('partials/adotarPetForm', { saveId: save.id }) %>
             </div>
             <div id="menu" class="menus opcoes-menu col-md-8">
                 <a href="/loja"><button>Loja</button></a>
@@ -32,4 +33,19 @@
     <div class="col-4 col-s-2"></div>
     <%- include('partials/footer') %>
 </body>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+    const infoPet = document.querySelectorAll('.pet-info');
+    const btnAdotar = document.querySelectorAll('.btn-adotar-toggle');
+
+    btnAdotar.forEach(button => {
+        button.addEventListener('click', () => {
+            infoPet.forEach(pet => {
+                pet.classList.toggle('opcoes-save');
+            });
+            button.classList.toggle('opcoes-save');
+        });
+    });
+});
+</script>
 </html>

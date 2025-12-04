@@ -108,6 +108,18 @@ class saveController {
             res.redirect(`/saves?erro=Erro ao deletar save: ${error.message}`);
         }
     }
+
+    static async adotarPet(req, res) {
+        const saveId = req.params.id;
+        const nome_pet = req.body.nome_pet;
+        try {
+            const pet = await saveModel.adotarPet(saveId, nome_pet);
+            req.session.save.pet = pet;
+            res.redirect('/menu?sucesso=c adotou um pet!');
+        } catch (error) {
+            res.redirect(`/menu?erro=Erro ao adotar pet: ${error.message}`);
+        }
+    }
 }
 
 module.exports = saveController
