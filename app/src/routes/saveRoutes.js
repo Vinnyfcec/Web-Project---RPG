@@ -14,8 +14,6 @@ router.post('/saves/:id/adotarpet', saveController.isAuth, saveController.adotar
 router.post('/saves/:id/renomearatributos', saveController.isAuth, saveController.renomearAtributos);
 router.get('/ferreiro', saveController.isAuth, saveController.showFerreiro);
 router.post('/ferreiro/melhorar', saveController.isAuth, saveController.melhorarItem);
-//router.post('/saves/:id/abririnventario', saveController.isAuth, saveController.abrirInventario);
-//router.get('/inventario', saveController.isAuth, saveController.mostrarInventario);
 //router.post('/saves/:id/pegaritem', saveController.isAuth, saveController.pegarItem);
 //router.post('saves/:id/caçar', saveController.isAuth, saveController.caçar);
 

@@ -14,22 +14,21 @@
 
         <div class="row mt-4">
             <div id="atrbt" class="menus save-display-menu col-md-4" >
-                <p class="nome_reno"> Nome: <%= save.atributos.nome %></p>
-                <input class="input_reno opcoes-save" type="text" name="novo_nome" placeholder="Novo Nome" value="<%= save.atributos.nome %>" required form="renomearForm"></input>
-                <p> Nivel: <%= save.atributos.nivel %></p>
-                <p> Vida: <%= save.atributos.vida_atual %> / <%= save.atributos.vida_maxima %></p>
-                <p> Ataque: <%= save.atributos.ataque %></p>
-                <p> Defesa: <%= save.atributos.defesa %></p>
+                <p class="nome_reno"> Nome: <%= (typeof save !== 'undefined' && save.atributos) ? save.atributos.nome : '' %></p>
+                <input class="input_reno opcoes-save" type="text" name="novo_nome" placeholder="Novo Nome" value="<%= (typeof save !== 'undefined' && save.atributos) ? save.atributos.nome : '' %>" required form="renomearForm"></input>
+                <p> Nivel: <%= (typeof save !== 'undefined' && save.atributos) ? save.atributos.nivel : '' %></p>
+                <p> Vida: <%= (typeof save !== 'undefined' && save.atributos) ? save.atributos.vida_atual : '' %> / <%= (typeof save !== 'undefined' && save.atributos) ? save.atributos.vida_maxima : '' %></p>
+                <p> Ataque: <%= (typeof save !== 'undefined' && save.atributos) ? save.atributos.ataque : '' %></p>
+                <p> Defesa: <%= (typeof save !== 'undefined' && save.atributos) ? save.atributos.defesa : '' %></p>
                 <p> Dinheiro: <%= save.dinheiro %></p>
                 <form action="/saves/<%= save.id %>/tirarvida" method="POST"> <button> Tirar Vida </button> </form>
                 <%- include('partials/adotarPetForm', { saveId: save.id }) %>
             </div>
             <div id="menu" class="menus opcoes-menu col-md-8">
                 <p> Inventario aq</p>
+                <%- include('partials/inventario', { inventario: inventario }) %>
             </div>
-
-
-            <%-include('partials/inventario') %>
+            
 
         </div>
     </main>

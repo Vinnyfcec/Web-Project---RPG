@@ -27,6 +27,7 @@ class saveModel {
     static async listarInventario(save_id) {
         const query = `SELECT i.id as inventario_id, i.quantidade, i.equipado, ib.nome, ib.tipo, ib.raridade, ib.descricao, ib.atributo_ataque, ib.atributo_defesa FROM inventario i JOIN itens_base ib ON i.item_base_id = ib.id WHERE i.save_id = ?`;
         const [rows] = await db.execute(query, [save_id]);
+        console.log('Inventário encontrado:', rows);
         return rows;
     }
 
@@ -106,6 +107,8 @@ class saveModel {
     }
 
     static async melhorarItem(save_id, item_id) {
+        console.log("Dados enviados para SQL:", item_id, save_id);
+        
         const query = 'SELECT ib.atributo_ataque, ib.atributo_defesa, i.quantidade FROM inventario i JOIN itens_base ib ON i.item_base_id = ib.id WHERE i.id = ? AND i.save_id = ?';
         const [itens] = await db.execute(query, [item_id, save_id]);
         if (itens.length === 0) {

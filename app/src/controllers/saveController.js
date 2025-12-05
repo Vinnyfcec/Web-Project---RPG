@@ -10,11 +10,30 @@ class saveController {
     }
 
     static async loadSave(req, res, next) {
+        res.locals.inventario = req.session.inventario || [];
+
         if (req.session.save_id) {
             try {
                 const saveCompleto = await saveModel.buscarSaveCompleto(req.session.save_id);
-                req.session.save = saveCompleto;
+                // eu vou explodir esse código
+                if (!saveCompleto) {
+                    req.session.save_id = null;
+                    req.session.saveAtual = null;
+                    return next();
+                }
+                req.session.saveAtual = saveCompleto;
                 res.locals.save = saveCompleto;
+
+
+                try {
+                    const inventario = await saveModel.listarInventario(req.session.save_id);
+                    req.session.inventario = inventario;
+                    res.locals.inventario = inventario;
+                } catch (invErr) {
+                    console.error('Erro ao carregar inventário:', invErr);
+                    req.session.inventario = [];
+                    res.locals.inventario = [];
+                }
             } catch (error) {
                 console.error("Erro ao carregar o save:", error);
                 req.session.save_id = null;
@@ -49,7 +68,7 @@ class saveController {
         if (!req.session.save) {
             return res.redirect('/saves');
         }
-        res.render('menu', { erro: req.query.erro });
+        res.render('menu', { erro: req.query.erro, inventario: req.session.inventario });
     }
 
     static async tirarVida(req, res) {
@@ -145,6 +164,9 @@ class saveController {
     static async melhorarItem(req, res) {
         const saveId = req.session.save_id;
         const itemId = req.body.item_id;
+        console.log("Item recebido:", req.body);
+        console.log("Save ID:", req.session.save_id);
+
         try {
             await saveModel.melhorarItem(saveId, itemId);
             res.redirect('/ferreiro?sucesso=item mlhorado');
