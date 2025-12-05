@@ -10,14 +10,15 @@ CRUD:
 - UPDATE:
 
 - Renomear save OK
-- Renomear personagem
-- Renomear pet
+- Renomear personagem OK
+- Renomear pet OK
 
 - READ:
 
 - Listar saves OK
 - Listar inventário
 - Listar inventário com filtro
+- 
 
 - DELETE:
 

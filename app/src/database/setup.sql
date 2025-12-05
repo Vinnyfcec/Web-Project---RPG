@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS `itens_base` (
   `raridade` ENUM('Comum', 'Raro', 'Epico', 'Lendario') NOT NULL,
   `valor_mercado` INT NOT NULL,
   `efeito_consumivel` VARCHAR(100) NULL,
+  `atualizavel` BOOLEAN NOT NULL DEFAULT FALSE,
   `atributo_ataque` INT DEFAULT 0,
   `atributo_defesa` INT DEFAULT 0,
   PRIMARY KEY (`id`)
@@ -60,6 +61,7 @@ CREATE TABLE IF NOT EXISTS `inventario` (
 
 CREATE TABLE IF NOT EXISTS `atributos_personagem` (
   `save_id` INT NOT NULL,
+  `nome` VARCHAR(100) NOT NULL DEFAULT 'Cleitin',
   `vida_maxima` INT NOT NULL DEFAULT 100,
   `vida_atual` INT NOT NULL DEFAULT 100,
   `ataque` INT NOT NULL DEFAULT 10,
@@ -86,3 +88,11 @@ CREATE TABLE IF NOT EXISTS `pets` (
     ON DELETE CASCADE
     ON UPDATE CASCADE
 ) ENGINE = InnoDB;
+
+
+
+INSERT INTO `itens_base` (`nome`, `descricao`, `tipo`, `raridade`, `valor_mercado`, `efeito_consumivel`, `atualizavel`, `atributo_ataque`, `atributo_defesa`) VALUES
+('Espada de Madeira', 'Uma espada simples feita de madeira. Ideal para iniciantes.', 'Arma_ataque', 'Comum', 5, NULL, TRUE, 5, 0),
+('Escudo de Madeira', 'Um escudo básico feito de madeira. Oferece proteção modesta.', 'Escudo', 'Comum', 5, NULL, TRUE, 0, 5),
+('Poção de Vida Pequena', 'Restaura uma pequena quantidade de vida quando consumida.', 'Consumivel', 'Comum', 10, 'Restaura 20 pontos de vida', FALSE, 0, 0),
+('Armadura de Couro', 'Uma armadura leve feita de couro. Proporciona defesa básica.', 'Armadura', 'Comum', 15, NULL, TRUE, 0, 10);

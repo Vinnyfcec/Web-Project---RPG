@@ -12,11 +12,6 @@ class saveModel {
         return save_id;
     }
 
-    //static async atualizarSave(nome_save, dinheiro, nivel, itens_adquiridos) {
-        //const query = 'UPDATE saves SET nome_save = ?, dinheiro = ?, nivel = ?, itens_adquiridos = ? WHERE id = ?';
-        //const [result] = await db.execute(query, [nome_save, dinheiro, nivel, itens_adquiridos, nome_save]);
-        //return result.affectedRows > 0;
-    //}
     static async renomearSave(save_id, novo_nome) {
         const query = 'UPDATE saves SET nome_save = ? WHERE id = ?';
         const [result] = await db.execute(query, [novo_nome, save_id]);
@@ -108,6 +103,20 @@ class saveModel {
         const petQuery = 'SELECT * FROM pets WHERE id = ?';
         const [pet] = await db.execute(petQuery, [result.insertId]);
         return pet[0];
+    }
+
+    static async melhorarItem(save_id, item_id) {
+        const query = 'SELECT ib.atributo_ataque, ib.atributo_defesa, i.quantidade FROM inventario i JOIN itens_base ib ON i.item_base_id = ib.id WHERE i.id = ? AND i.save_id = ?';
+        const [itens] = await db.execute(query, [item_id, save_id]);
+        if (itens.length === 0) {
+            throw new Error('Não ta no inventário.');
+        }
+        const item = itens[0];
+        const novoAtributoAtaque = item.atributo_ataque + 5;
+        const novoAtributoDefesa = item.atributo_defesa + 5;
+        const Uquery = 'UPDATE itens_base SET atributo_ataque = ?, atributo_defesa = ? WHERE id = (SELECT item_base_id FROM inventario WHERE id = ?)';
+        await db.execute(Uquery, [novoAtributoAtaque, novoAtributoDefesa, item_id]);
+        return;
     }
 }
 

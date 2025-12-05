@@ -7,9 +7,6 @@
         <div class="row">
             <h1> Bem-vindo mochileiro</h1>
             <h3> Save atual: <%= save.nome_save %> ID:<%= save.id %></h3>
-            <button class="btn-editar-toggle"> Editar: </button><!-- colocar isso e as duas linhas de baixo ao lado da linha de cima, tipo: "save atual... EDITAR"-->
-            <button type="submit" class="btn-concluir-toggle opcoes-save" form="renomearForm"> Concluir Edição </button>
-            <form class="opcoes-save" id="renomearForm" action="/saves/<%= save.id %>/renomearatributos" method="POST"></form>
         </div>
 
         <div class="row mt-4">
@@ -21,11 +18,38 @@
                 <p> Ataque: <%= save.atributos.ataque %></p>
                 <p> Defesa: <%= save.atributos.defesa %></p>
                 <p> Dinheiro: <%= save.dinheiro %></p>
-                <form action="/saves/<%= save.id %>/tirarvida" method="POST"> <button> Tirar Vida </button> </form>
                 <%- include('partials/adotarPetForm', { saveId: save.id }) %>
             </div>
-            <div id="menu" class="menus opcoes-menu col-md-8">
-                <p> Inventario aq</p>
+            <div id="menu" class="menus ferreiro opcoes-menu col-md-8">
+                <h2> Ferreiro </h2>
+                <p> Aqui você pode melhorar seus equipamentos! </p>
+
+                <div class="disponiveis">
+                    <h3> Itens Disponíveis para Melhoria: </h3>
+                    
+                </div>
+
+                <p>selecione um pra melhorar:</p>
+                <select form="melhorarForm" name="itens" id="itens-disponiveis">
+                    <option value="" disabled selected>Selecione um item</option>
+
+                </select>
+
+                <form id="melhorarForm" action="/ferreiro/melhorar" method="POST">
+                    <button > Melhorar </button>
+                </form>
+
+
+
+
+
+
+
+
+
+
+
+
             </div>
 
 

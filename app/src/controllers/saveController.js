@@ -120,6 +120,38 @@ class saveController {
             res.redirect(`/menu?erro=Erro ao adotar pet: ${error.message}`);
         }
     }
+
+    static async renomearAtributos(req, res) {
+        const saveId = req.params.id;
+        const novo_nome = req.body.novo_nome;
+        const novo_nome_pet = req.body.novo_nome_pet;
+        try {
+            const queryAttr = 'UPDATE atributos_personagem SET nome = ? WHERE save_id = ?';
+            await saveModel.atualizarAtributoPersonagem(queryAttr, [novo_nome, saveId]);
+            if (novo_nome_pet && novo_nome_pet.trim() !== '') {
+                const queryPet = 'UPDATE pets SET nome = ? WHERE save_id = ?';
+                await saveModel.atualizarAtributoPersonagem(queryPet, [novo_nome_pet, saveId]);
+            }
+            res.redirect('/menu?sucesso=Atributos renomeados com sucesso!');
+        } catch (error) {
+            res.redirect(`/menu?erro=Erro ao renomear atributos: ${error.message}`);
+        }
+    }
+
+    static async showFerreiro(req, res) {
+        res.render('ferreiro', { erro: req.query.erro });
+    }
+
+    static async melhorarItem(req, res) {
+        const saveId = req.session.save_id;
+        const itemId = req.body.item_id;
+        try {
+            await saveModel.melhorarItem(saveId, itemId);
+            res.redirect('/ferreiro?sucesso=item mlhorado');
+        } catch (error) {
+            res.redirect(`/ferreiro?erro=Erro ao melhorar item: ${error.message}`);
+        }
+    }
 }
 
 module.exports = saveController
