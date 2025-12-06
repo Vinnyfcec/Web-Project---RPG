@@ -15,7 +15,6 @@ class saveController {
         if (req.session.save_id) {
             try {
                 const saveCompleto = await saveModel.buscarSaveCompleto(req.session.save_id);
-                // eu vou explodir esse código
                 if (!saveCompleto) {
                     req.session.save_id = null;
                     req.session.saveAtual = null;
@@ -76,11 +75,13 @@ class saveController {
             return res.redirect('/saves');
         }
         try {
-            let novaVida = req.session.save.atributos.vida_atual - 10;
+            console.log('Vida atual antes de tirar vida:', req.session.saveAtual.atributos.vida_atual);
+            let novaVida = req.session.saveAtual.atributos.vida_atual - 10;
+            console.log('Vida atual antes de tirar vida:', req.session.saveAtual.atributos.vida_atual);
             if (novaVida < 0) novaVida = 0;
             const query = 'UPDATE atributos_personagem SET vida_atual = ? WHERE save_id = ?';
             await saveModel.atualizarAtributoPersonagem(query, [novaVida, req.session.save_id]);
-            req.session.save.atributos.vida_atual = novaVida;
+            req.session.saveAtual.atributos.vida_atual = novaVida;
             res.redirect('/menu');
         } catch (error) {
             console.error('Erro ao tirar sua vida:', error);
@@ -128,6 +129,77 @@ class saveController {
         }
     }
 
+    static async listarInventario(req, res) {
+        const saveId = req.session.save_id;
+        try {
+            const inventario = await saveModel.listarInventario(saveId);
+            res.render('inventario', {itens})
+        } catch (error) {
+            res.redirect(`/menu?erro=Erro ao carregar inventário: ${error.message}`);
+        }
+    }
+
+    static async atualizarAtributoPersonagem(req, res) {
+        try {
+            const { atributo, valor } = req.body;
+            await saveModel.atualizarAtributoPersonagem(atributo, valor, req.session.save_id);
+            res.redirect('/menu?sucesso=item equipado.');
+        } catch (error) {
+            res.redirect(`/menu?erro=Erro ao equipar o item. ${error.message}`);
+        }
+    }
+
+    static async abrirInventario(req, res) {
+        try {
+            const saveId = req.session.save_id;
+            const itens = await saveModel.listarInventario(saveId);
+            const slots=20;
+            const inventario= [...itens];
+            while (inventario.length < slots) {
+                inventario.push(null);
+            }
+            res.render('inventario', { inventario });
+        } catch (error) {
+            res.redirect(`/menu?erro=Erro ao abrir inventário: ${error.message}`);
+        }
+
+    } //ent guarda esse aqui pra se der separar dps do menu// ok
+
+    //man, o inventario por enquanto ta no menu, nn tem uma pagina pra ele pq ele ja ta funcionando por enquanto
+    static async equiparItem(req, res) {
+        try {
+            const { item_id } = req.body;
+            const saveId = req.session.save_id;
+            const[result] = await db.execute('SELECT COUNT(*) AS total FROM inventario WHERE id = ? AND equipado= 1', [saveId]);
+            if (result[0].total >= 3){
+                return res.redirect('/menu?erro=Limite de itens equipados atingido.');
+            }
+            await db.execute('UPDATE inventario SET equipado = 1 WHERE id = ? AND save_id = ?', [item_id, saveId]);
+            res.redirect('/menu?sucesso=item equipado.');
+        } catch (error) {
+            res.redirect(`/menu?erro=Erro ao equipar o item. ${error.message}`);
+        }
+    }
+
+    static async desequiparItem(req, res) {
+        try {
+            const { item_id } = req.body;
+            const saveId = req.session.save_id;
+            await db.execute('UPDATE inventario SET equipado = 0 WHERE id = ? AND save_id = ?', [item_id, saveId]);
+            res.redirect('/menu?sucesso=item desequipado.');
+        } catch (error) {
+            res.redirect(`/menu?erro=Erro ao desequipar o item. ${error.message}`);
+        }
+    }
+
+    //static async pegarItem(req, res) {
+        //try {
+            //const saveId = req.session.save_id;
+            //const [base] = await db.execute('SELECT * FROM itens_base ORDER BY RAND() LIMIT 1');
+        //}
+    //}
+    
+    
     static async adotarPet(req, res) {
         const saveId = req.params.id;
         const nome_pet = req.body.nome_pet;
@@ -174,6 +246,19 @@ class saveController {
             res.redirect(`/ferreiro?erro=Erro ao melhorar item: ${error.message}`);
         }
     }
+
+    static async excluirItem(req, res) {
+        const saveId = req.session.save_id;
+        const inventarioId = req.body.inventario_id;
+        try {
+            await saveModel.excluirItem(saveId, inventarioId);
+            res.redirect('/menu?sucesso=item excluído');
+        } catch (error) {
+            res.redirect(`/menu?erro=Erro ao excluir item: ${error.message}`);
+        }
+    }
+
+    
 }
 
 module.exports = saveController
