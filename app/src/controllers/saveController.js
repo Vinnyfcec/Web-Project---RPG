@@ -75,9 +75,7 @@ class saveController {
             return res.redirect('/saves');
         }
         try {
-            console.log('Vida atual antes de tirar vida:', req.session.saveAtual.atributos.vida_atual);
             let novaVida = req.session.saveAtual.atributos.vida_atual - 10;
-            console.log('Vida atual antes de tirar vida:', req.session.saveAtual.atributos.vida_atual);
             if (novaVida < 0) novaVida = 0;
             const query = 'UPDATE atributos_personagem SET vida_atual = ? WHERE save_id = ?';
             await saveModel.atualizarAtributoPersonagem(query, [novaVida, req.session.save_id]);
@@ -236,8 +234,6 @@ class saveController {
     static async melhorarItem(req, res) {
         const saveId = req.session.save_id;
         const itemId = req.body.item_id;
-        console.log("Item recebido:", req.body);
-        console.log("Save ID:", req.session.save_id);
 
         try {
             await saveModel.melhorarItem(saveId, itemId);

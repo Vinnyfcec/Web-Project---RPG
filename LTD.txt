@@ -27,7 +27,7 @@ CRUD:
 - Excluir usuário OK
 
 Uso de sessão (session-based auth) OK
-Uso de bcrypt
+Uso de bcrypt OK
 
 MVC:
 - Models: OK

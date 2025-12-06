@@ -64,7 +64,6 @@ class userController {
 
     static async excluirUsuario(req, res) {
         const userId = req.session.usuario.id;
-        console.log('Excluindo usuário com ID:', userId);
         try {
             await userModel.excluirUsuario(userId);
             req.session.destroy();
