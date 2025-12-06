@@ -30,13 +30,14 @@ CREATE TABLE IF NOT EXISTS `itens_base` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `nome` VARCHAR(100) NOT NULL UNIQUE,
   `descricao` TEXT,
-  `tipo` ENUM('Armadura', 'Escudo', 'Arma_ataque', 'Consumivel', 'Outro') NOT NULL,
+  `tipo` ENUM('Armadura', 'Arma_ataque', 'Escudo', 'Consumivel', 'Outro') NOT NULL,
   `raridade` ENUM('Comum', 'Raro', 'Epico', 'Lendario') NOT NULL,
   `valor_mercado` INT NOT NULL,
   `efeito_consumivel` VARCHAR(100) NULL,
   `atualizavel` BOOLEAN NOT NULL DEFAULT FALSE,
   `atributo_ataque` INT DEFAULT 0,
   `atributo_defesa` INT DEFAULT 0,
+  `atributo_chave` VARCHAR(10) DEFAULT 'nenhum',
   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB;
 

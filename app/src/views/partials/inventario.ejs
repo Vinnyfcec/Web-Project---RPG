@@ -10,6 +10,7 @@
                     <span class="item-nome"><%= item.nome %></span>
                     <span class="item-tipo">Tipo: <%= item.tipo %></span>
                     <span class="item-descricao"><%= item.descricao %></span>
+                    <span class="item-achave"> <%= item.atributo_chave %>: <%= item.atributo_chave === 'Ataque' ? item.atributo_ataque : item.atributo_defesa %></span>
                 </li>
             <% }); %>
         <% } %>

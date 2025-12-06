@@ -3,6 +3,7 @@
     <%- include('partials/head') %>
 </head>
 <body>
+    <%- include('partials/header') %>
     <main class="container mt-4">
         <div class="row">
             <h1> Bem-vindo mochileiro</h1>
@@ -25,8 +26,18 @@
                 <%- include('partials/adotarPetForm', { saveId: save.id }) %>
             </div>
             <div id="menu" class="menus opcoes-menu col-md-8">
-                <p> Inventario aq</p>
                 <%- include('partials/inventario', { inventario: inventario }) %>
+                <form id="excluirItem" action="/menu/excluirItem" method="POST">
+                    <select name="inventario_id">
+                        <option value="" disabled selected>Selecione um pra descartar: </option>
+                        <% inventario.forEach(item => { %>
+                            <option value="<%= item.id %>">
+                                <%= item.id %> - <%= item.nome %>
+                            </option>
+                        <% }); %>
+                    </select>
+                    <button type="submit"> Descartar! </button>
+                </form>
             </div>
             
 

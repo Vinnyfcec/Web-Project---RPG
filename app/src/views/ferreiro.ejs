@@ -26,18 +26,18 @@
 
                 <div class="disponiveis">
                     <h3> Itens Disponíveis para Melhoria: </h3>
-                    <% inventary = inventario || []; %>
+                    <% inventario = inventario || []; %>
                     <div class="inventario-container">
                         <ul class="inventario-lista">
-                            <% if (inventary.length === 0) { %>
+                            <% if (inventario.length === 0) { %>
                                 <li>O inventário não tem itens disponiveis para melhora.</li>
                             <% } else { %>
-                                <% inventary.forEach(item => { %>
-                                    <% if (item.atributo_ataque > 0 || item.atributo_defesa > 0) { %>
+                                <% inventario.forEach(item => { %>
+                                    <% if (item.atributo_chave !== 'nenhum') { %>
                                     <li class="inventario-item"> <!-- arrumem dps do jeito q vc querem pq eu n sou bom em design-->
                                         <span class="item-nome"><%= item.nome %></span>
                                         <span class="item-tipo">Tipo: <%= item.tipo %></span>
-                                        <span class="item-descricao"><%= item.descricao %></span>
+                                        <span class="item-atributo"> <%= item.atributo_chave %>: <%= item.atributo_chave === 'Ataque' ? item.atributo_ataque : item.atributo_defesa %></span>
                                     </li>
                                     <% } %>
                                 <% }); %>
@@ -48,17 +48,18 @@
                 </div>
 
                 <p>selecione um pra melhorar:</p>
-                <select form="melhorarForm" name="item_id" id="itens-disponiveis">
-                    <option value="" disabled selected>Selecione um item</option>
-                    <% inventary.forEach(item => { %>
-                        <% if (item.atributo_ataque > 0 || item.atributo_defesa > 0) { %>
-                            <option value="<%= item.id %>"><%= item.nome %> - Ataque: <%= item.atributo_ataque %>, Defesa: <%= item.atributo_defesa %></option>
-                        <% } %>
-                    <% }); %>
-                </select>
-
                 <form id="melhorarForm" action="/ferreiro/melhorar" method="POST">
-                    <button > Melhorar </button>
+                    <select name="item_id" id="itens-disponiveis">
+                        <option value="" disabled selected>Selecione um item</option>
+                        <% inventario.forEach(item => { %>
+                            <% if (item.atributo_chave !== 'nenhum') { %>
+                                <option value="<%= item.id %>"> 
+                                    <%= item.id %> <%= item.nome %> - <%= item.atributo_chave %>: <%= item.atributo_chave === 'Ataque' ? item.atributo_ataque : item.atributo_defesa %>
+                                </option>
+                            <% } %>
+                        <% }); %>
+                    </select>
+                    <button>Melhorar</button>
                 </form>
             </div>
         </div>
