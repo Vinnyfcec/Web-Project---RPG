@@ -206,15 +206,7 @@ class saveController {
         } catch (error) {
             res.redirect(`/menu?erro=Erro ao desequipar o item. ${error.message}`);
         }
-    }
-
-    //static async pegarItem(req, res) {
-        //try {
-            //const saveId = req.session.save_id;
-            //const [base] = await db.execute('SELECT * FROM itens_base ORDER BY RAND() LIMIT 1');
-        //}
-    //}
-    
+    } 
     
     static async adotarPet(req, res) {
         const saveId = req.params.id;
@@ -289,6 +281,7 @@ class saveController {
         const saveId = req.session.save_id;
         try {
             const item = await saveModel.pegarItemNovo(saveId);
+            await saveModel.adicionarItemInventario(saveId, item[0].id);
             res.redirect('/menu?sucesso=item pego!');
         } catch (error) {
             res.redirect(`/menu?erro=Erro ao pegar item: ${error.message}`);
