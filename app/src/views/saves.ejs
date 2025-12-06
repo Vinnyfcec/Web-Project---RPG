@@ -30,46 +30,46 @@
     <%- include('partials/footer') %>
 </body>
 <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const saveCards = document.querySelectorAll('.Savecard');
+    document.addEventListener('DOMContentLoaded', () => {
+        const saveCards = document.querySelectorAll('.Savecard');
 
-            saveCards.forEach(card => {
-                const displayMode = card.querySelector('.save-display-mode');
-                const btnContinuar = card.querySelector('.selecionar');
-                const renameForm = card.querySelector('.renomear-form');
-                const deleteForm = card.querySelector('.deletar-form');
-                const criarForm = card.querySelector('.criar-form');
-                const toggleButtons = card.querySelectorAll('.btn-rename-toggle');
-                const deleteToggleButtons = card.querySelectorAll('.btn-delete-toggle');
-                const criarToggleButtons = card.querySelectorAll('.btn-criar-toggle');
+        saveCards.forEach(card => {
+            const displayMode = card.querySelector('.save-display-mode');
+            const btnContinuar = card.querySelector('.selecionar');
+            const renameForm = card.querySelector('.renomear-form');
+            const deleteForm = card.querySelector('.deletar-form');
+            const criarForm = card.querySelector('.criar-form');
+            const toggleButtons = card.querySelectorAll('.btn-rename-toggle');
+            const deleteToggleButtons = card.querySelectorAll('.btn-delete-toggle');
+            const criarToggleButtons = card.querySelectorAll('.btn-criar-toggle');
 
-                toggleButtons.forEach(button => {
-                    button.addEventListener('click', () => {
-                        displayMode.classList.toggle('opcoes-save');
-                        btnContinuar.classList.toggle('opcoes-save');
-                        renameForm.classList.toggle('opcoes-save');
-                        
+            toggleButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    displayMode.classList.toggle('opcoes-save');
+                    btnContinuar.classList.toggle('opcoes-save');
+                    renameForm.classList.toggle('opcoes-save');
+                    
 
-                        if (!renameForm.classList.contains('opcoes-save')) {
-                            renameForm.querySelector('input[name="novo_nome"]').focus();
-                        }
-                    });
+                    if (!renameForm.classList.contains('opcoes-save')) {
+                        renameForm.querySelector('input[name="novo_nome"]').focus();
+                    }
                 });
-                deleteToggleButtons.forEach(button => {
-                    button.addEventListener('click', () => {
-                        displayMode.classList.toggle('opcoes-save');
-                        btnContinuar.classList.toggle('opcoes-save');
-                        deleteForm.classList.toggle('opcoes-save');
-                    });
-                });
-                criarToggleButtons.forEach(button => {
-                    button.addEventListener('click', () => {
-                        displayMode.classList.toggle('opcoes-save');
-                        criarForm.classList.toggle('opcoes-save');
-                    })
-                })
             });
+            deleteToggleButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    displayMode.classList.toggle('opcoes-save');
+                    btnContinuar.classList.toggle('opcoes-save');
+                    deleteForm.classList.toggle('opcoes-save');
+                });
+            });
+            criarToggleButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    displayMode.classList.toggle('opcoes-save');
+                    criarForm.classList.toggle('opcoes-save');
+                })
+            })
         });
-        //setInterval(() => location.reload(), 2000);
-    </script>
+    });
+    //setInterval(() => location.reload(), 2000);
+</script>
 </html>

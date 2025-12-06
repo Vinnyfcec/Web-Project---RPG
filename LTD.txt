@@ -4,26 +4,27 @@ CRUD:
 
 - CADASTROS - 3
 -- Usuários OK
--- Saves
--- Vendas
+-- Saves OK
+-- Pet OK
 
 - UPDATE:
 
-- Renomear save
-- Renomear personagem
-- Alterar classe
+- Renomear save OK
+- Renomear personagem OK
+- Renomear pet OK
 
 - READ:
 
 - Listar saves OK
-- Listar inventário
-- Listar loja com filtro
+- Listar inventário OK
+- Listar inventário com filtro (FERREIRO) OK
+- 
 
 - DELETE:
 
-- Excluir save
-- Descartar item
-- Excluir usuário
+- Excluir save OK
+- Descartar item OK
+- Excluir usuário OK
 
 Uso de sessão (session-based auth) OK
 Uso de bcrypt
@@ -33,7 +34,7 @@ MVC:
 - Controllers: OK
 - Views: OK
 
-RESTfull
+RESTfull OK
 
 render EJS OK
 
@@ -48,12 +49,9 @@ DESIGN:
 - tipografia legível
 - espaçamentos adequados
 
-Grid 12 columns com reponsividade
+Grid 12 columns com reponsividade OK
 
 Banco de dados:
 - Mysql OK
 - Chave estrangeira OK
 - Script pronto OK
-
-
-

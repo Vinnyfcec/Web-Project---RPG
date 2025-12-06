@@ -1,0 +1,19 @@
+<% if (save?.pet) { %>
+    <div>
+        <h4>Petzin:</h4>
+        <p class="nome_pet_reno">Nome: <%= save.pet.nome %></p>
+        <input class="input_pet_reno opcoes-save" name="novo_nome_pet" type="text" value="<%= save.pet.nome %>" form="renomearForm"></input>
+        <form action="/menu/<%= save.pet.id %>/soltarPet" method="post" class="soltar-pet opcoes-save">
+            <button type="submit">Soltar Pet</button>
+        </form>
+        
+    </div>
+<% } else { %>
+    <div class="adotar-pet-form">
+        <button class="btn-adotar-toggle" type="button">Adotar Pet</button>
+        <form action="/saves/<%= saveId %>/adotarpet" method="POST" class="pet-info opcoes-save">
+            <input type="text" name="nome_pet" placeholder="Nome do Pet" required></input>
+            <button type="submit">Adotar Pet</button>
+        </form>
+    </div>
+<% } %>

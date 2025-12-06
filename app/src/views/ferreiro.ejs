@@ -3,44 +3,65 @@
     <%- include('partials/head') %>
 </head>
 <body>
-    <%- include('partials/header') %>
     <main class="container mt-4">
         <div class="row">
             <h1> Bem-vindo mochileiro</h1>
             <h3> Save atual: <%= save.nome_save %> ID:<%= save.id %></h3>
-            <button class="btn-editar-toggle"> Editar: </button><!-- colocar isso e as duas linhas de baixo ao lado da linha de cima, tipo: "save atual... EDITAR"-->
-            <button type="submit" class="btn-concluir-toggle opcoes-save" form="renomearForm"> Concluir Edição </button>
-            <form class="opcoes-save" id="renomearForm" action="/saves/<%= save.id %>/renomearatributos" method="POST"></form>
         </div>
 
         <div class="row mt-4">
             <div id="atrbt" class="menus save-display-menu col-md-4" >
-                <p class="nome_reno"> Nome: <%= (typeof save !== 'undefined' && save.atributos) ? save.atributos.nome : '' %></p>
-                <input class="input_reno opcoes-save" type="text" name="novo_nome" placeholder="Novo Nome" value="<%= (typeof save !== 'undefined' && save.atributos) ? save.atributos.nome : '' %>" required form="renomearForm"></input>
-                <p> Nivel: <%= (typeof save !== 'undefined' && save.atributos) ? save.atributos.nivel : '' %></p>
-                <p> Vida: <%= (typeof save !== 'undefined' && save.atributos) ? save.atributos.vida_atual : '' %> / <%= (typeof save !== 'undefined' && save.atributos) ? save.atributos.vida_maxima : '' %></p>
-                <p> Ataque: <%= (typeof save !== 'undefined' && save.atributos) ? save.atributos.ataque : '' %></p>
-                <p> Defesa: <%= (typeof save !== 'undefined' && save.atributos) ? save.atributos.defesa : '' %></p>
+                <p class="nome_reno"> Nome: <%= save.atributos.nome %></p>
+                <input class="input_reno opcoes-save" type="text" name="novo_nome" placeholder="Novo Nome" value="<%= save.atributos.nome %>" required form="renomearForm"></input>
+                <p> Nivel: <%= save.atributos.nivel %></p>
+                <p> Vida: <%= save.atributos.vida_atual %> / <%= save.atributos.vida_maxima %></p>
+                <p> Ataque: <%= save.atributos.ataque %></p>
+                <p> Defesa: <%= save.atributos.defesa %></p>
                 <p> Dinheiro: <%= save.dinheiro %></p>
-                <form action="/saves/<%= save.id %>/tirarvida" method="POST"> <button> Tirar Vida </button> </form>
                 <%- include('partials/adotarPetForm', { saveId: save.id }) %>
             </div>
-            <div id="menu" class="menus opcoes-menu col-md-8">
-                <%- include('partials/inventario', { inventario: inventario }) %>
-                <form id="excluirItem" action="/menu/excluirItem" method="POST">
-                    <select name="inventario_id">
-                        <option value="" disabled selected>Selecione um pra descartar: </option>
+            <div id="menu" class="menus ferreiro opcoes-menu col-md-8">
+                <h2> Ferreiro </h2>
+                <p> Aqui você pode melhorar seus equipamentos! </p>
+
+                <div class="disponiveis">
+                    <h3> Itens Disponíveis para Melhoria: </h3>
+                    <% inventario = inventario || []; %>
+                    <div class="inventario-container">
+                        <ul class="inventario-lista">
+                            <% if (inventario.length === 0) { %>
+                                <li>O inventário não tem itens disponiveis para melhora.</li>
+                            <% } else { %>
+                                <% inventario.forEach(item => { %>
+                                    <% if (item.atributo_chave !== 'nenhum') { %>
+                                    <li class="inventario-item"> <!-- arrumem dps do jeito q vc querem pq eu n sou bom em design-->
+                                        <span class="item-nome"><%= item.nome %></span>
+                                        <span class="item-tipo">Tipo: <%= item.tipo %></span>
+                                        <span class="item-atributo"> <%= item.atributo_chave %>: <%= item.atributo_chave === 'Ataque' ? item.atributo_ataque : item.atributo_defesa %></span>
+                                    </li>
+                                    <% } %>
+                                <% }); %>
+                            <% } %>
+                        </ul>
+                    </div>
+                    
+                </div>
+
+                <p>selecione um pra melhorar:</p>
+                <form id="melhorarForm" action="/ferreiro/melhorar" method="POST">
+                    <select name="item_id" id="itens-disponiveis">
+                        <option value="" disabled selected>Selecione um item</option>
                         <% inventario.forEach(item => { %>
-                            <option value="<%= item.id %>">
-                                <%= item.id %> - <%= item.nome %>
-                            </option>
+                            <% if (item.atributo_chave !== 'nenhum') { %>
+                                <option value="<%= item.id %>"> 
+                                    <%= item.id %> <%= item.nome %> - <%= item.atributo_chave %>: <%= item.atributo_chave === 'Ataque' ? item.atributo_ataque : item.atributo_defesa %>
+                                </option>
+                            <% } %>
                         <% }); %>
                     </select>
-                    <button type="submit"> Descartar! </button>
+                    <button>Melhorar</button>
                 </form>
             </div>
-            
-
         </div>
     </main>
 
@@ -51,7 +72,6 @@
     document.addEventListener('DOMContentLoaded', () => {
     const infoPet = document.querySelectorAll('.pet-info');
     const btnAdotar = document.querySelectorAll('.btn-adotar-toggle');
-    const soltarPet = document.querySelectorAll('.soltar-pet');
     const btnEditar = document.querySelectorAll('.btn-editar-toggle');
     const btnConcluir = document.querySelectorAll('.btn-concluir-toggle');
     const inputReno = document.querySelectorAll('.input_reno');
@@ -75,9 +95,6 @@
             });
             btnConcluir.forEach(btn => {
                 btn.classList.toggle('opcoes-save');
-            });
-            soltarPet.forEach(form => {
-                form.classList.toggle('opcoes-save');
             });
             button.classList.toggle('opcoes-save');
         });
@@ -110,7 +127,6 @@
                 pet.classList.toggle('opcoes-save');
             });
             button.classList.toggle('opcoes-save');
-            
         });
     });
 });
