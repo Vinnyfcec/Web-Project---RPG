@@ -42,20 +42,23 @@ class saveModel {
         const attrQuery = `SELECT * FROM atributos_personagem WHERE save_id = ?`;
         const [atributos] = await db.execute(attrQuery, [save_id]);
 
+        const petQuery = `SELECT * FROM pets WHERE save_id = ?`;
+        const [pets] = await db.execute(petQuery, [save_id]);
+
         //agora o ataque é a soma do ataque dos itens equipados
         let ataqueTotal = 0;
         inventario.forEach(item => {
             ataqueTotal += item.atributo_ataque;
-        });//defesa é a soma da defesa dos itens equipados
+        });//defesa é a soma da defesa dos itens equipados + bonus de pet (tipo ganhar sanidade tlgd)
         let defesaTotal = 0;
+        if (pets && pets.length > 0) defesaTotal += 2;
         inventario.forEach(item => {
             defesaTotal += item.atributo_defesa;   
         });
         atributos[0].ataque = ataqueTotal;
         atributos[0].defesa = defesaTotal;
 
-        const petQuery = `SELECT * FROM pets WHERE save_id = ?`;
-        const [pets] = await db.execute(petQuery, [save_id]);
+        
 
         return {
             ...save[0], 
@@ -146,7 +149,7 @@ class saveModel {
         const [petExistente] = await db.execute(checkQuery, [save_id]);
         
         if (petExistente.length > 0) {
-            throw new Error('Este save já possui um pet. Delete o pet anterior para adotar um novo.'); //tá podendo trocar delete o pet por libere o pet? é menos tenebroso
+            throw new Error('Este save já possui um pet. Solte o pet anterior para adotar um novo.');
         }
         
         const query = 'INSERT INTO pets (save_id, nome) VALUES (?, ?)';

@@ -3,6 +3,9 @@
         <h4>Petzin:</h4>
         <p class="nome_pet_reno">Nome: <%= save.pet.nome %></p>
         <input class="input_pet_reno opcoes-save" name="novo_nome_pet" type="text" value="<%= save.pet.nome %>" form="renomearForm"></input>
+        <form action="/menu/<%= save.pet.id %>/soltarPet" method="post" class="soltar-pet opcoes-save">
+            <button type="submit">Soltar Pet</button>
+        </form>
         
     </div>
 <% } else { %>

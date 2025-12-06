@@ -93,9 +93,14 @@ CREATE TABLE IF NOT EXISTS `pets` (
 
 
 INSERT INTO `itens_base` (`nome`, `descricao`, `tipo`, `raridade`, `valor_mercado`, `efeito_consumivel`, `atualizavel`, `atributo_ataque`, `atributo_defesa`) VALUES
-('Espada de Madeira', 'Uma espada simples feita de madeira. Ideal para iniciantes.', 'Arma_ataque', 'Comum', 5, NULL, TRUE, 5, 0),
-('Escudo de Madeira', 'Um escudo básico feito de madeira. Oferece proteção modesta.', 'Escudo', 'Comum', 5, NULL, TRUE, 0, 5),
-('Poção de Vida Pequena', 'Restaura uma pequena quantidade de vida quando consumida.', 'Consumivel', 'Comum', 10, 'Restaura 20 pontos de vida', FALSE, 0, 0),
-('Armadura de Couro', 'Uma armadura leve feita de couro. Proporciona defesa básica.', 'Armadura', 'Comum', 15, NULL, TRUE, 0, 10);
+('Espada de Madeira', 'Uma espada simples feita de madeira. Ideal para iniciantes.', 'Arma_ataque', 'Comum', 5, NULL, TRUE, 'Ataque', 5, 0),
+('Escudo de Madeira', 'Um escudo básico feito de madeira. Oferece proteção modesta.', 'Escudo', 'Comum', 5, NULL, TRUE, 'Defesa', 0, 5),
+('Poção de Vida Pequena', 'Restaura uma pequena quantidade de vida quando consumida.', 'Consumivel', 'Comum', 10, 'Restaura 20 pontos de vida', FALSE, 'nenhum', 0, 0),
+('Armadura de Couro', 'Uma armadura leve feita de couro. Proporciona defesa básica.', 'Armadura', 'Comum', 15, NULL, TRUE, 'Ataque', 0, 10);
 
 
+INSERT INTO `inventario` (`save_id`, `item_base_id`, `quantidade`, `equipado`) VALUES
+(1, 1, 1, TRUE),
+(1, 2, 1, TRUE),
+(1, 3, 5, FALSE),
+(1, 4, 1, TRUE);

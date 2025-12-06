@@ -8,6 +8,7 @@ router.post('/saves/:id/tirarvida', saveController.isAuth, saveController.loadSa
 router.use(saveController.loadSave);
 router.get('/menu', saveController.isAuth, saveController.mostrarMenu);
 router.post('/menu/excluirItem', saveController.isAuth, saveController.excluirItem);
+router.post('/menu/:pet_id/soltarPet', saveController.isAuth, saveController.soltarPet);
 router.post('/saves/criar', saveController.isAuth, saveController.criarSave);
 router.post('/saves/:id/renomear', saveController.renomearSave);
 router.post('/saves/:id/deletar', saveController.isAuth, saveController.excluirSave);

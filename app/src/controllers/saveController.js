@@ -258,7 +258,19 @@ class saveController {
         }
     }
 
-    
+    static async soltarPet(req, res) {
+        const petId = req.params.pet_id;
+        const saveId = req.session.save_id;
+        try {
+            const query = 'DELETE FROM pets WHERE id = ? AND save_id = ?';
+            await saveModel.atualizarAtributoPersonagem(query, [petId, saveId]);
+            req.session.save.pet = null;
+            res.redirect('/menu?sucesso=Pet solto com sucesso!');
+        } catch (error) {
+            res.redirect(`/menu?erro=Erro ao soltar pet: ${error.message}`);
+        }
+    }
+
 }
 
 module.exports = saveController

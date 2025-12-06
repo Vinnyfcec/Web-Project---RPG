@@ -51,6 +51,7 @@
     document.addEventListener('DOMContentLoaded', () => {
     const infoPet = document.querySelectorAll('.pet-info');
     const btnAdotar = document.querySelectorAll('.btn-adotar-toggle');
+    const soltarPet = document.querySelectorAll('.soltar-pet');
     const btnEditar = document.querySelectorAll('.btn-editar-toggle');
     const btnConcluir = document.querySelectorAll('.btn-concluir-toggle');
     const inputReno = document.querySelectorAll('.input_reno');
@@ -74,6 +75,9 @@
             });
             btnConcluir.forEach(btn => {
                 btn.classList.toggle('opcoes-save');
+            });
+            soltarPet.forEach(form => {
+                form.classList.toggle('opcoes-save');
             });
             button.classList.toggle('opcoes-save');
         });
@@ -106,6 +110,7 @@
                 pet.classList.toggle('opcoes-save');
             });
             button.classList.toggle('opcoes-save');
+            
         });
     });
 });
