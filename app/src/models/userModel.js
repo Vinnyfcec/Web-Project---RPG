@@ -1,10 +1,13 @@
 const db = require('../config/db');
+const bcrypt = require('bcrypt');
 
 class userModel {
     
         static async criarUsuario(nome_usuario, email, senha) {
+            const saltRounds = 10;
+            const senhaHash = await bcrypt.hash(senha, saltRounds);
             const query = 'INSERT INTO usuarios (nome_usuario, email, senha_hash) VALUES (?, ?, ?)';
-            const [result] = await db.execute(query, [nome_usuario, email, senha]);
+            const [result] = await db.execute(query, [nome_usuario, email, senhaHash]);
             return result.insertId;
         }
         static async buscarUsuarioporIdentificador(identificador) {
@@ -13,8 +16,10 @@ class userModel {
             return rows[0];
         }
         static async atualizarSenhaUsuario(id, novaSenha) {
+            const saltRounds = 10;
+            const novaSenhaHash = await bcrypt.hash(novaSenha, saltRounds);
             const query = 'UPDATE usuarios SET senha = ? WHERE id = ?';
-            const [result] = await db.execute(query, [novaSenha, id]);
+            const [result] = await db.execute(query, [novaSenhaHash, id]);
             return result;
         }
         static async excluirUsuario(usuario_id) {
@@ -23,7 +28,7 @@ class userModel {
             return resultado.affectedRows > 0;
         }
         static async verificarSenha(senha, senha_hash) {
-            return await bycrypt.compare(senha, senha_hash);
+            return await bcrypt.compare(senha, senha_hash);
         }
 }
 
