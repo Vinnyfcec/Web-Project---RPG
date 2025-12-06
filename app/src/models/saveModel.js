@@ -3,7 +3,7 @@ const db = require('../config/db');
 class saveModel {
 
     static async criarSaveInicial(usuario_id, nomesave) {
-        const query = "INSERT INTO saves (usuario_id, nome_save, dinheiro, nivel, itens_adquiridos) VALUES (?, ?, 10, 1, 0)";
+        const query = "INSERT INTO saves (usuario_id, nome_save, dinheiro, nivel, itens_adquiridos) VALUES (?, ?, 100, 1, 0)";
         const [result] = await db.execute(query, [usuario_id, nomesave]);
         const save_id = result.insertId;
         const attrQuery = 'INSERT INTO atributos_personagem (save_id) VALUES (?)';
@@ -160,11 +160,17 @@ class saveModel {
     }
 
     static async melhorarItem(save_id, item_id) {
+        const save = await this.buscarSaveCompleto(save_id);
+        if (save.dinheiro < 10) {
+            throw new Error('Dinheiro insuficiente para melhorar o item.');
+        }
         const query = 'SELECT ib.atributo_ataque, ib.atributo_defesa, i.quantidade FROM inventario i JOIN itens_base ib ON i.item_base_id = ib.id WHERE i.id = ? AND i.save_id = ?';
         const [itens] = await db.execute(query, [item_id, save_id]);
         if (itens.length === 0) {
             throw new Error('Não ta no inventário.');
         }
+        const novoDinheiro = save.dinheiro - 10;
+        await db.execute('UPDATE saves SET dinheiro = ? WHERE id = ?', [novoDinheiro, save_id]);
         const item = itens[0];
         const novoAtributoAtaque = (item.atributo_ataque > 0) ? item.atributo_ataque + 5 : item.atributo_ataque;
         const novoAtributoDefesa = (item.atributo_defesa > 0) ? item.atributo_defesa + 5 : item.atributo_defesa;

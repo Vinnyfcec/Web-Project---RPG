@@ -297,3 +297,7 @@ main {
 .save-display-mode {
     width: 100%;
 }
+
+.red {
+    color: red;
+}
