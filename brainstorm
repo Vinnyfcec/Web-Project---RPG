@@ -2,57 +2,41 @@ RPG
 
 TOM DO JOGO: Medieval de fantasia
 
-Login - Cada usuário terá teu próprio jogo
+Login - Cada usuário terá seus próprios jogos
 
 
-Menu principal ideializado:
-⦁	Opções:
-⦁	Sair
+
+HEADER:
+- menu (home quando não logado)
+- trocar save
+- logout
+
 ⦁	Abas:
 
+1 - MENU
+Info:
+= nome
+= nivel
+= vida
+= ataque
+= defesa
+= dinheiro
+= Pet
 
+Inventario.
+- descartar item
 
-GUIs que a gente pretende fazer enumeradas:
-#
-1 - Inventário 
-Armadura?/Escudo
-Arma de ataque
-_______________
-Outros Itens
-Raridades:
-Comum: 12
-Raro: 9
-Épico: 6
-Lendário: 3
+Ferreiro.
 
-2 - Loja 
-Score Money
-_______
-Ferreiro
+2 - Ferreiro
+Info:
+= nome
+= nivel
+= vida
+= ataque
+= defesa
+= dinheiro
+= Pet
+
+inventario, apenas itens q podem ser modificados
 ⦁	aprimorar atributo
-
-Shop
-⦁	comprar itens
-
-
-3 - Mapa 
-Aventura única, começo meio fim
-Selecionar quaisquer níveis já desbloqueado
-ao finalizar o ultimo o jogo oferece opção permanente de recomeçar no head
-
-4off - batalha 
-
-Mecânicas core:
-Batalhas em Turnos
-
-Botão: Atacar
-⦁	roda d20 + atributos
-
-Inventário de poções:
-⦁	selecione poção e aperte usar
-
-Botão Usar
-⦁	atribui vantagens e é excluído
-
-
-fim

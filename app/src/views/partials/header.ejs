@@ -1,16 +1,18 @@
-<div class="row">
+<div class="row header">
     <a href="/menu" class="col-2 col-s-2 header-link"> <h3 class="header-titulo">RPG Web</h3> </a>
     <div class="col-8 col-s-0"></div>
-    <div class="col-2 col-s-2 header-link">
-        <button onclick="location.href='/saves'" class="header-logout"> Trocar de Save </button>
-        <button class="header-logout btn-logout-toggle"> Logout </button>
-        <form action="/logout" method="POST" class="logout-form opcoes-save">
-            <button type="submit"> Confirmar Logout </button>
-        </form>
-        <form action="/excluirUser" method="POST" class="logout-exclusao-form opcoes-save">
-            <button type="submit"> Logout e Exclusão</button>
-        </form>
-    </div>
+    <% if (typeof save !== 'undefined' && save.atributos) { %>
+        <div class="col-2 col-s-2 header-link">
+            <button onclick="location.href='/saves'" class="header-logout"> Trocar de Save </button>
+            <button class="header-logout btn-logout-toggle"> Logout </button>
+            <form action="/logout" method="POST" class="logout-form opcoes-save">
+                <button type="submit"> Confirmar Logout </button>
+            </form>
+            <form action="/excluirUser" method="POST" class="logout-exclusao-form opcoes-save">
+                <button type="submit"> Logout e Exclusão</button>
+            </form>
+        </div>
+    <% } %>
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
