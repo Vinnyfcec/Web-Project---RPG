@@ -16,15 +16,15 @@ CRUD:
 - READ:
 
 - Listar saves OK
-- Listar inventário
-- Listar inventário com filtro
+- Listar inventário OK
+- Listar inventário com filtro (FERREIRO) OK
 - 
 
 - DELETE:
 
 - Excluir save OK
-- Descartar item
-- Excluir usuário
+- Descartar item OK
+- Excluir usuário OK
 
 Uso de sessão (session-based auth) OK
 Uso de bcrypt
@@ -34,7 +34,7 @@ MVC:
 - Controllers: OK
 - Views: OK
 
-RESTfull
+RESTfull OK
 
 render EJS OK
 
