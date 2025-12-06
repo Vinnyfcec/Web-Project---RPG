@@ -38,6 +38,7 @@ CREATE TABLE IF NOT EXISTS `itens_base` (
   `atributo_ataque` INT DEFAULT 0,
   `atributo_defesa` INT DEFAULT 0,
   `atributo_chave` VARCHAR(10) DEFAULT 'nenhum',
+  `nivel_requerido` INT NOT NULL DEFAULT 1,
   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB;
 

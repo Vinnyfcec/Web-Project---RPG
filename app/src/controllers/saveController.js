@@ -86,7 +86,25 @@ class saveController {
             res.redirect('/menu');
         }
     }
-    
+
+    static async adicionarVida(req, res) {
+        if (!req.session.save) {
+            return res.redirect('/saves');
+        }
+        try {
+            let novaVida = req.session.saveAtual.atributos.vida_atual + 10;
+            const vidaMaxima = req.session.saveAtual.atributos.vida_maxima;
+            if (novaVida > vidaMaxima) novaVida = vidaMaxima;
+            const query = 'UPDATE atributos_personagem SET vida_atual = ? WHERE save_id = ?';
+            await saveModel.atualizarAtributoPersonagem(query, [novaVida, req.session.save_id]);
+            req.session.saveAtual.atributos.vida_atual = novaVida;
+            res.redirect('/menu');
+        } catch (error) {
+            console.error('Erro ao adicionar vida:', error);
+            res.redirect('/menu');
+        }
+    }
+
     static async criarSave(req, res) {
         const usuario_id = req.session.usuario.id;
         const nomesave = req.body.nomesave; 
@@ -267,6 +285,15 @@ class saveController {
         }
     }
 
+    static async pegarItem(req, res) {
+        const saveId = req.session.save_id;
+        try {
+            const item = await saveModel.pegarItemNovo(saveId);
+            res.redirect('/menu?sucesso=item pego!');
+        } catch (error) {
+            res.redirect(`/menu?erro=Erro ao pegar item: ${error.message}`);
+        }
+    }
 }
 
 module.exports = saveController

@@ -23,6 +23,7 @@
                 <p> Defesa: <%= (typeof save !== 'undefined' && save.atributos) ? save.atributos.defesa : '' %></p>
                 <p> Dinheiro: <%= save.dinheiro %></p>
                 <form action="/saves/<%= save.id %>/tirarvida" method="POST"> <button> Tirar Vida </button> </form>
+                <form action="/saves/<%= save.id %>/adicionarvida" method="POST"> <button> Adicionar Vida </button> </form>
                 <%- include('partials/adotarPetForm', { saveId: save.id }) %>
             </div>
             <div id="menu" class="menus opcoes-menu col-md-8">
@@ -39,6 +40,8 @@
                     <button type="submit"> Descartar! </button>
                 </form>
                 <button onclick="location.href='/ferreiro'" type="button"> Ferreiro </button>
+                <button onclick="location.href='/pegarItem'" type="button"> Pegar Item </button>
+
             </div>
             
 

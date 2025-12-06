@@ -77,9 +77,13 @@ class saveModel {
         return result;
     }
 
-    static async pegarItemNovo(save_id, nivel_mochileiro) {
-        const query = 'SELECT * FROM  itens_base WHERE stat_min <= ? AND stat_max <= ?';
-        const [result] = await db.execute(query, [nivel_mochileiro, nivel_mochileiro]);
+    static async pegarItemNovo(save_id) {
+        const nivelQuery = 'SELECT atributos_personagem.nivel AS nivel_mochileiro FROM atributos_personagem JOIN saves ON atributos_personagem.save_id = saves.id WHERE saves.id = ?';
+        const [nivelResult] = await db.execute(nivelQuery, [save_id]);
+        const nivel_mochileiro = nivelResult[0]?.nivel_mochileiro || 0;
+        //pegar item aleatório baseado no nível
+        const query = 'SELECT * FROM itens_base WHERE nivel_requerido <= ? ORDER BY RAND() LIMIT 1';
+        const [result] = await db.execute(query, [nivel_mochileiro]);
         return result;
     }
 

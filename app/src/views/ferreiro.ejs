@@ -26,7 +26,7 @@
                 <h2> Ferreiro </h2>
                 <p> Aqui você pode melhorar seus equipamentos! </p>
                 <p class="bold"> Custo por melhoria: 10 de dinheiro </p>
-                <p class="red opcoes-save">  -- Você precisa de pelo menos 10 de dinheiro para melhorar um item</p>
+                <% if (save.dinheiro < 10) { %> <p class="red">  -- Você precisa de pelo menos 10 de dinheiro pa melhorar um item</p> <% } %>                 
 
                 <div class="disponiveis">
                     <h3> Itens Disponíveis para Melhoria: </h3>
@@ -134,9 +134,5 @@
         });
     });
     });
-    if (save.dinheiro < 10) {
-        const redAviso = document.querySelector('.red');
-        redAviso.classList.remove('opcoes-save');
-    }
 </script>
 </html>
