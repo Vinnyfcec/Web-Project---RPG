@@ -6,7 +6,7 @@ class userModel {
         static async criarUsuario(nome_usuario, email, senha) {
             const saltRounds = 10;
             const senhaHash = await bcrypt.hash(senha, saltRounds);
-            const query = 'INSERT INTO usuarios (nome_usuario, email, senha_hash) VALUES (?, ?, ?)';
+            const query = 'INSERT INTO usuarios (nome_usuario, email, senhaHash) VALUES (?, ?, ?)';
             const [result] = await db.execute(query, [nome_usuario, email, senhaHash]);
             return result.insertId;
         }
@@ -27,8 +27,8 @@ class userModel {
             const [resultado] = await db.execute(query, [usuario_id]);
             return resultado.affectedRows > 0;
         }
-        static async verificarSenha(senha, senha_hash) {
-            return await bcrypt.compare(senha, senha_hash);
+        static async verificarSenha(senha, senhaHash) {
+            return await bcrypt.compare(senha, senhaHash);
         }
 }
 
