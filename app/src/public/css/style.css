@@ -3,18 +3,22 @@
 /*celulares*/
 *{
     box-sizing: border-box;
+    font-family: 'MedievalSharp', cursive;
 }
+
 .row::after{
     content:"";
     clear: both;
     display: table;
 }
+
 [class*="col-"]{
     width: 100%;
     float: left;
     padding: 5px;
     
 }
+
 @media only screen and (min-width:600px){
     /*tablets*/
     .col-s-1{
@@ -55,6 +59,7 @@
     }
 
 }
+
 @media only screen and (min-width:889px){
     /*pc*/
     .col-1{
@@ -96,14 +101,20 @@
 
 }
 
-
-
-
-
-* {
-    font-family: 'MedievalSharp', cursive;
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
 }
 
+body {
+    display: grid;
+    min-height: 100vh;
+}
+
+main {
+    grid-row: 2;
+}
 
 .form-cadastro fieldset {
     display: grid;
@@ -188,8 +199,10 @@
 }
 
 .footer{
-    grid-row: 2;
-    width: 100%;    
+    grid-row: 3;
+    width: 100%;
+    margin-top: auto;
+    text-align: center;
 }
 
 .titulo{
@@ -283,4 +296,136 @@
 
 .save-display-mode {
     width: 100%;
+}
+
+.red {
+    color: red;
+}
+
+/* COMECEI HOJE DAQUI PRA BAIXO VINECIUS */
+
+#atrbt {
+    background: #ffffff !important;
+    border-radius: 15px !important;
+    padding: 25px 28px !important;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.15) !important;
+    border: 1px solid #e5e5e5 !important;
+    max-width: 350px;
+    margin-bottom: 15px;
+}
+
+#atrbt p {
+    font-size: 17px;
+    margin-top: 6px 0;
+    color: #333;
+    font-weight: 500;
+}
+
+#atrbt .nome_reno{
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #222;
+}
+
+#atrbt .input-reno:focus{
+    border-color: #007bff;
+    outline: none;
+}
+
+#atrbt form button{
+    background: #007bff;
+    border: none;
+    color: white;
+    padding: 10px 16px;
+    font-size: 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 12px;
+    transition: background 0.25 ease;
+    width: 100%;
+}
+
+#atrbt form button:hover{
+    background: #005fcc;
+}
+
+.opcoes-save{
+    display: none !important;
+}
+
+.header{
+    display:grid;
+    align-items: center;
+    padding: 2px 2px;
+    background: #1e1e1e;
+    color: #fff;
+}
+
+.header-titulo{
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.header-link{
+    display: grid;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: inherit;
+}
+
+.header-logout{
+    background:transparent;
+    border: 1px solid #aaa;
+    color: #fff;
+    padding: 4px 8px;
+    font-size: 13px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: 0.2s;
+    margin-left: 4px;
+}
+
+.header-logout:hover{
+    background: #333;
+}
+
+.opcoes-save{
+    display: none;
+}
+
+.logout-form, .logout-exclusao-form{
+    margin-top: 4px;
+}
+
+.logout-form button:hover,
+.logout-exclusao-form button:hover{
+    background: #555;
+}
+
+.pag-saves .header {
+    padding: 2px 2px;
+    height: 140px;
+}
+
+.pag-login .container{
+    padding: 10px 2px;
+    height: -30%;
+}
+
+.pag-login .header{
+    padding: 10px 10px;
+    height: 100px;
+}
+
+.pag-saves .container{
+    padding: 10px 2px;
+    height: -200px;
+} 
+
+.ferreiro .container{
+    display: grid;
+    padding: 2px 2px;
 }

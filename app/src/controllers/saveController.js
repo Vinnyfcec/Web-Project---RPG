@@ -75,9 +75,7 @@ class saveController {
             return res.redirect('/saves');
         }
         try {
-            console.log('Vida atual antes de tirar vida:', req.session.saveAtual.atributos.vida_atual);
             let novaVida = req.session.saveAtual.atributos.vida_atual - 10;
-            console.log('Vida atual antes de tirar vida:', req.session.saveAtual.atributos.vida_atual);
             if (novaVida < 0) novaVida = 0;
             const query = 'UPDATE atributos_personagem SET vida_atual = ? WHERE save_id = ?';
             await saveModel.atualizarAtributoPersonagem(query, [novaVida, req.session.save_id]);
@@ -88,7 +86,25 @@ class saveController {
             res.redirect('/menu');
         }
     }
-    
+
+    static async adicionarVida(req, res) {
+        if (!req.session.save) {
+            return res.redirect('/saves');
+        }
+        try {
+            let novaVida = req.session.saveAtual.atributos.vida_atual + 10;
+            const vidaMaxima = req.session.saveAtual.atributos.vida_maxima;
+            if (novaVida > vidaMaxima) novaVida = vidaMaxima;
+            const query = 'UPDATE atributos_personagem SET vida_atual = ? WHERE save_id = ?';
+            await saveModel.atualizarAtributoPersonagem(query, [novaVida, req.session.save_id]);
+            req.session.saveAtual.atributos.vida_atual = novaVida;
+            res.redirect('/menu');
+        } catch (error) {
+            console.error('Erro ao adicionar vida:', error);
+            res.redirect('/menu');
+        }
+    }
+
     static async criarSave(req, res) {
         const usuario_id = req.session.usuario.id;
         const nomesave = req.body.nomesave; 
@@ -190,15 +206,7 @@ class saveController {
         } catch (error) {
             res.redirect(`/menu?erro=Erro ao desequipar o item. ${error.message}`);
         }
-    }
-
-    //static async pegarItem(req, res) {
-        //try {
-            //const saveId = req.session.save_id;
-            //const [base] = await db.execute('SELECT * FROM itens_base ORDER BY RAND() LIMIT 1');
-        //}
-    //}
-    
+    } 
     
     static async adotarPet(req, res) {
         const saveId = req.params.id;
@@ -236,8 +244,6 @@ class saveController {
     static async melhorarItem(req, res) {
         const saveId = req.session.save_id;
         const itemId = req.body.item_id;
-        console.log("Item recebido:", req.body);
-        console.log("Save ID:", req.session.save_id);
 
         try {
             await saveModel.melhorarItem(saveId, itemId);
@@ -271,6 +277,16 @@ class saveController {
         }
     }
 
+    static async pegarItem(req, res) {
+        const saveId = req.session.save_id;
+        try {
+            const item = await saveModel.pegarItemNovo(saveId);
+            await saveModel.adicionarItemInventario(saveId, item[0].id);
+            res.redirect('/menu?sucesso=item pego!');
+        } catch (error) {
+            res.redirect(`/menu?erro=Erro ao pegar item: ${error.message}`);
+        }
+    }
 }
 
 module.exports = saveController

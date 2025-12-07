@@ -3,7 +3,7 @@ const db = require('../config/db');
 class saveModel {
 
     static async criarSaveInicial(usuario_id, nomesave) {
-        const query = "INSERT INTO saves (usuario_id, nome_save, dinheiro, nivel, itens_adquiridos) VALUES (?, ?, 10, 1, 0)";
+        const query = "INSERT INTO saves (usuario_id, nome_save, dinheiro, nivel, itens_adquiridos) VALUES (?, ?, 100, 1, 0)";
         const [result] = await db.execute(query, [usuario_id, nomesave]);
         const save_id = result.insertId;
         const attrQuery = 'INSERT INTO atributos_personagem (save_id) VALUES (?)';
@@ -27,7 +27,6 @@ class saveModel {
     static async listarInventario(save_id) {
         const query = `SELECT i.id as inventario_id, i.id, i.quantidade, i.equipado, ib.nome, ib.tipo, ib.raridade, ib.descricao, ib.atributo_ataque, ib.atributo_defesa, ib.atributo_chave FROM inventario i JOIN itens_base ib ON i.item_base_id = ib.id WHERE i.save_id = ?`;
         const [rows] = await db.execute(query, [save_id]);
-        console.log('Inventário encontrado:', rows);
         return rows;
     }
 
@@ -78,9 +77,13 @@ class saveModel {
         return result;
     }
 
-    static async pegarItemNovo(save_id, nivel_mochileiro) {
-        const query = 'SELECT * FROM  itens_base WHERE stat_min <= ? AND stat_max <= ?';
-        const [result] = await db.execute(query, [nivel_mochileiro, nivel_mochileiro]);
+    static async pegarItemNovo(save_id) {
+        const nivelQuery = 'SELECT atributos_personagem.nivel AS nivel_mochileiro FROM atributos_personagem JOIN saves ON atributos_personagem.save_id = saves.id WHERE saves.id = ?';
+        const [nivelResult] = await db.execute(nivelQuery, [save_id]);
+        const nivel_mochileiro = nivelResult[0]?.nivel_mochileiro || 0;
+        //pegar item aleatório baseado no nível
+        const query = 'SELECT * FROM itens_base WHERE nivel_requerido <= ? ORDER BY RAND() LIMIT 1';
+        const [result] = await db.execute(query, [nivel_mochileiro]);
         return result;
     }
 
@@ -162,11 +165,17 @@ class saveModel {
     }
 
     static async melhorarItem(save_id, item_id) {
+        const save = await this.buscarSaveCompleto(save_id);
+        if (save.dinheiro < 10) {
+            throw new Error('Dinheiro insuficiente para melhorar o item.');
+        }
         const query = 'SELECT ib.atributo_ataque, ib.atributo_defesa, i.quantidade FROM inventario i JOIN itens_base ib ON i.item_base_id = ib.id WHERE i.id = ? AND i.save_id = ?';
         const [itens] = await db.execute(query, [item_id, save_id]);
         if (itens.length === 0) {
             throw new Error('Não ta no inventário.');
         }
+        const novoDinheiro = save.dinheiro - 10;
+        await db.execute('UPDATE saves SET dinheiro = ? WHERE id = ?', [novoDinheiro, save_id]);
         const item = itens[0];
         const novoAtributoAtaque = (item.atributo_ataque > 0) ? item.atributo_ataque + 5 : item.atributo_ataque;
         const novoAtributoDefesa = (item.atributo_defesa > 0) ? item.atributo_defesa + 5 : item.atributo_defesa;

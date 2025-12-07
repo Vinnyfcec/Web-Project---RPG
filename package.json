@@ -4,12 +4,13 @@
   "description": "rpgweb",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node app/server.js"
   },
   "keywords": [],
   "author": "David, Joseph, McCaveira, Fcec",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "datenv": "^0.0.0",
     "dotenv": "^17.2.3",
     "ejs": "^3.1.10",

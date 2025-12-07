@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS `saves` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `usuario_id` INT NOT NULL,
   `nome_save` VARCHAR(100) NOT NULL,
-  `dinheiro` INT NOT NULL DEFAULT 10,
+  `dinheiro` INT NOT NULL DEFAULT 100,
   `nivel` INT NOT NULL DEFAULT 1,
   `itens_adquiridos` INT NOT NULL DEFAULT 0,
   `data_ultima_atualizacao` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -38,6 +38,7 @@ CREATE TABLE IF NOT EXISTS `itens_base` (
   `atributo_ataque` INT DEFAULT 0,
   `atributo_defesa` INT DEFAULT 0,
   `atributo_chave` VARCHAR(10) DEFAULT 'nenhum',
+  `nivel_requerido` INT NOT NULL DEFAULT 1,
   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB;
 

@@ -2,25 +2,27 @@
 <head>
     <%- include('partials/head') %>
 </head>
-<body>
-<div class="row">
-    <div class="col-4 col-s-2"></div> 
+<body class="pag-login">
+    <%- include('partials/header') %>
+    <div class="row">
+        <div class="col-4 col-s-2"></div> 
 
-    <div class="col-4 col-s-8">
-    <h1> Login </h1>
-    <form action="/login" method="POST" class="form-login">
-        <fieldset>
-                        
-            <label for="identificador"> Autenticação do usuário </label>
-            <input type="text" name="identificador" id="identificador" placeholder="Nome de usuário/e-mail..." required>
-            <label for="senha"> Senha </label>
-            <input type="password" name="senha" id="senha" placeholder="Digite a sua senha..." required>
-            
-            <button type="submit"> Entrar </button>
-            
-        </fieldset>
-    </form>
-    <div class="col-4 col-s-2"></div>
+        <div class="col-4 col-s-8">
+        <h1> Login </h1>
+        <form action="/login" method="POST" class="form-login">
+            <fieldset>
+                            
+                <label for="identificador"> Autenticação do usuário </label>
+                <input type="text" name="identificador" id="identificador" placeholder="Nome de usuário/e-mail..." required>
+                <label for="senha"> Senha </label>
+                <input type="password" name="senha" id="senha" placeholder="Digite a sua senha..." required>
+                
+                <button type="submit"> Entrar </button>
+                
+            </fieldset>
+        </form>
+        <div class="col-4 col-s-2"></div>
+    </div>
 
     <%- include('partials/footer') %>
 </body>
