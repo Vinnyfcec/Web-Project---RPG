@@ -1,4 +1,4 @@
-https://prod.liveshare.vsengsaas.visualstudio.com/join?7729B9A03EBD0BBA704A1BC8E743C8880FEFconst db = require('../config/db');
+const db = require('../config/db');
 
 class saveModel {
 
@@ -95,6 +95,7 @@ class saveModel {
         if (total >= 3) {
             throw new Error('Limite de itens equipados atingido.');
             return false;
+        } else {
             const query = 'UPDATE inventario SET equipado = 1 WHERE id = ?';
             await db.execute(query, [item_id]);
             return true;
@@ -106,7 +107,7 @@ class saveModel {
     }
 
     static async somaAtributos(save_id) {
-        const query = 'SELECT SUM (ib.atributo_poder) AS poder, FROM inventario i JOIN itens_base ib OM i.item_base_id = ib.id WHERE i.save_id = ? AND i.equipado = 1';
+        const query = 'SELECT SUM (ib.atributo_poder) AS poder FROM inventario i JOIN itens_base ib ON i.item_base_id = ib.id WHERE i.save_id = ? AND i.equipado = 1';
 
         const [rows] = await db.execute(query, [save_id]);
         return rows[0];

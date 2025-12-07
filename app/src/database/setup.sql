@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `nome_usuario` VARCHAR(45) NOT NULL UNIQUE,
   `email` VARCHAR(100) NOT NULL UNIQUE,
-  `senha_hash` VARCHAR(255) NOT NULL,
+  `senhaHash` VARCHAR(500) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB;
 

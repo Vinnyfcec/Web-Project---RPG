@@ -37,9 +37,9 @@ class userController {
         try {
             const usuario = await userModel.buscarUsuarioporIdentificador(identificador);
 
-            //if (!usuario || !(await userModel.verificarSenha(senha, usuario.senha_hash))) { //mudar para hash dps
-                //return res.redirect('/login?erro=Ocorreu um erro no servidor.');
-            //}
+            if (!usuario || !(await userModel.verificarSenha(senha, usuario.senhaHash))) { 
+                return res.redirect('/login?erro=Ocorreu um erro no servidor.');
+            }
             
             req.session.usuario = { id: usuario.id, nome: usuario.nome_usuario };
             res.redirect('/saves');
