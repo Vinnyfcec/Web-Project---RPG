@@ -94,7 +94,7 @@ CREATE TABLE IF NOT EXISTS `pets` (
 
 
 
-INSERT INTO `itens_base` (`nome`, `descricao`, `tipo`, `raridade`, `valor_mercado`, `efeito_consumivel`, `atualizavel`, `atributo_ataque`, `atributo_defesa`) VALUES
+INSERT INTO `itens_base` (`nome`, `descricao`, `tipo`, `raridade`, `valor_mercado`, `efeito_consumivel`, `atualizavel`,`atributo_chave`, `atributo_ataque`, `atributo_defesa`) VALUES
 ('Espada de Madeira', 'Uma espada simples feita de madeira. Ideal para iniciantes.', 'Arma_ataque', 'Comum', 5, NULL, TRUE, 'Ataque', 0, 0),
 ('Escudo de Madeira', 'Um escudo básico feito de madeira. Oferece proteção modesta.', 'Escudo', 'Comum', 5, NULL, TRUE, 'Defesa', 0, 0),
 ('Poção de Vida Pequena', 'Restaura uma pequena quantidade de vida quando consumida.', 'Consumivel', 'Comum', 10, 'Restaura 20 pontos de vida', FALSE, 'nenhum', 0, 0),
