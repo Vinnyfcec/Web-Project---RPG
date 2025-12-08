@@ -302,7 +302,6 @@ main {
     color: red;
 }
 
-/* COMECEI HOJE DAQUI PRA BAIXO VINECIUS */
 
 #atrbt {
     background: #ffffff !important;
@@ -428,4 +427,33 @@ main {
 .ferreiro .container{
     display: grid;
     padding: 2px 2px;
+}
+
+/* COMECEI HOJE DAQUI PRA BAIXO VINECIUS */
+
+.home .header{
+    height: 100px;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+
+body.cadastro2 {
+    display: grid;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+
+body.cadastro2 main {
+    flex: 1;
+}
+
+
+body.cadastro2 footer {
+    margin-top: auto;
 }

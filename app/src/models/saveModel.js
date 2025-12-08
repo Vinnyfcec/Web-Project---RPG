@@ -82,7 +82,7 @@ class saveModel {
         const [nivelResult] = await db.execute(nivelQuery, [save_id]);
         const nivel_mochileiro = nivelResult[0]?.nivel_mochileiro || 0;
         //pegar item aleatório baseado no nível
-        const query = 'SELECT * FROM itens_base WHERE nivel_requerido <= ? ORDER BY RAND() LIMIT 1';
+        const query = 'SELECT * FROM itens_base WHERE nivel_requerido <= 5 ORDER BY RAND() LIMIT 1';
         const [result] = await db.execute(query, [nivel_mochileiro]);
         return result;
     }
