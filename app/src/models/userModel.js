@@ -18,7 +18,7 @@ class userModel {
         static async atualizarSenhaUsuario(id, novaSenha) {
             const saltRounds = 10;
             const novaSenhaHash = await bcrypt.hash(novaSenha, saltRounds);
-            const query = 'UPDATE usuarios SET senha = ? WHERE id = ?';
+            const query = 'UPDATE usuarios SET senhaHash = ? WHERE id = ?';
             const [result] = await db.execute(query, [novaSenhaHash, id]);
             return result;
         }

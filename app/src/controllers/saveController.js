@@ -1,6 +1,13 @@
 const saveModel = require('../models/saveModel');
 const userModel = require('../models/userModel');
 
+function GerarAtributoPorNivel(nivel) {
+    const min = 3*nivel;
+    const max = 6*nivel;
+    const cap = 33;
+    const valor = Math.floor(Math.random() * (max - min + 1)) + min;
+    return Math.min(valor, cap);
+}
 class saveController {
     static isAuth(req, res, next) {
         if (req.session.usuario) {
@@ -149,7 +156,7 @@ class saveController {
         const saveId = req.session.save_id;
         try {
             const inventario = await saveModel.listarInventario(saveId);
-            res.render('inventario', {itens})
+            res.render('inventario', { inventario })
         } catch (error) {
             res.redirect(`/menu?erro=Erro ao carregar inventário: ${error.message}`);
         }
@@ -179,9 +186,30 @@ class saveController {
             res.redirect(`/menu?erro=Erro ao abrir inventário: ${error.message}`);
         }
 
-    } //ent guarda esse aqui pra se der separar dps do menu// ok
+    } 
 
-    //man, o inventario por enquanto ta no menu, nn tem uma pagina pra ele pq ele ja ta funcionando por enquanto
+    static async pegarItemNovo(req, res) {
+        try {
+            const saveId = req.session.save_id;
+            const save = await saveModel.buscarSaveCompleto(saveId);
+            const nivel = save.atributos.nivel;
+            const dinheiro = save.dinheiro;
+            const custo = 10 * nivel;
+            if (dinheiro < custo) {
+                return  res.redirect('/menu?erro=Dinheiro insuficiente.');
+            }
+            const novoDinheiro = dinheiro - custo;
+            await saveModel.atualizarDinheiro(saveId, novoDinheiro);
+            const item = await saveModel.pegarItemNovo();
+            const valorAtributos = GerarAtributoPorNivel(nivel);
+            await saveModel.addAtributoAoItem(item.id, item.atributo_chave, valorAtributos);
+            await saveModel.adicionarItemInventario(saveId, item.id);
+            res.redirect('/menu?sucesso=Item adquirido: ' + item.nome);
+        } catch (error) {
+            res.redirect(`/menu?erro=Erro ao pegar item novo: ${error.message}`);
+        }
+
+    }
     static async equiparItem(req, res) {
         try {
             const { item_id } = req.body;
@@ -277,14 +305,31 @@ class saveController {
         }
     }
 
-    static async pegarItem(req, res) {
-        const saveId = req.session.save_id;
+    static async cacar(req, res) {
         try {
-            const item = await saveModel.pegarItemNovo(saveId);
-            await saveModel.adicionarItemInventario(saveId, item[0].id);
-            res.redirect('/menu?sucesso=item pego!');
+            const saveId = req.session.save_id;
+            const save = await saveModel.buscarSaveCompleto(saveId);
+            const atributos = save.atributos;
+            const ataqueTotal = atributos.ataque;
+            const vidaAtual = atributos.vida_atual;
+            const inimigo = await saveModel.caçar();
+            const roll = Math.floor(Math.random()*100) +1;
+            if (roll <= ataqueTotal) {
+                const ouroGanho= 10+nivel*2;
+                const experienciaGanha= 20+nivel*5;
+                await saveModel.atualizarDinheiro(saveId, save.dinheiro + ouroGanho);
+                await saveModel.atualizarExperiencia(saveId, experienciaGanha);
+                const subiuNivel = await saveModel.subirNivel(saveId);
+                req.session.flash = `Você derrotou o ${inimigo}! Ganhou ${ouroGanho} de ouro e ${experienciaGanha} de experiência.`;
+                return res.redirect('/menu');
+            } else {
+                const dano = 17+nivel;
+                await saveModel.perderVida(saveId, dano);
+                req.session.flash = `O ${inimigo} te atacou e causou ${dano} de dano!`;
+                return res.redirect('/menu');
+            }
         } catch (error) {
-            res.redirect(`/menu?erro=Erro ao pegar item: ${error.message}`);
+            res.redirect(`/menu?erro=Erro ao caçar: ${error.message}`);
         }
     }
 }

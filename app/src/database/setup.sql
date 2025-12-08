@@ -93,6 +93,26 @@ CREATE TABLE IF NOT EXISTS `pets` (
 ) ENGINE = InnoDB;
 
 
+CREATE TABLE IF NOT EXISTS `monstros` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `save_id` INT NOT NULL,
+  `nome` VARCHAR(100) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_save_pet` (`save_id`),
+  CONSTRAINT `fk_pets_saves`
+    FOREIGN KEY (`save_id`)
+    REFERENCES `saves` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+) ENGINE = InnoDB;
+
+
+INSERT INTO `monstros` (`save_id`, `nome`) VALUES
+(1, 'Goblin'),
+(1, 'Orc'),
+(1, 'Lobo'),
+(1, 'Bandido'),
+(1, 'Espectro');
 
 INSERT INTO `itens_base` (`nome`, `descricao`, `tipo`, `raridade`, `valor_mercado`, `efeito_consumivel`, `atualizavel`,`atributo_chave`, `atributo_ataque`, `atributo_defesa`) VALUES
 ('Espada de Madeira', 'Uma espada simples feita de madeira. Ideal para iniciantes.', 'Arma_ataque', 'Comum', 5, NULL, TRUE, 'Ataque', 0, 0),

@@ -1,5 +1,5 @@
 const db = require('../config/db');
-
+const experienciaNivel = [0, 300, 900, 2700, 6500];
 class saveModel {
 
     static async criarSaveInicial(usuario_id, nomesave) {
@@ -77,19 +77,29 @@ class saveModel {
         return result;
     }
 
-    static async pegarItemNovo(save_id) {
-        const nivelQuery = 'SELECT atributos_personagem.nivel AS nivel_mochileiro FROM atributos_personagem JOIN saves ON atributos_personagem.save_id = saves.id WHERE saves.id = ?';
-        const [nivelResult] = await db.execute(nivelQuery, [save_id]);
-        const nivel_mochileiro = nivelResult[0]?.nivel_mochileiro || 0;
-        //pegar item aleatório baseado no nível
-        const query = 'SELECT * FROM itens_base WHERE nivel_requerido <= 5 ORDER BY RAND() LIMIT 1';
-        const [result] = await db.execute(query, [nivel_mochileiro]);
-        return result;
+    static async pegarItemNovo() {
+        const query = `SELECT * FROM  itens_base WHERE tipo IN ('Arma_ataque','Armadura', 'Escudo') ORDER BY RAND() LIMIT 1`;
+        const [rows] = await db.execute(query);
+        return rows[0] || null;
+    }
+    static async buscarNivelMochileiro(save_id) {
+        const query = 'SELECT nivel FROM atributos_personagem WHERE id = ?';
+        const [rows] = await db.execute(query, [save_id]);
+        return rows[0] ?.nivel || 1;
+    }
+    static async addAtributoAoItem(item_base_id, Atributo_chave, valor) {
+        let novoAtaque = 0;
+        let novaDefesa = 0;
+        if (Atributo_chave === 'Ataque') novoAtaque = valor;
+        if (Atributo_chave === 'Defesa') novaDefesa = valor;
+        const query = 'UPDATE itens_base SET atributo_ataque = atributo_ataque + ?, atributo_defesa = atributo_defesa + ? WHERE id = ?';
+        await db.execute(query, [novoAtaque, novaDefesa, item_base_id]);
     }
 
+
     static async adicionarItemInventario(save_id, item_base_id, quantidade = 1) {
-        const query = 'INSERT INTO inventario (save_id, item_base_id, quantidade) VALUES (?, ?, ?)';
-        await db.execute(query, [save_id, item_base_id, quantidade]);
+        const query = 'INSERT INTO inventario (save_id, item_base_id, quantidade, equipado) VALUES (?, ?, 1, 0) ON DUPLICATE KEY UPDATE quantidade = quantidade + 1';
+        await db.execute(query, [save_id, item_base_id]);
     }
 
     static async equiparItem(item_id, save_id) {
@@ -117,7 +127,7 @@ class saveModel {
     }
 
     static async atualizarExperiencia(save_id, ganho_experiencia) {
-        const query = 'UPDATE saves SET experiencia = experiencia + ? WHERE id = ?';
+        const query = 'UPDATE atributos_personagem SET experiencia = experiencia + ? WHERE save_id = ?';
         await db.execute(query, [ganho_experiencia, save_id]);
     }
 
@@ -147,9 +157,8 @@ class saveModel {
     }
 
     static async caçar(){
-        const [rows] = await db.execute('SELECT nome FROM inimigos ORDER BY RAND() LIMIT 1');//vou precisar de uma tabela pros monstros vinição, mas só pros nomes deles
+        const [rows] = await db.execute('SELECT nome FROM inimigos ORDER BY RAND() LIMIT 1');
         return rows[0].nome;
-    
     }
 
     static async adotarPet(save_id, nome_pet) {
