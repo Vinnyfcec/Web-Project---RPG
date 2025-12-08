@@ -37,7 +37,6 @@ CREATE TABLE IF NOT EXISTS `itens_base` (
   `atualizavel` BOOLEAN NOT NULL DEFAULT FALSE,
   `atributo_ataque` INT DEFAULT 0,
   `atributo_defesa` INT DEFAULT 0,
-  `atributo_poder` INT GENERATED ALWAYS AS (atributo_ataque + atributo_defesa) STORED,
   `atributo_chave` VARCHAR(10) DEFAULT 'nenhum',
   `nivel_requerido` INT NOT NULL DEFAULT 1,
   PRIMARY KEY (`id`)
@@ -94,7 +93,7 @@ CREATE TABLE IF NOT EXISTS `pets` (
 
 
 
-INSERT INTO `itens_base` (`nome`, `descricao`, `tipo`, `raridade`, `valor_mercado`, `efeito_consumivel`, `atualizavel`, `atributo_ataque`, `atributo_defesa`) VALUES
+INSERT INTO `itens_base` (`nome`, `descricao`, `tipo`, `raridade`, `valor_mercado`, `efeito_consumivel`, `atualizavel`, `atributo_chave`, `atributo_ataque`, `atributo_defesa`) VALUES
 ('Espada de Madeira', 'Uma espada simples feita de madeira. Ideal para iniciantes.', 'Arma_ataque', 'Comum', 5, NULL, TRUE, 'Ataque', 0, 0),
 ('Escudo de Madeira', 'Um escudo básico feito de madeira. Oferece proteção modesta.', 'Escudo', 'Comum', 5, NULL, TRUE, 'Defesa', 0, 0),
 ('Poção de Vida Pequena', 'Restaura uma pequena quantidade de vida quando consumida.', 'Consumivel', 'Comum', 10, 'Restaura 20 pontos de vida', FALSE, 'nenhum', 0, 0),
@@ -124,4 +123,4 @@ INSERT INTO `inventario` (`save_id`, `item_base_id`, `quantidade`, `equipado`) V
 (1, 1, 1, TRUE),
 (1, 2, 1, TRUE),
 (1, 3, 5, FALSE),
-(1, 4, 1, TRUE);
+(1, 4, 1, TRUE);    
