@@ -178,10 +178,8 @@ class saveController {
         } catch (error) {
             res.redirect(`/menu?erro=Erro ao abrir inventário: ${error.message}`);
         }
+    } 
 
-    } //ent guarda esse aqui pra se der separar dps do menu// ok
-
-    //man, o inventario por enquanto ta no menu, nn tem uma pagina pra ele pq ele ja ta funcionando por enquanto
     static async equiparItem(req, res) {
         try {
             const { item_id } = req.body;

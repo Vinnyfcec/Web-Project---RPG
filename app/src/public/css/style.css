@@ -457,3 +457,46 @@ body.cadastro2 main {
 body.cadastro2 footer {
     margin-top: auto;
 }
+
+/* AQUI !*/
+.header-logout {
+    padding: 6px 18px;
+    font-size: 14px;
+    background-color: transparent;
+    border: 2px solid white;
+    color: white;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: 0.2s;
+    margin-left: 5px;
+    font-family: inherit;
+}
+
+.header-logout:hover{
+    background-color: white;
+    color:black;
+}
+
+.logout-form button, .logout-exclusao-form button{
+    padding: 6px 2px;
+    font-size: 14px;
+    background-color: transparent;
+    border: 2px solid white;
+    color: white;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: 0.2s;
+    margin-top: 5px;
+    width: 100%;
+    font-family: inherit;
+}
+
+.logout-form button:hover, .logout-exclusao-form button:hover {
+    background-color: white;
+    color: black
+}
+
+.opcoes-save{
+    display: none;
+}
+

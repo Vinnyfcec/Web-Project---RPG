@@ -44,11 +44,10 @@ class saveModel {
         const petQuery = `SELECT * FROM pets WHERE save_id = ?`;
         const [pets] = await db.execute(petQuery, [save_id]);
 
-        //agora o ataque é a soma do ataque dos itens equipados
         let ataqueTotal = 0;
         inventario.forEach(item => {
             ataqueTotal += item.atributo_ataque;
-        });//defesa é a soma da defesa dos itens equipados + bonus de pet (tipo ganhar sanidade tlgd)
+        });
         let defesaTotal = 0;
         if (pets && pets.length > 0) defesaTotal += 2;
         inventario.forEach(item => {
@@ -81,7 +80,6 @@ class saveModel {
         const nivelQuery = 'SELECT atributos_personagem.nivel AS nivel_mochileiro FROM atributos_personagem JOIN saves ON atributos_personagem.save_id = saves.id WHERE saves.id = ?';
         const [nivelResult] = await db.execute(nivelQuery, [save_id]);
         const nivel_mochileiro = nivelResult[0]?.nivel_mochileiro || 0;
-        //pegar item aleatório baseado no nível
         const query = 'SELECT * FROM itens_base WHERE nivel_requerido <= 5 ORDER BY RAND() LIMIT 1';
         const [result] = await db.execute(query, [nivel_mochileiro]);
         return result;
@@ -97,7 +95,6 @@ class saveModel {
         const [[{ total }]] = await db.execute(queryCount, [save_id]);
         if (total >= 3) {
             throw new Error('Limite de itens equipados atingido.');
-            return false;
         } else {
             const query = 'UPDATE inventario SET equipado = 1 WHERE id = ?';
             await db.execute(query, [item_id]);
@@ -147,7 +144,7 @@ class saveModel {
     }
 
     static async caçar(){
-        const [rows] = await db.execute('SELECT nome FROM inimigos ORDER BY RAND() LIMIT 1');//vou precisar de uma tabela pros monstros vinição, mas só pros nomes deles
+        const [rows] = await db.execute('SELECT nome FROM inimigos ORDER BY RAND() LIMIT 1');
         return rows[0].nome;
     
     }
