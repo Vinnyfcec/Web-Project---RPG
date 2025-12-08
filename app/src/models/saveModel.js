@@ -87,8 +87,8 @@ class saveModel {
         return result;
     }
 
-    static async adicionarItemInventario(save_id, item_base_id, quantidade = 1,) {
-        const query = 'INSERT INTO inventario (save_id, item_base_id, quantidade,) VALUES (?, ?, ?)';
+    static async adicionarItemInventario(save_id, item_base_id, quantidade = 1) {
+        const query = 'INSERT INTO inventario (save_id, item_base_id, quantidade) VALUES (?, ?, ?)';
         await db.execute(query, [save_id, item_base_id, quantidade]);
     }
 
@@ -123,6 +123,11 @@ class saveModel {
 
     static async atualizarDinheiro(save_id, valor) {
         const query = 'UPDATE saves SET dinheiro = dinheiro + ? WHERE id = ?';
+        await db.execute(query, [valor, save_id]);
+    }
+
+    static async gastarDinheiro(save_id, valor) {
+        const query = 'UPDATE saves SET dinheiro = GREATEST(dinheiro - ?, 0) WHERE id = ?';
         await db.execute(query, [valor, save_id]);
     }
 

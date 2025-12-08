@@ -37,6 +37,7 @@ CREATE TABLE IF NOT EXISTS `itens_base` (
   `atualizavel` BOOLEAN NOT NULL DEFAULT FALSE,
   `atributo_ataque` INT DEFAULT 0,
   `atributo_defesa` INT DEFAULT 0,
+  `atributo_poder` INT GENERATED ALWAYS AS (atributo_ataque + atributo_defesa) STORED,
   `atributo_chave` VARCHAR(10) DEFAULT 'nenhum',
   `nivel_requerido` INT NOT NULL DEFAULT 1,
   PRIMARY KEY (`id`)
@@ -94,10 +95,29 @@ CREATE TABLE IF NOT EXISTS `pets` (
 
 
 INSERT INTO `itens_base` (`nome`, `descricao`, `tipo`, `raridade`, `valor_mercado`, `efeito_consumivel`, `atualizavel`, `atributo_ataque`, `atributo_defesa`) VALUES
-('Espada de Madeira', 'Uma espada simples feita de madeira. Ideal para iniciantes.', 'Arma_ataque', 'Comum', 5, NULL, TRUE, 'Ataque', 5, 0),
-('Escudo de Madeira', 'Um escudo básico feito de madeira. Oferece proteção modesta.', 'Escudo', 'Comum', 5, NULL, TRUE, 'Defesa', 0, 5),
+('Espada de Madeira', 'Uma espada simples feita de madeira. Ideal para iniciantes.', 'Arma_ataque', 'Comum', 5, NULL, TRUE, 'Ataque', 0, 0),
+('Escudo de Madeira', 'Um escudo básico feito de madeira. Oferece proteção modesta.', 'Escudo', 'Comum', 5, NULL, TRUE, 'Defesa', 0, 0),
 ('Poção de Vida Pequena', 'Restaura uma pequena quantidade de vida quando consumida.', 'Consumivel', 'Comum', 10, 'Restaura 20 pontos de vida', FALSE, 'nenhum', 0, 0),
-('Armadura de Couro', 'Uma armadura leve feita de couro. Proporciona defesa básica.', 'Armadura', 'Comum', 15, NULL, TRUE, 'Ataque', 0, 10);
+('Peitoral', 'Uma armadura de peito. te fará durar mais no campo de batalha.', 'Armadura', 'Comum', 15, NULL, TRUE, 'Defesa', 0, 0),
+('Elmo', 'A armadura, não o personagem.', 'Armadura', 'Comum', 15, NULL, TRUE, 'Defesa', 0, 0),
+('Ombreiras', 'Sim, saíram de moda, mas são melhores que nada.', 'Armadura', 'Comum', 15, NULL, TRUE, 'Defesa', 0, 0),
+('Grevas', 'Basicamente calças de metal. proporcionam quase a mesma quantidade de mobilidade que você possui.', 'Armadura', 'Comum', 15, NULL, TRUE, 'Defesa', 0, 0),
+('Botas', 'Para não tomar um tiro no pé, temos as novas botas Mike! bem melhores que a Subidas.', 'Armadura', 'Comum', 15, NULL, TRUE, 'Defesa', 0, 0),
+('Manoplas', 'Material anti aderente, perfeitas para descontar a raiva em alguns goblins sem se sujar!', 'Armadura', 'Comum', 15, NULL, TRUE, 'Defesa', 0, 0),
+('Arco Composto', 'para acertar os inimigos em uma distância segura.', 'Arma_ataque', 'Comum', 15, NULL, TRUE, 'Ataque', 0, 0),
+('Machado', 'Criou grandes obras literárias, como Memórias Póstumas de Brás Cubas e... espera, não é esse Machado?', 'Arma_ataque', 'Comum', 15, NULL, TRUE, 'Ataque', 0, 0),
+('Besta', 'Quase um arco, mas diferente.', 'Arma_ataque', 'Comum', 15, NULL, TRUE, 'Ataque', 0, 0),
+('Espada de Ferro', 'Pronto, agora você pode cortar alguma coisa.', 'Arma_ataque', 'Comum', 15, NULL, TRUE, 'Ataque', 0, 0),
+('Lança', 'Não tem granadas, não tem perfume, só lança.', 'Arma_ataque', 'Comum', 15, NULL, TRUE, 'Ataque', 0, 0),
+('Tridente', 'Bom, você pode escolher: ser um herói ou o vilão?', 'Arma_ataque', 'Comum', 15, NULL, TRUE, 'Ataque', 0, 0),
+('Bastão', 'Nooooossa, que arma incrível...', 'Arma_ataque', 'Comum', 15, NULL, TRUE, 'Ataque', 0, 0),
+('Espada Grande', 'Familiar para você?', 'Arma_ataque', 'Comum', 15, NULL, TRUE, 'Ataque', 0, 0),
+('Foice', 'Mirou no ceifeiro, acertou no fazendeiro, mas ainda deve funcionar.', 'Arma_ataque', 'Comum', 15, NULL, TRUE, 'Ataque', 0, 0),
+('Maça', 'É pesado, é pontiagudo, quer mais o quê?', 'Arma_ataque', 'Comum', 15, NULL, TRUE, 'Ataque', 0, 0),
+('Adaga', 'Quem dera furtividade valesse algo nesse jogo... Devs preguiçosos...', 'Arma_ataque', 'Comum', 15, NULL, TRUE, 'Ataque', 0, 0),
+('Capa', 'Melhor vender, afinal NADA DE CAPAS.', 'Armadura', 'Comum', 15, NULL, TRUE, 'Ataque', 0, 0),
+('Anel Dourado', 'Meu precioso!', 'Armadura', 'Comum', 15, NULL, TRUE, 'Defesa', 0, 0),
+('Escudo Torre', 'Esse nem fantasma atravessa!', 'Escudo', 'Comum', 15, NULL, TRUE, 'Defesa', 0, 0);
 
 
 INSERT INTO `inventario` (`save_id`, `item_base_id`, `quantidade`, `equipado`) VALUES
