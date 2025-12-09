@@ -98,8 +98,8 @@ CREATE TABLE IF NOT EXISTS `monstros` (
   `save_id` INT NOT NULL,
   `nome` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_save_pet` (`save_id`),
-  CONSTRAINT `fk_pets_saves`
+  UNIQUE KEY `uk_save_monstros` (`save_id`),
+  CONSTRAINT `fk_monstros_saves`
     FOREIGN KEY (`save_id`)
     REFERENCES `saves` (`id`)
     ON DELETE CASCADE
@@ -108,11 +108,11 @@ CREATE TABLE IF NOT EXISTS `monstros` (
 
 
 INSERT INTO `monstros` (`save_id`, `nome`) VALUES
-(1, 'Goblin'),
-(1, 'Orc'),
-(1, 'Lobo'),
-(1, 'Bandido'),
-(1, 'Espectro');
+(2, 'Goblin'),
+(2, 'Orc'),
+(2, 'Lobo'),
+(2, 'Bandido'),
+(2, 'Espectro');
 
 INSERT INTO `itens_base` (`nome`, `descricao`, `tipo`, `raridade`, `valor_mercado`, `efeito_consumivel`, `atualizavel`,`atributo_chave`, `atributo_ataque`, `atributo_defesa`) VALUES
 ('Espada de Madeira', 'Uma espada simples feita de madeira. Ideal para iniciantes.', 'Arma_ataque', 'Comum', 5, NULL, TRUE, 'Ataque', 0, 0),
@@ -141,7 +141,9 @@ INSERT INTO `itens_base` (`nome`, `descricao`, `tipo`, `raridade`, `valor_mercad
 
 
 INSERT INTO `inventario` (`save_id`, `item_base_id`, `quantidade`, `equipado`) VALUES
-(1, 1, 1, TRUE),
-(1, 2, 1, TRUE),
-(1, 3, 5, FALSE),
-(1, 4, 1, TRUE);
+(2, 1, 1, TRUE),
+(2, 2, 1, TRUE),
+(2, 3, 5, FALSE),
+(2, 4, 1, TRUE);
+
+select * from saves;

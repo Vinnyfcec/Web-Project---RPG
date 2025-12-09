@@ -22,24 +22,36 @@
                 <p> Ataque: <%= (typeof save !== 'undefined' && save.atributos) ? save.atributos.ataque : '' %></p>
                 <p> Defesa: <%= (typeof save !== 'undefined' && save.atributos) ? save.atributos.defesa : '' %></p>
                 <p> Dinheiro: <%= save.dinheiro %></p>
-                <form action="/saves/<%= save.id %>/tirarvida" method="POST"> <button> Tirar Vida </button> </form>
-                <form action="/saves/<%= save.id %>/adicionarvida" method="POST"> <button> Adicionar Vida </button> </form>
+                <% if (save.atributos.vida_atual === 0) { %>
+                    <form action="/saves/<%= save.id %>/adicionarvida" method="POST"> <button> Adicionar Vida </button> </form>
+                <% } %>
                 <%- include('partials/adotarPetForm', { saveId: save.id }) %>
             </div>
             <div id="menu" class="menus opcoes-menu col-md-8">
                 <%- include('partials/inventario', { inventario: inventario }) %>
-                <form id="excluirItem" action="/menu/excluirItem" method="POST">
-                    <select name="inventario_id">
-                        <option value="" disabled selected>Selecione um pra descartar: </option>
-                        <% inventario.forEach(item => { %>
-                            <option value="<%= item.id %>">
-                                <%= item.id %> - <%= item.nome %>
-                            </option>
-                        <% }); %>
-                    </select>
-                    <button type="submit"> Descartar! </button>
-                </form>
-                <button onclick="location.href='/ferreiro'" type="button"> Ferreiro </button>
+                <div class="opcoes-jogo">
+                    <form id="excluirItem" action="/menu/excluirItem" method="POST">
+                        <select name="inventario_id">
+                            <option value="" disabled selected>Selecione um pra descartar: </option>
+                            <% inventario.forEach(item => { %>
+                                <option value="<%= item.id %>">
+                                    - <%= item.nome %>
+                                </option>
+                            <% }); %>
+                        </select>
+                        <button type="submit"> Descartar! </button>
+                    </form>
+                    <form action="/saves/<%= save.id %>/cacar" method="POST">
+                        <button type="submit"> Caçar </button>
+                    </form>
+                    <form action="/saves/<%= save.id %>/pegarItem" method="post">
+                        <button type="submit"> Pegar Item </button>
+                    </form>
+                </div>
+                <a href="/ferreiro" class="btn-ferreiro">
+                    <img src="/img/ferreiro.jpeg" alt="ferreiro">
+                </a>
+
             </div>
             
 

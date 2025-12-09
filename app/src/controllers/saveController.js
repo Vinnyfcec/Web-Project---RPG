@@ -99,7 +99,7 @@ class saveController {
             return res.redirect('/saves');
         }
         try {
-            let novaVida = req.session.saveAtual.atributos.vida_atual + 10;
+            let novaVida = 100;
             const vidaMaxima = req.session.saveAtual.atributos.vida_maxima;
             if (novaVida > vidaMaxima) novaVida = vidaMaxima;
             const query = 'UPDATE atributos_personagem SET vida_atual = ? WHERE save_id = ?';
@@ -287,28 +287,56 @@ class saveController {
             const saveId = req.session.save_id;
             const save = await saveModel.buscarSaveCompleto(saveId);
             const atributos = save.atributos;
+            const nivel = atributos.nivel;
             const ataqueTotal = atributos.ataque;
-            const vidaAtual = atributos.vida_atual;
             const inimigo = await saveModel.caçar();
-            const roll = Math.floor(Math.random()*100) +1;
-            if (roll <= ataqueTotal) {
-                const ouroGanho= 10+nivel*2;
-                const experienciaGanha= 20+nivel*5;
-                await saveModel.atualizarDinheiro(saveId, save.dinheiro + ouroGanho);
+            const chanceAcerto = 20 + ataqueTotal + nivel * 5;
+            const roll = Math.floor(Math.random() * 100) + 1;
+            if (roll <= chanceAcerto) {
+                const ouroGanho = 5+nivel*1.5;
+                const novoDinheiro = save.dinheiro + ouroGanho
+                const experienciaGanha = 15+nivel*3;
+                await saveModel.atualizarDinheiro(saveId, novoDinheiro);
                 await saveModel.atualizarExperiencia(saveId, experienciaGanha);
-                const subiuNivel = await saveModel.subirNivel(saveId);
+                await saveModel.subirNivel(saveId);
                 req.session.flash = `Você derrotou o ${inimigo}! Ganhou ${ouroGanho} de ouro e ${experienciaGanha} de experiência.`;
                 return res.redirect('/menu');
             } else {
-                const dano = 17+nivel;
+                const dano = 8+nivel*1.5;
                 await saveModel.perderVida(saveId, dano);
                 req.session.flash = `O ${inimigo} te atacou e causou ${dano} de dano!`;
                 return res.redirect('/menu');
             }
+
         } catch (error) {
-            res.redirect(`/menu?erro=Erro ao caçar: ${error.message}`);
+            return res.redirect(`/menu?erro=Erro ao caçar: ${error.message}`);
         }
     }
+
+    static async pegarItem(req, res) {
+        try { const saveId = req.session.save_id;
+            const save = await saveModel.buscarSaveCompleto(saveId);
+            const nivel = save.atributos.nivel;
+            const dinheiro = save.dinheiro;
+            const custo = nivel * 10;
+            if (dinheiro < custo) {
+                return res.redirect('/menu?erro=Dinheiro insuficiente para pegar um item.');
+            }
+            const novoDinheiro = dinheiro - custo;
+            await saveModel.atualizarDinheiro(saveId, novoDinheiro);
+            const item = await saveModel.pegarItemNovo(saveId); 
+            const { atributo_chave } = item;
+            const valorAtributo = GerarAtributoPorNivel(nivel);
+            await saveModel.aplicarAtributoItem(item.id, atributo_chave, valorAtributo);
+            await saveModel.adicionarItemInventario(saveId, item.id);
+            res.redirect('/menu');
+
+        } catch (error) {
+            res.redirect(`/menu?erro=Erro ao pegar item: ${error.message}`);
+        }
+    }
+
+
 }
 
 module.exports = saveController
