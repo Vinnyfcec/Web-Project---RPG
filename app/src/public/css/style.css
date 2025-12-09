@@ -12,11 +12,11 @@
     display: table;
 }
 
-[class*="col-"]{
-    width: 100%;
-    float: left;
-    padding: 5px;
-    
+@media(max-width: 600px) {
+    .menu {
+        width: 100%;
+        margin: 0 auto;
+    }
 }
 
 @media only screen and (min-width:600px){
@@ -426,10 +426,9 @@ main {
 
 .ferreiro .container{
     display: grid;
-    padding: 2px 2px;
+    margin-top: auto;
+    padding: 10px 10px;
 }
-
-/* COMECEI HOJE DAQUI PRA BAIXO VINECIUS */
 
 .home .header{
     height: 100px;
@@ -458,7 +457,7 @@ body.cadastro2 footer {
     margin-top: auto;
 }
 
-/* AQUI !*/
+/* AQUI !1!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
 .header-logout {
     padding: 6px 18px;
     font-size: 14px;
@@ -472,12 +471,12 @@ body.cadastro2 footer {
     font-family: inherit;
 }
 
-.header-logout:hover{
+.header-logout:hover .saves{
     background-color: white;
     color:black;
 }
 
-.logout-form button, .logout-exclusao-form button{
+.logout-form button, .logout-exclusao-form button .saves{
     padding: 6px 2px;
     font-size: 14px;
     background-color: transparent;
@@ -491,7 +490,21 @@ body.cadastro2 footer {
     font-family: inherit;
 }
 
-.logout-form button:hover, .logout-exclusao-form button:hover {
+.logout-exclusao-form button {
+    padding: 6px 2px;
+    font-size: 14px;
+    background-color: transparent;
+    border: 2px solid white;
+    color: white;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: 0.2s;
+    margin-top: 5px;
+    width: 100%;
+    font-family: inherit;
+}
+
+.logout-form button:hover, .logout-exclusao-form button:hover .saves{
     background-color: white;
     color: black
 }
@@ -500,3 +513,544 @@ body.cadastro2 footer {
     display: none;
 }
 
+.inventario-container{
+    width: 600px;
+    margin: 20px auto;
+}
+
+.inventario-container h2{
+    margin-bottom: 10px;
+}
+
+.inventario-lista{
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(4, 120px);
+    gap: 0;
+    border: 4px solid #b87333;
+    padding: 0px;
+}
+
+.inventario-item{
+    border: 3px solid #b87333;
+    border-top: none;
+    border-left: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 5px;
+    font-size: 12px;
+}
+
+.inventario-item:nth-child(5n) {
+    border-right: none;
+}
+
+.inventario-item span{
+    display: block;
+}
+
+.btn-ferreiro{
+    display: block;
+    margin-left: auto;
+    width: fit-content;
+    margin-top: 10px;
+    position: absolute;
+    right: -100;
+    top: 150;
+    cursor: pointer;
+}
+
+.btn-ferreiro img{
+    width: 160px;
+    height: 160px;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.btn-ferreiro img:hover{
+    transform: scale(1,1);
+    filter: brightness(1.15);
+}
+
+#menu {
+    position: relative;
+}
+
+.pet-info{
+    border: 2px solid #005fcc;
+    padding: 8px 14px;
+    color: #fff;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.pet-info:hover{
+    transform: scale(1.05);
+}
+
+.btn-adotar-toggle {
+    background: #007bff;
+    border: none;
+    color: rgb(255, 255, 255);
+    padding: 10px 16px;
+    font-size: 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 12px;
+    transition: background 0.25 ease;
+    width: 100%;
+}
+
+.opcoes-jogo{
+    display : flex;
+    justify-content: center;
+    margin-top: 10px;
+    color:#005fcc;
+    gap:10px;
+}
+
+.menus{
+    margin-left: 10px;
+    padding: 6px 14px;
+}
+
+#excluirItem select, #excluirItem button{
+    font-size: 14px;
+}
+
+.text-melhorar{
+    display : flex;
+    justify-content: center;
+    margin-top: 10px;
+    color:red;
+    gap:10px;
+}
+
+.selectes{
+    display: grid;
+    justify-self: center;
+    margin-top: 10px;
+    color:#005fcc;
+    gap:10px;
+    align-self: center;
+}
+
+.btn-melhorar{
+    display : grid;
+    justify-self: center;
+    margin-top: 10px;
+    gap:10px;
+    background: linear-gradient(180deg, #cfa76e 0%, #8b622a 100%);
+    color: #fff;
+    padding: 10px 25px;
+    border: 3px solid #5a3b16;
+    border-radius: 8px;
+    font-size: 18px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    text-shadow: 1px 1px 2px #000;
+    box-shadow: 0 4px 0 #5a3b16, 0 6px 10px rgba(0,0,0,0.4);
+    transition: all 0.15s ease-in-out;
+}
+
+.btn-melhorar:hover{
+    background: linear-gradient(180deg, #dfc78e 0%, #a6783c 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 #5a3b16, 0 8px 14px rgba(0,0,0,0,5);
+}
+
+.btn-melhorar:active{
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #5a3b16, 0 4px 8px rgba(0,0,0,0.3);
+}
+
+
+@media(max-width: 600px) {
+
+    main.ferreiro .row {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    main.ferreiro .col-s-8,
+    main.ferreiro .menus {
+        width: 100% !important;
+        max-width: 100%;
+        margin: 0 auto;
+        box-sizing: border-box;
+    }
+
+
+    main.ferreiro .Savecard,
+    main.ferreiro .saveVazio {
+        width: 100% !important;
+        max-width: 100%;
+        margin: 0 auto;
+    }
+
+    main.ferreiro input,
+    main.ferreiro select,
+    main.ferreiro button {
+        width: 100% !important;
+        max-width: 100%;
+        margin-top: 5px;
+        box-sizing: border-box;
+    }
+
+  
+    main.ferreiro .inventario-lista {
+        padding-left: 0;
+        list-style: none;
+        width: 100%;
+    }
+
+    main.ferreiro .inventario-item {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        margin-bottom: 8px;
+        word-wrap: break-word;
+    }
+
+  
+    main.ferreiro form {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    main.ferreiro h1,
+    main.ferreiro h2,
+    main.ferreiro h3,
+    main.ferreiro p,
+    main.ferreiro span {
+        word-wrap: break-word;
+        text-align: center;
+    }
+
+    
+    main.ferreiro .col-s-2 {
+        display: none;
+    }
+}
+
+@media(max-width: 600px) {
+
+
+    .inventario-container {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow-x: auto; 
+        box-sizing: border-box;
+        padding: 0 5px; 
+    }
+
+
+    .inventario-lista {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding-left: 0;
+        list-style: none;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .inventario-item {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        word-wrap: break-word;
+    }
+
+
+    .inventario-item span {
+        display: block;
+        text-align: center;
+    }
+}
+
+
+@media (min-width: 600px) and (max-width: 888px) {
+    .col-s-8 {
+        width: 90% !important;
+        margin: 0 auto;
+        padding: 0 5px;
+        box-sizing: border-box;
+    }
+
+    .Savecard, .saveVazio {
+        width: 100% !important;
+        margin: 10px 0;
+        box-sizing: border-box;
+    }
+
+    .Savecard input, .Savecard button,
+    .saveVazio input, .saveVazio button {
+        width: 100% !important;
+        box-sizing: border-box;
+        margin-top: 5px;
+    }
+
+    .Savecard p, .Savecard h1,
+    .saveVazio p, .saveVazio h1 {
+        text-align: center;
+        word-wrap: break-word;
+    }
+
+    .renomear-form, .deletar-form, .criar-form {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+}
+
+@media (max-width: 599px) {
+    .col-s-8 {
+        width: 95% !important;
+        margin: 0 auto;
+        padding: 0 5px;
+        box-sizing: border-box;
+    }
+
+    .Savecard, .saveVazio {
+        width: 100% !important;
+        margin: 8px 0;
+        box-sizing: border-box;
+    }
+
+    .Savecard input, .Savecard button,
+    .saveVazio input, .saveVazio button {
+        width: 100% !important;
+        box-sizing: border-box;
+        margin-top: 5px;
+    }
+
+    .Savecard p, .Savecard h1,
+    .saveVazio p, .saveVazio h1 {
+        text-align: center;
+        word-wrap: break-word;
+    }
+
+    .renomear-form, .deletar-form, .criar-form {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+}
+
+@media only screen and (max-width: 599px) {
+  body.home main {
+    padding: 20px 10px; 
+    text-align: center; 
+
+  body.home main h1 {
+    font-size: 1.8rem;
+    margin-bottom: 0.3em;
+  }
+
+  body.home main h2 {
+    font-size: 1.3rem;
+    margin-bottom: 1em;
+  }
+
+  body.home main p {
+    font-size: 1.1rem;
+    margin-bottom: 1em;
+  }
+
+  body.home main a {
+    display: inline-block;
+    margin: 0.4em auto;
+    padding: 0.5em 1.2em;
+    font-size: 1.1rem;
+    background-color: #f0d27b; 
+    border-radius: 6px;
+    text-decoration: none;
+    color: #000;
+    transition: background-color 0.3s ease;
+  }
+
+  body.home main a:hover {
+    background-color: #ddb74e;
+  }
+
+  body.home main br {
+    display: none; 
+  }
+}
+}
+
+.form-cadastro {
+  width: 100%;
+  max-width: 400px; 
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.form-cadastro fieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.form-cadastro h1 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.form-cadastro label {
+  display: block;
+  margin-top: 1rem;
+  font-weight: bold;
+}
+
+.form-cadastro input {
+  width: 100%;
+  padding: 8px 12px;
+  margin-top: 0.3rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+
+
+@media only screen and (max-width: 599px) {
+  .form-cadastro {
+    padding: 10px;
+  }
+  
+  .form-cadastro h1 {
+    font-size: 1.5rem;
+  }
+
+  .form-cadastro input,
+  .form-cadastro button {
+    font-size: 1rem;
+  }
+}
+
+.form-login {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto; 
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.form-login fieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.form-login h1 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.form-login label {
+  display: block;
+  margin-top: 1rem;
+  font-weight: bold;
+}
+
+.form-login input {
+  width: 100%;
+  padding: 8px 12px;
+  margin-top: 0.3rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+
+.form-login button:hover {
+  background-color: #ddb74e;
+}
+
+
+@media only screen and (max-width: 599px) {
+
+  .pag-login .row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .pag-login .col-4.col-s-8 {
+    width: 90%; 
+    padding: 0;
+  }
+
+  .pag-login .col-4.col-s-2 {
+    display: none; 
+  }
+
+  .form-login {
+    padding: 10px;
+  }
+
+  .form-login h1 {
+    font-size: 1.5rem;
+  }
+
+  .form-login input,
+  .form-login button {
+    font-size: 1rem;
+  }
+}
+
+@media only screen and (max-width: 599px) {
+
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    [class*="col-"], [class*="col-s-"] {
+        float: none;     
+        width: 90% !important; 
+        padding: 0;       
+    }
+    
+    
+    .col-4.col-s-2 {
+        display: none;
+    }
+
+
+    .form-login,
+    .form-cadastro,
+    .conteudo-central {
+        width: 100%;     
+        max-width: 400px;  
+        margin: 0 auto;
+    }
+}
+
+@media only screen and (max-width: 599px) {
+    .pag-login .form-login,
+    .pag-login .form-login h1,
+    .pag-login .form-login p,
+    .pag-login .form-login label,
+    .pag-login .form-login a {
+        text-align: center;
+    }
+
+    .pag-login .form-login a {
+        display: block;
+        margin-top: 0.5rem;
+    }
+}

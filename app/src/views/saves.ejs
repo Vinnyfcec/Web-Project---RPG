@@ -2,34 +2,51 @@
 <head>
     <%- include('partials/head') %>
 </head>
+
 <body>
+
     <%- include('partials/header') %>
+
     <div class="row">
-    <div class="col-3 col-s-2"></div> 
 
-    <div class="col-6 col-s-8">
-        <h1 class="titulo"> Seleção de Save </h1>
-        <div class="menu">
-            <% for(let i = 1; i <= 4; i++){ %>
-                <% saves.sort((a, b) => a.id - b.id); %>
-                <% const save = saves[i-1]; %>
+        
+        <div class="col-4 col-s-2"></div>
 
-                <% if(save) { %>
-                    <%- include('partials/savesCriados', {save}) %>
-                
-                <% } else { %>
-                    <%- include('partials/savesVazios') %>
-                <% } %>
-            <% } %>
+       
+        <div class="col-4 col-s-8">
+            <div class="conteudo-central">
+
+                <h1 class="titulo">Seleção de Save</h1>
+
+                <div class="menu">
+
+                    <% saves.sort((a, b) => a.id - b.id); %>
+
+                    <% for(let i = 1; i <= 4; i++){ %>
+                        <% const save = saves[i-1]; %>
+
+                        <% if(save) { %>
+                            <%- include('partials/savesCriados', {save}) %>
+                        <% } else { %>
+                            <%- include('partials/savesVazios') %>
+                        <% } %>
+                    <% } %>
+
+                </div>
+
+            </div> 
+
         </div>
-    </div>
 
-    <div class="col-3 col-s-2"></div>
-        </form>
+       
+        <div class="col-4 col-s-2"></div>
+
     </div>
 
     <%- include('partials/footer') %>
+
 </body>
+
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const saveCards = document.querySelectorAll('.Savecard');
@@ -49,13 +66,9 @@
                     displayMode.classList.toggle('opcoes-save');
                     btnContinuar.classList.toggle('opcoes-save');
                     renameForm.classList.toggle('opcoes-save');
-                    
-
-                    if (!renameForm.classList.contains('opcoes-save')) {
-                        renameForm.querySelector('input[name="novo_nome"]').focus();
-                    }
                 });
             });
+
             deleteToggleButtons.forEach(button => {
                 button.addEventListener('click', () => {
                     displayMode.classList.toggle('opcoes-save');
@@ -63,14 +76,15 @@
                     deleteForm.classList.toggle('opcoes-save');
                 });
             });
+
             criarToggleButtons.forEach(button => {
                 button.addEventListener('click', () => {
                     displayMode.classList.toggle('opcoes-save');
                     criarForm.classList.toggle('opcoes-save');
-                })
-            })
+                });
+            });
         });
     });
-    //setInterval(() => location.reload(), 2000);
 </script>
+
 </html>

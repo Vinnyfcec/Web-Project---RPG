@@ -2,10 +2,13 @@
 <head>
     <%- include('partials/head') %>
 </head>
-<body class="ferreiro">
+<body>
     <%- include('partials/header') %>
-    <main class="container mt-4">
+    <main class="ferreiro container mt-4">
         <div class="row">
+         <div class="col-4 col-s-2"></div> 
+
+         <div class="col-4 col-s-8">
             <h1> Bem-vindo mochileiro</h1>
             <h3> Save atual: <%= save.nome_save %> ID:<%= save.id %></h3>
         </div>
@@ -51,10 +54,10 @@
                     
                 </div>
 
-                <p>selecione um pra melhorar:</p>
+                <p class="text-melhorar" >selecione um pra melhorar:</p>
                 <form id="melhorarForm" action="/ferreiro/melhorar" method="POST">
-                    <select name="item_id" id="itens-disponiveis">
-                        <option value="" disabled selected>Selecione um item</option>
+                    <select class="selectes" name="item_id" id="itens-disponiveis">
+                        <option class="optiones" value="" disabled selected>Selecione um item</option>
                         <% inventario.forEach(item => { %>
                             <% if (item.atributo_chave !== 'nenhum') { %>
                                 <option value="<%= item.id %>"> 
@@ -63,13 +66,12 @@
                             <% } %>
                         <% }); %>
                     </select>
-                    <button>Melhorar</button>
+                    <button class="btn-melhorar" >Melhorar</button>
                 </form>
             </div>
+            <div class="col-4 col-s-2"></div>
         </div>
     </main>
-
-    <div class="col-4 col-s-2"></div>
     <%- include('partials/footer') %>
 </body>
 <script>

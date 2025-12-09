@@ -18,6 +18,6 @@ router.post('/saves/:id/renomearatributos', saveController.isAuth, saveControlle
 router.get('/ferreiro', saveController.isAuth, saveController.showFerreiro);
 router.post('/ferreiro/melhorar', saveController.isAuth, saveController.melhorarItem);
 router.post('/pegarItem', saveController.isAuth, saveController.pegarItem);
-//router.post('saves/:id/caçar', saveController.isAuth, saveController.caçar);
+router.post('saves/:id/caçar', saveController.isAuth, saveController.caçar);
 
 module.exports = router;

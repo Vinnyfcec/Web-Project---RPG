@@ -1,5 +1,5 @@
 const db = require('../config/db');
-
+const experienciaNivel = [0, 300, 900, 2700, 6500];
 class saveModel {
 
     static async criarSaveInicial(usuario_id, nomesave) {
@@ -85,9 +85,10 @@ class saveModel {
         return result;
     }
 
+
     static async adicionarItemInventario(save_id, item_base_id, quantidade = 1) {
-        const query = 'INSERT INTO inventario (save_id, item_base_id, quantidade) VALUES (?, ?, ?)';
-        await db.execute(query, [save_id, item_base_id, quantidade]);
+        const query = 'INSERT INTO inventario (save_id, item_base_id, quantidade, equipado) VALUES (?, ?, 1, 0) ON DUPLICATE KEY UPDATE quantidade = quantidade + 1';
+        await db.execute(query, [save_id, item_base_id]);
     }
 
     static async equiparItem(item_id, save_id) {
@@ -114,7 +115,7 @@ class saveModel {
     }
 
     static async atualizarExperiencia(save_id, ganho_experiencia) {
-        const query = 'UPDATE saves SET experiencia = experiencia + ? WHERE id = ?';
+        const query = 'UPDATE atributos_personagem SET experiencia = experiencia + ? WHERE save_id = ?';
         await db.execute(query, [ganho_experiencia, save_id]);
     }
 
@@ -146,7 +147,6 @@ class saveModel {
     static async caçar(){
         const [rows] = await db.execute('SELECT nome FROM inimigos ORDER BY RAND() LIMIT 1');
         return rows[0].nome;
-    
     }
 
     static async adotarPet(save_id, nome_pet) {
