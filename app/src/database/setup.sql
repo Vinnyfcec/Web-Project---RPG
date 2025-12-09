@@ -106,14 +106,6 @@ CREATE TABLE IF NOT EXISTS `monstros` (
     ON UPDATE CASCADE
 ) ENGINE = InnoDB;
 
-
-INSERT INTO `monstros` (`save_id`, `nome`) VALUES
-(2, 'Goblin'),
-(2, 'Orc'),
-(2, 'Lobo'),
-(2, 'Bandido'),
-(2, 'Espectro');
-
 INSERT INTO `itens_base` (`nome`, `descricao`, `tipo`, `raridade`, `valor_mercado`, `efeito_consumivel`, `atualizavel`,`atributo_chave`, `atributo_ataque`, `atributo_defesa`) VALUES
 ('Espada de Madeira', 'Uma espada simples feita de madeira. Ideal para iniciantes.', 'Arma_ataque', 'Comum', 5, NULL, TRUE, 'Ataque', 0, 0),
 ('Escudo de Madeira', 'Um escudo básico feito de madeira. Oferece proteção modesta.', 'Escudo', 'Comum', 5, NULL, TRUE, 'Defesa', 0, 0),
@@ -138,12 +130,3 @@ INSERT INTO `itens_base` (`nome`, `descricao`, `tipo`, `raridade`, `valor_mercad
 ('Capa', 'Melhor vender, afinal NADA DE CAPAS.', 'Armadura', 'Comum', 15, NULL, TRUE, 'Ataque', 0, 0),
 ('Anel Dourado', 'Meu precioso!', 'Armadura', 'Comum', 15, NULL, TRUE, 'Defesa', 0, 0),
 ('Escudo Torre', 'Esse nem fantasma atravessa!', 'Escudo', 'Comum', 15, NULL, TRUE, 'Defesa', 0, 0);
-
-
-INSERT INTO `inventario` (`save_id`, `item_base_id`, `quantidade`, `equipado`) VALUES
-(2, 1, 1, TRUE),
-(2, 2, 1, TRUE),
-(2, 3, 5, FALSE),
-(2, 4, 1, TRUE);
-
-select * from saves;
