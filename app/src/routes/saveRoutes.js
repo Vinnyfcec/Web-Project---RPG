@@ -4,7 +4,6 @@ const saveController = require("../controllers/saveController");
 
 router.get('/saves', saveController.isAuth, saveController.listarSaves, (req, res) => saveController.mostrarRenomearSave(req, res, false));
 router.post('/saves/:id/selecionar', saveController.selecionarSave);
-//router.post('/saves/:id/tirarvida', saveController.isAuth, saveController.loadSave, saveController.tirarVida);
 router.post('/saves/:id/adicionarvida', saveController.isAuth, saveController.loadSave, saveController.adicionarVida);
 router.use(saveController.loadSave);
 router.get('/menu', saveController.isAuth, saveController.mostrarMenu);

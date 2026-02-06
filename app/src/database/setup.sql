@@ -98,7 +98,6 @@ CREATE TABLE IF NOT EXISTS `monstros` (
   `save_id` INT NOT NULL,
   `nome` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_save_monstros` (`save_id`),
   CONSTRAINT `fk_monstros_saves`
     FOREIGN KEY (`save_id`)
     REFERENCES `saves` (`id`)
