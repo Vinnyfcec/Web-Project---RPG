@@ -1,5 +1,5 @@
 const saveModel = require('../models/saveModel');
-const userModel = require('../models/userModel');
+const db = require('../config/db');
 
 function GerarAtributoPorNivel(nivel) {
     const min = 3*nivel;
@@ -17,37 +17,38 @@ class saveController {
     }
 
     static async loadSave(req, res, next) {
-        res.locals.inventario = req.session.inventario || [];
+        res.locals.save = null;
+        res.locals.inventario = [];
 
-        if (req.session.save_id) {
-            try {
-                const saveCompleto = await saveModel.buscarSaveCompleto(req.session.save_id);
-                if (!saveCompleto) {
-                    req.session.save_id = null;
-                    req.session.saveAtual = null;
-                    return next();
-                }
-                req.session.saveAtual = saveCompleto;
-                res.locals.save = saveCompleto;
-
-
-                try {
-                    const inventario = await saveModel.listarInventario(req.session.save_id);
-                    req.session.inventario = inventario;
-                    res.locals.inventario = inventario;
-                } catch (invErr) {
-                    console.error('Erro ao carregar inventário:', invErr);
-                    req.session.inventario = [];
-                    res.locals.inventario = [];
-                }
-            } catch (error) {
-                console.error("Erro ao carregar o save:", error);
-                req.session.save_id = null;
-                req.session.save = null;
-            }
+        if (!req.session.save_id) {
+            return next();
         }
+
+        try {
+            const saveCompleto = await saveModel.buscarSaveCompleto(req.session.save_id);
+
+            if (!saveCompleto) {
+                req.session.save_id = null;
+                return next();
+            }
+
+            res.locals.save = saveCompleto;
+
+            try {
+                const inventario = await saveModel.listarInventario(req.session.save_id);
+                res.locals.inventario = inventario;
+            } catch (invErr) {
+                console.error('Erro ao carregar inventário:', invErr);
+            }
+
+        } catch (error) {
+            console.error('Erro ao carregar o save:', error);
+            req.session.save_id = null;
+        }
+
         next();
     }
+
 
     static async listarSaves(req, res) {
         try {
@@ -63,30 +64,40 @@ class saveController {
         req.session.save_id = save_id;
         req.session.save(err => {
             if (err) {
-                console.error('Erro ao salvar sessão:', err);
+                console.error(err);
                 return res.redirect('/saves');
             }
-            res.redirect('/menu');
+        res.redirect('/menu');
         });
     }
 
     static async mostrarMenu(req, res) {
-        if (!req.session.save) {
+        if (!req.session.save_id) {
             return res.redirect('/saves');
         }
-        res.render('menu', { erro: req.query.erro, inventario: req.session.inventario });
+        res.render('menu', { erro: req.query.erro });
     }
 
     static async tirarVida(req, res) {
-        if (!req.session.save) {
+        if (!req.session.save_id) {
             return res.redirect('/saves');
         }
         try {
-            let novaVida = req.session.saveAtual.atributos.vida_atual - 10;
+            const save = await saveModel.buscarSaveCompleto(req.session.save_id);
+            if (!save) {
+                return res.redirect('/saves');
+            }
+            
+            let novaVida = save.atributos.vida_atual - 10;
             if (novaVida < 0) novaVida = 0;
+            
             const query = 'UPDATE atributos_personagem SET vida_atual = ? WHERE save_id = ?';
-            await saveModel.atualizarAtributoPersonagem(query, [novaVida, req.session.save_id]);
-            req.session.saveAtual.atributos.vida_atual = novaVida;
+            await db.execute(query, [novaVida, req.session.save_id]);
+
+            if (req.session.saveAtual) {
+                req.session.saveAtual.atributos.vida_atual = novaVida;
+            }
+            
             res.redirect('/menu');
         } catch (error) {
             console.error('Erro ao tirar sua vida:', error);
@@ -95,16 +106,25 @@ class saveController {
     }
 
     static async adicionarVida(req, res) {
-        if (!req.session.save) {
+        if (!req.session.save_id) {
             return res.redirect('/saves');
         }
         try {
-            let novaVida = 100;
-            const vidaMaxima = req.session.saveAtual.atributos.vida_maxima;
-            if (novaVida > vidaMaxima) novaVida = vidaMaxima;
+            const save = await saveModel.buscarSaveCompleto(req.session.save_id);
+            if (!save) {
+                return res.redirect('/saves');
+            }
+            
+            const vidaMaxima = save.atributos.vida_maxima;
+            let novaVida = vidaMaxima;
+            
             const query = 'UPDATE atributos_personagem SET vida_atual = ? WHERE save_id = ?';
-            await saveModel.atualizarAtributoPersonagem(query, [novaVida, req.session.save_id]);
-            req.session.saveAtual.atributos.vida_atual = novaVida;
+            await db.execute(query, [novaVida, req.session.save_id]);
+
+            if (req.session.saveAtual) {
+                req.session.saveAtual.atributos.vida_atual = novaVida;
+            }
+            
             res.redirect('/menu');
         } catch (error) {
             console.error('Erro ao adicionar vida:', error);
@@ -162,16 +182,6 @@ class saveController {
         }
     }
 
-    static async atualizarAtributoPersonagem(req, res) {
-        try {
-            const { atributo, valor } = req.body;
-            await saveModel.atualizarAtributoPersonagem(atributo, valor, req.session.save_id);
-            res.redirect('/menu?sucesso=item equipado.');
-        } catch (error) {
-            res.redirect(`/menu?erro=Erro ao equipar o item. ${error.message}`);
-        }
-    }
-
     static async abrirInventario(req, res) {
         try {
             const saveId = req.session.save_id;
@@ -191,10 +201,12 @@ class saveController {
         try {
             const { item_id } = req.body;
             const saveId = req.session.save_id;
-            const[result] = await db.execute('SELECT COUNT(*) AS total FROM inventario WHERE id = ? AND equipado= 1', [saveId]);
-            if (result[0].total >= 3){
+            
+            const [result] = await db.execute('SELECT COUNT(*) AS total FROM inventario WHERE save_id = ? AND equipado = 1', [saveId]);
+            if (result[0].total >= 3) {
                 return res.redirect('/menu?erro=Limite de itens equipados atingido.');
             }
+            
             await db.execute('UPDATE inventario SET equipado = 1 WHERE id = ? AND save_id = ?', [item_id, saveId]);
             res.redirect('/menu?sucesso=item equipado.');
         } catch (error) {
@@ -218,7 +230,7 @@ class saveController {
         const nome_pet = req.body.nome_pet;
         try {
             const pet = await saveModel.adotarPet(saveId, nome_pet);
-            req.session.save.pet = pet;
+            req.session.thesave.pet = pet;
             res.redirect('/menu?sucesso=c adotou um pet!');
         } catch (error) {
             res.redirect(`/menu?erro=Erro ao adotar pet: ${error.message}`);
@@ -231,11 +243,13 @@ class saveController {
         const novo_nome_pet = req.body.novo_nome_pet;
         try {
             const queryAttr = 'UPDATE atributos_personagem SET nome = ? WHERE save_id = ?';
-            await saveModel.atualizarAtributoPersonagem(queryAttr, [novo_nome, saveId]);
+            await db.execute(queryAttr, [novo_nome, saveId]);
+            
             if (novo_nome_pet && novo_nome_pet.trim() !== '') {
                 const queryPet = 'UPDATE pets SET nome = ? WHERE save_id = ?';
-                await saveModel.atualizarAtributoPersonagem(queryPet, [novo_nome_pet, saveId]);
+                await db.execute(queryPet, [novo_nome_pet, saveId]);
             }
+            
             res.redirect('/menu?sucesso=Atributos renomeados com sucesso!');
         } catch (error) {
             res.redirect(`/menu?erro=Erro ao renomear atributos: ${error.message}`);
@@ -275,7 +289,7 @@ class saveController {
         try {
             const query = 'DELETE FROM pets WHERE id = ? AND save_id = ?';
             await saveModel.atualizarAtributoPersonagem(query, [petId, saveId]);
-            req.session.save.pet = null;
+            req.session.thesave.pet = null;
             res.redirect('/menu?sucesso=Pet solto com sucesso!');
         } catch (error) {
             res.redirect(`/menu?erro=Erro ao soltar pet: ${error.message}`);

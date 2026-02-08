@@ -34,8 +34,8 @@
                         <select name="inventario_id">
                             <option value="" disabled selected>Selecione um pra descartar: </option>
                             <% inventario.forEach(item => { %>
-                                <option value="<%= item.id %>">
-                                    - <%= item.nome %>
+                                <option value="<%= item.inventario_id %>">
+                                    - <%= item.nome %>/ <%= item.inventario_id %>
                                 </option>
                             <% }); %>
                         </select>

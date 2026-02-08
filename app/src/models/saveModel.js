@@ -9,9 +9,12 @@ class saveModel {
         const attrQuery = 'INSERT INTO atributos_personagem (save_id) VALUES (?)';
         await db.execute(attrQuery, [save_id]);
         const inimigos = "INSERT INTO `monstros` (`save_id`, `nome`) VALUES (?, 'Goblin'), (?, 'Orc'), (?, 'Lobo'), (?, 'Bandido'), (?, 'Espectro');"
-        await db.execute(inimigos, [save_id, save_id, save_id, save_id, save_id])
-        const invent = "INSERT INTO `inventario` (`save_id`, `item_base_id`, `quantidade`, `equipado`) VALUES (?, 1, 1, TRUE), (?, 2, 1, TRUE);"
-        await db.execute(invent, [save_id, save_id])
+        await db.execute(inimigos, [save_id, save_id, save_id, save_id, save_id]);
+        const [itensBase] = await db.execute("SELECT * FROM itens_base WHERE id IN (1, 2)");
+        for (const item of itensBase) {
+            const invent = "INSERT INTO `inventario` (`save_id`, `item_base_id`, `quantidade`, `equipado`, `raridade`, `valor_mercado`, `efeito_consumivel`, `atualizavel`, `atributo_ataque`, `atributo_defesa`) VALUES (?, ?, 1, TRUE, ?, ?, ?, ?, ?, ?);"
+            await db.execute(invent, [save_id, item.id, item.raridade, item.valor_mercado, item.efeito_consumivel, item.atualizavel, item.atributo_ataque, item.atributo_defesa]);
+        }
         return save_id;
     }
 
@@ -28,18 +31,21 @@ class saveModel {
     }
 
     static async listarInventario(save_id) {
-        const query = `SELECT i.id as inventario_id, i.id, i.quantidade, i.equipado, ib.nome, ib.tipo, ib.raridade, ib.descricao, ib.atributo_ataque, ib.atributo_defesa, ib.atributo_chave FROM inventario i JOIN itens_base ib ON i.item_base_id = ib.id WHERE i.save_id = ?`;
+        const query = `SELECT i.id as inventario_id, i.quantidade, i.equipado, i.raridade, i.atributo_ataque, i.atributo_defesa, i.valor_mercado, ib.nome, ib.tipo, ib.descricao, ib.atributo_chave FROM inventario i JOIN itens_base ib ON i.item_base_id = ib.id WHERE i.save_id = ?`;
         const [rows] = await db.execute(query, [save_id]);
         return rows;
     }
 
     static async buscarSaveCompleto(save_id){
+        if (!save_id || save_id <= 0) {
+            throw new Error('ID do save inválido');
+        }
+
         const query = `SELECT * FROM saves WHERE id = ?`;
         const [save] = await db.execute(query, [save_id]);
         if (save.length === 0) {return null;}
 
-        const invQuery = 'SELECT i.id as inventario_id, i.quantidade, i.equipado, ib.nome, ib.tipo, ib.raridade, ib.descricao, ib.atributo_ataque, ib.atributo_defesa, ib.atributo_chave FROM inventario i JOIN itens_base ib ON i.item_base_id = ib.id WHERE i.save_id = ?';
-        const [inventario] = await db.execute(invQuery, [save_id]);
+        const inventario = await this.listarInventario(save_id);
 
         const attrQuery = `SELECT * FROM atributos_personagem WHERE save_id = ?`;
         const [atributos] = await db.execute(attrQuery, [save_id]);
@@ -48,22 +54,30 @@ class saveModel {
         const [pets] = await db.execute(petQuery, [save_id]);
 
         let ataqueTotal = 0;
-        inventario.forEach(item => {
-            ataqueTotal += item.atributo_ataque;
-        });
         let defesaTotal = 0;
-        if (pets && pets.length > 0) defesaTotal += 2;
+        let poder = 0;
+        poder = atributos[0].poder;
+        ataqueTotal = atributos[0].ataque;
+        defesaTotal = atributos[0].defesa;
+
+        if (pets && pets.length > 0) {
+            poder += 2;
+            defesaTotal += 2;
+        }
+
         inventario.forEach(item => {
-            defesaTotal += item.atributo_defesa;   
+            if (item.equipado) {
+                ataqueTotal += item.atributo_ataque;
+                defesaTotal += item.atributo_defesa;
+                poder += item.atributo_ataque;
+                poder += item.atributo_defesa;
+            }
         });
-        atributos[0].ataque = ataqueTotal;
-        atributos[0].defesa = defesaTotal;
-
         
-
         return {
             ...save[0], 
-            atributos: atributos.length > 0 ? atributos[0] : {},
+            atributos: atributos.length > 0 ? {...atributos[0], ataque: ataqueTotal, defesa: defesaTotal, poder: poder } : {},
+            inventario,
             pet: pets.length > 0 ? pets[0] : null
         };
     }
@@ -82,7 +96,7 @@ class saveModel {
     static async pegarItemNovo(save_id) {
     const nivelQuery = `SELECT atributos_personagem.nivel AS nivel_mochileiro FROM atributos_personagem JOIN saves ON atributos_personagem.save_id = saves.id WHERE saves.id = ?`;
     const [nivelResult] = await db.execute(nivelQuery, [save_id]);
-    const nivel_mochileiro = nivelResult[0]?.nivel_mochileiro || 0;
+    const nivel_mochileiro = nivelResult[0]?.nivel_mochileiro || 1;
     const query = `SELECT * FROM itens_base WHERE nivel_requerido <= ? ORDER BY RAND() LIMIT 1`;
     const [result] = await db.execute(query, [nivel_mochileiro]);
 
@@ -90,8 +104,8 @@ class saveModel {
 }
 
     static async adicionarItemInventario(save_id, item_base_id, quantidade = 1) {
-        const query = 'INSERT INTO inventario (save_id, item_base_id, quantidade, equipado) VALUES (?, ?, 1, 0) ON DUPLICATE KEY UPDATE quantidade = quantidade + 1';
-        await db.execute(query, [save_id, item_base_id]);
+        const query = 'INSERT INTO inventario (save_id, item_base_id, quantidade, equipado, raridade, valor_mercado, efeito_consumivel, atualizavel, atributo_ataque, atributo_defesa) VALUES (?, ?, ?, 0, (SELECT raridade FROM itens_base WHERE id = ?), (SELECT valor_mercado FROM itens_base WHERE id = ?), (SELECT efeito_consumivel FROM itens_base WHERE id = ?), (SELECT atualizavel FROM itens_base WHERE id = ?), (SELECT atributo_ataque FROM itens_base WHERE id = ?), (SELECT atributo_defesa FROM itens_base WHERE id = ?)) ON DUPLICATE KEY UPDATE quantidade = quantidade + ?';
+        await db.execute(query, [save_id, item_base_id, quantidade, item_base_id, item_base_id, item_base_id, item_base_id, item_base_id, item_base_id, quantidade]);
     }
 
     static async equiparItem(item_id, save_id) {
@@ -111,10 +125,9 @@ class saveModel {
     }
 
     static async somaAtributos(save_id) {
-        const query = 'SELECT SUM (ib.atributo_poder) AS poder FROM inventario i JOIN itens_base ib ON i.item_base_id = ib.id WHERE i.save_id = ? AND i.equipado = 1';
-
+        const query = 'SELECT SUM(ib.atributo_poder) AS poder FROM inventario i JOIN itens_base ib ON i.item_base_id = ib.id WHERE i.save_id = ? AND i.equipado = 1';
         const [rows] = await db.execute(query, [save_id]);
-        return rows[0];
+        return rows[0] || { poder: 0 };
     }
 
     static async atualizarExperiencia(save_id, ganho_experiencia) {
@@ -176,19 +189,35 @@ class saveModel {
         if (save.dinheiro < 10) {
             throw new Error('Dinheiro insuficiente para melhorar o item.');
         }
-        const query = 'SELECT ib.id AS item_base_id, ib.atributo_chave, ib.atributo_ataque, ib.atributo_defesa, i.quantidade FROM inventario i JOIN itens_base ib ON i.item_base_id = ib.id WHERE i.id = ? AND i.save_id = ?';
+
+        const query = 'SELECT i.id, ib.atributo_chave, i.atributo_ataque, i.atributo_defesa, i.quantidade FROM inventario i JOIN itens_base ib ON i.item_base_id = ib.id WHERE i.id = ? AND i.save_id = ?';
         const [itens] = await db.execute(query, [item_id, save_id]);
+        
         if (itens.length === 0) {
-            throw new Error('Não ta no inventário.');
+            throw new Error('Item não encontrado no inventário.');
         }
+        
+        const item = itens[0];
+        if (item.atributo_chave === 'nenhum') {
+            throw new Error('Esre item não pode ser melhorado.');
+        }
+        
         const novoDinheiro = save.dinheiro - 10;
         await db.execute('UPDATE saves SET dinheiro = ? WHERE id = ?', [novoDinheiro, save_id]);
-        const item = itens[0];
-        const novoAtributoAtaque  = (item.atributo_chave === 'Ataque') ? (item.atributo_ataque = item.atributo_ataque + 5) : item.atributo_ataque;
-        const novoAtributoDefesa  = (item.atributo_chave === 'Defesa') ? (item.atributo_defesa = item.atributo_defesa + 5) : item.atributo_defesa;
-        const Uquery = 'UPDATE itens_base SET atributo_ataque = ?, atributo_defesa = ? WHERE id = ?';
-        await db.execute(Uquery, [novoAtributoAtaque, novoAtributoDefesa, item.item_base_id]);
-        return;
+        
+        let novoAtributoAtaque = item.atributo_ataque;
+        let novoAtributoDefesa = item.atributo_defesa;
+        
+        if (item.atributo_chave === 'Ataque') {
+            novoAtributoAtaque += 5;
+        } else if (item.atributo_chave === 'Defesa') {
+            novoAtributoDefesa += 5;
+        }
+        
+        const updateQuery = 'UPDATE inventario SET atributo_ataque = ?, atributo_defesa = ? WHERE id = ?';
+        await db.execute(updateQuery, [novoAtributoAtaque, novoAtributoDefesa, item.id]);
+
+        return { sucesso: true, item_base_id: item.item_base_id, novoAtributoAtaque, novoAtributoDefesa };
     }
 
     static async excluirItem(save_id, inventario_id) {
@@ -202,15 +231,16 @@ class saveModel {
         await db.execute(query, [user_id]);
     }
 
-    static async aplicarAtributoItem (item_id, atributo_chave, valor) {
+    static async aplicarAtributoItem(item_id, atributo_chave, valor) {
         let novoAtaque = 0;
         let novoDefesa = 0;
+        
         if (atributo_chave === 'ataque') {
             novoAtaque = valor;
-        }
-        if (atributo_chave === 'defesa') {
+        } else if (atributo_chave === 'defesa') {
             novoDefesa = valor;
         }
+        
         const query = 'UPDATE itens_base SET atributo_ataque = ?, atributo_defesa = ? WHERE id = ?';
         await db.execute(query, [novoAtaque, novoDefesa, item_id]);
     }

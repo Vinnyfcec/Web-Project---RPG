@@ -14,13 +14,13 @@ app.use(express.json());
 app.use(session({
   secret: 'senha_cookie',
   resave: false,
-  saveUninitialized: true,
+  saveUninitialized: false,
   cookie: { secure: false }
 }));
 
 app.use((req, res, next) => {
     res.locals.usuario = req.session.usuario;
-    res.locals.save = req.session.save;
+    res.locals.save = req.session.thesave;
     next();
 });
 
@@ -32,6 +32,5 @@ app.use('/', saveRoutes);
 app.get('/', (req, res) => {
   res.render('home', { titulo: 'pagina inuail rpg' });
 });
-
 
 module.exports = app;

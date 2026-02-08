@@ -60,8 +60,8 @@
                         <option class="optiones" value="" disabled selected>Selecione um item</option>
                         <% inventario.forEach(item => { %>
                             <% if (item.atributo_chave !== 'nenhum') { %>
-                                <option value="<%= item.id %>"> 
-                                    <%= item.id %> <%= item.nome %> - <%= item.atributo_chave %>: <%= item.atributo_chave === 'Ataque' ? item.atributo_ataque : item.atributo_defesa %>
+                                <option value="<%= item.inventario_id %>"> 
+                                    <%= item.inventario_id %> <%= item.nome %> - <%= item.atributo_chave %>: <%= item.atributo_chave === 'Ataque' ? item.atributo_ataque : item.atributo_defesa %>
                                 </option>
                             <% } %>
                         <% }); %>

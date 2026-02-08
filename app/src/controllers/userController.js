@@ -18,8 +18,6 @@ class userController {
             const novoUsuarioId = await userModel.criarUsuario(nome_usuario, email, senha);
             await saveModel.criarSaveInicial(novoUsuarioId, 'myfirstsave');
             res.redirect('/login?//sucesso');
-        
-            //res.render('../view/home', <variaveis do usuario criado pra usar no ejs>)
 
         } catch (error) {
             console.error(error);
