@@ -10,10 +10,15 @@ function GerarAtributoPorNivel(nivel) {
 }
 class saveController {
     static isAuth(req, res, next) {
-        if (req.session.usuario) {
-            return next();
+        if (req.path === '/') return next();
+        if (req.path === '/login') return next();
+        if (req.path === '/cadastro') return next();
+
+        if (!req.session.usuario) {
+            return res.redirect('/login');
         }
-        res.redirect('/login');
+
+        next();
     }
 
     static async loadSave(req, res, next) {

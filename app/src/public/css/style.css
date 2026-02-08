@@ -1054,3 +1054,16 @@ body.cadastro2 footer {
         margin-top: 0.5rem;
     }
 }
+
+.contraste a {
+    text-decoration: none;
+}
+
+.home main {
+    padding: 0px 50px; 
+    text-align: left;
+}
+
+.home main a {
+    text-decoration: none;
+}
