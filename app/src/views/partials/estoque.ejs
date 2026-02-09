@@ -1,15 +1,14 @@
-<% inventario = inventario || [] %>
-<div class="inventario-container">
-    <h2>Seu Inventário</h2>
-    <div class="inventario-lista">
-        <% if (inventario.length === 0) { %>
-            <p class="inventario-vazio">O inventário está vazio.</p>
+<% estoque = estoque || []; %>
+<div class="estoque-container">
+    <h2>Estoque</h2>
+    <div class="estoque-lista">
+        <% if (estoque.length === 0) { %>
+            <p class="estoque-vazio">O estoque está vazio.</p>
         <% } else { %>
-            <% inventario.forEach(item => { %>
+            <% estoque.forEach(item => { %>
                 <button type="button" 
-                        class="inventario-item item-inventario-btn <%= item.equipado ? 'equipado' : '' %>"
-                        data-id="<%= item.inventario_id %>"
-                        data-equipado="<%= item.equipado ? 1 : 0 %>"
+                        class="estoque-item" 
+                        data-id="<%= item.id %>"
                         data-nome="<%= item.nome %>"
                         data-tipo="<%= item.tipo %>"
                         data-descricao="<%= item.descricao %>"
@@ -17,7 +16,7 @@
                         data-valor="<%= item.atributo_chave === 'Ataque' ? item.atributo_ataque : item.atributo_defesa %>"
                         data-raridade="<%= item.raridade %>">
                     <span class="item-nome"><strong><%= item.nome %></strong></span>
-                    <span class="item-tipo"><%= item.tipo %></span>
+                    <span class="item-tipo">Tipo: <%= item.tipo %></span>
                     <span class="item-valor"><%= item.atributo_chave %>: <%= item.atributo_chave === 'Ataque' ? item.atributo_ataque : item.atributo_defesa %></span>
                     <span class="item-raridade"><%= item.raridade %></span>
                 </button>

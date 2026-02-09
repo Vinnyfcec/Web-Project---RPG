@@ -45,6 +45,12 @@ class saveController {
             } catch (invErr) {
                 console.error('Erro ao carregar inventário:', invErr);
             }
+            try {
+                const estoque = await saveModel.listarEstoque(req.session.save_id);
+                res.locals.estoque = estoque;
+            } catch (estErr) {
+                console.error('Erro ao carregar estoque: ', estErr)
+            }
 
         } catch (error) {
             console.error('Erro ao carregar o save:', error);
@@ -81,60 +87,6 @@ class saveController {
             return res.redirect('/saves');
         }
         res.render('menu', { erro: req.query.erro });
-    }
-
-    static async tirarVida(req, res) {
-        if (!req.session.save_id) {
-            return res.redirect('/saves');
-        }
-        try {
-            const save = await saveModel.buscarSaveCompleto(req.session.save_id);
-            if (!save) {
-                return res.redirect('/saves');
-            }
-            
-            let novaVida = save.atributos.vida_atual - 10;
-            if (novaVida < 0) novaVida = 0;
-            
-            const query = 'UPDATE atributos_personagem SET vida_atual = ? WHERE save_id = ?';
-            await db.execute(query, [novaVida, req.session.save_id]);
-
-            if (req.session.saveAtual) {
-                req.session.saveAtual.atributos.vida_atual = novaVida;
-            }
-            
-            res.redirect('/menu');
-        } catch (error) {
-            console.error('Erro ao tirar sua vida:', error);
-            res.redirect('/menu');
-        }
-    }
-
-    static async adicionarVida(req, res) {
-        if (!req.session.save_id) {
-            return res.redirect('/saves');
-        }
-        try {
-            const save = await saveModel.buscarSaveCompleto(req.session.save_id);
-            if (!save) {
-                return res.redirect('/saves');
-            }
-            
-            const vidaMaxima = save.atributos.vida_maxima;
-            let novaVida = vidaMaxima;
-            
-            const query = 'UPDATE atributos_personagem SET vida_atual = ? WHERE save_id = ?';
-            await db.execute(query, [novaVida, req.session.save_id]);
-
-            if (req.session.saveAtual) {
-                req.session.saveAtual.atributos.vida_atual = novaVida;
-            }
-            
-            res.redirect('/menu');
-        } catch (error) {
-            console.error('Erro ao adicionar vida:', error);
-            res.redirect('/menu');
-        }
     }
 
     static async criarSave(req, res) {
@@ -207,15 +159,19 @@ class saveController {
             const { item_id } = req.body;
             const saveId = req.session.save_id;
             
-            const [result] = await db.execute('SELECT COUNT(*) AS total FROM inventario WHERE save_id = ? AND equipado = 1', [saveId]);
-            if (result[0].total >= 3) {
-                return res.redirect('/menu?erro=Limite de itens equipados atingido.');
+            const [rows] = await db.execute('SELECT COUNT(*) AS total FROM inventario WHERE save_id = ? AND equipado = 1', [saveId]);
+            if (rows[0].total >= 3) {
+                req.session.flash = "Limite de 3 itens equipados atingido";
+                return res.redirect('/menu');
             }
             
             await db.execute('UPDATE inventario SET equipado = 1 WHERE id = ? AND save_id = ?', [item_id, saveId]);
-            res.redirect('/menu?sucesso=item equipado.');
+            req.session.flash = "Item equipado com sucesso";
+            res.redirect('/menu');
         } catch (error) {
-            res.redirect(`/menu?erro=Erro ao equipar o item. ${error.message}`);
+            console.error('Erro ao equipar item:', error);
+            req.session.flash = "Erro ao equipar o item";
+            res.redirect('/menu');
         }
     }
 
@@ -224,19 +180,22 @@ class saveController {
             const { item_id } = req.body;
             const saveId = req.session.save_id;
             await db.execute('UPDATE inventario SET equipado = 0 WHERE id = ? AND save_id = ?', [item_id, saveId]);
-            res.redirect('/menu?sucesso=item desequipado.');
+            req.session.flash = "Item desequipado";
+            res.redirect('/menu');
         } catch (error) {
-            res.redirect(`/menu?erro=Erro ao desequipar o item. ${error.message}`);
+            console.error('Erro ao desequipar item:', error);
+            res.redirect(`/menu?erro=Erro ao desequipar o item`);
         }
     } 
+
     
     static async adotarPet(req, res) {
         const saveId = req.params.id;
         const nome_pet = req.body.nome_pet;
         try {
             const pet = await saveModel.adotarPet(saveId, nome_pet);
-            req.session.thesave.pet = pet;
-            res.redirect('/menu?sucesso=c adotou um pet!');
+            if (req.session.thesave) req.session.thesave.pet = pet;
+            res.redirect('/menu?sucesso=Você adotou um pet!');
         } catch (error) {
             res.redirect(`/menu?erro=Erro ao adotar pet: ${error.message}`);
         }
@@ -255,9 +214,12 @@ class saveController {
                 await db.execute(queryPet, [novo_nome_pet, saveId]);
             }
             
-            res.redirect('/menu?sucesso=Atributos renomeados com sucesso!');
+            req.session.flash = "Atributos renomeados";
+            res.redirect('/menu');
         } catch (error) {
-            res.redirect(`/menu?erro=Erro ao renomear atributos: ${error.message}`);
+            console.error('Erro ao renomear atributos:', error);
+            req.session.flash = `Erro ao renomear atributos: ${error.message}`;
+            res.redirect('/menu');
         }
     }
 
@@ -271,9 +233,12 @@ class saveController {
 
         try {
             await saveModel.melhorarItem(saveId, itemId);
-            res.redirect('/ferreiro?sucesso=item mlhorado');
+            req.session.flash = "Item melhorado com sucesso";
+            res.redirect('/ferreiro');
         } catch (error) {
-            res.redirect(`/ferreiro?erro=Erro ao melhorar item: ${error.message}`);
+            console.error('Erro ao melhorar item:', error);
+            req.session.flash = `Erro ao melhorar item: ${error.message}`;
+            res.redirect('/ferreiro');
         }
     }
 
@@ -282,9 +247,12 @@ class saveController {
         const inventarioId = req.body.inventario_id;
         try {
             await saveModel.excluirItem(saveId, inventarioId);
-            res.redirect('/menu?sucesso=item excluído');
+            req.session.flash = "Item excluído com sucesso";
+            res.redirect('/menu');
         } catch (error) {
-            res.redirect(`/menu?erro=Erro ao excluir item: ${error.message}`);
+            console.error('Erro ao excluir item:', error);
+            req.session.flash = `Erro ao excluir item: ${error.message}`;
+            res.redirect('/menu');
         }
     }
 
@@ -293,11 +261,14 @@ class saveController {
         const saveId = req.session.save_id;
         try {
             const query = 'DELETE FROM pets WHERE id = ? AND save_id = ?';
-            await saveModel.atualizarAtributoPersonagem(query, [petId, saveId]);
-            req.session.thesave.pet = null;
-            res.redirect('/menu?sucesso=Pet solto com sucesso!');
+            await db.execute(query, [petId, saveId]);
+            if (req.session.thesave) req.session.thesave.pet = null;
+            req.session.flash = "Pet solto com sucesso";
+            res.redirect('/menu');
         } catch (error) {
-            res.redirect(`/menu?erro=Erro ao soltar pet: ${error.message}`);
+            console.error('Erro ao soltar pet:', error);
+            req.session.flash = `Erro ao soltar pet: ${error.message}`;
+            res.redirect('/menu');
         }
     }
 
@@ -305,57 +276,132 @@ class saveController {
         try {
             const saveId = req.session.save_id;
             const save = await saveModel.buscarSaveCompleto(saveId);
-            const atributos = save.atributos;
-            const nivel = atributos.nivel;
-            const ataqueTotal = atributos.ataque;
-            const inimigo = await saveModel.caçar();
-            const chanceAcerto = 20 + ataqueTotal + nivel * 5;
+            if (save.atributos.vida_atual <= 0) {
+                return res.redirect('/menu?erro=Você está morto');
+            }
+
+            const { nivel, ataque, defesa } = save.atributos;
+            const inimigoNome = await saveModel.caçar();
+            
+            const inimigoNivel = Math.max(1, nivel + Math.floor(Math.random() * 3) - 1);
+            const inimigoAtaque = 5 + (inimigoNivel * 4);
+            const inimigoDefesa = 2 + (inimigoNivel * 3);
+            
+            const danoJogador = Math.max(5, ataque - inimigoDefesa + Math.floor(Math.random() * nivel));
+            const danoInimigo = Math.max(3, inimigoAtaque - defesa + Math.floor(Math.random() * nivel));
+
+            const poderJogador = ataque + defesa;
+            const poderInimigo = inimigoAtaque + inimigoDefesa;
+            const chanceBase = 50;
+            const bonusPoder = (poderJogador - poderInimigo) * 2;
+            const chanceVitoria = Math.min(95, Math.max(5, chanceBase + bonusPoder));
+
             const roll = Math.floor(Math.random() * 100) + 1;
-            if (roll <= chanceAcerto) {
-                const ouroGanho = 5+nivel*1.5;
-                const novoDinheiro = save.dinheiro + ouroGanho
-                const experienciaGanha = 15+nivel*3;
-                await saveModel.atualizarDinheiro(saveId, novoDinheiro);
-                await saveModel.atualizarExperiencia(saveId, experienciaGanha);
+            
+            if (roll <= chanceVitoria) {
+                const ouroGanho = Math.floor(10 + (inimigoNivel * 5) + (Math.random() * 10));
+                const expGanha = Math.floor(20 + (inimigoNivel * 10));
+                
+                const danoRecebido = Math.floor(danoInimigo * 0.3); 
+                
+                await saveModel.atualizarDinheiro(saveId, save.dinheiro + ouroGanho);
+                await saveModel.atualizarExperiencia(saveId, expGanha);
+                if (danoRecebido > 0) await saveModel.perderVida(saveId, danoRecebido);
                 await saveModel.subirNivel(saveId);
-                req.session.flash = `Você derrotou o ${inimigo}! Ganhou ${ouroGanho} de ouro e ${experienciaGanha} de experiência.`;
+
+                req.session.flash = `Vitória! Você derrotou ${inimigoNome} (Nível ${inimigoNivel}). +${ouroGanho} Ouro, +${expGanha} EXP. Dano recebido: ${danoRecebido}`;
                 return res.redirect('/menu');
             } else {
-                const dano = 8+nivel*1.5;
-                await saveModel.perderVida(saveId, dano);
-                req.session.flash = `O ${inimigo} te atacou e causou ${dano} de dano!`;
+                const danoRecebido = danoInimigo;
+                await saveModel.perderVida(saveId, danoRecebido);
+                
+                req.session.flash = `Derrota! ${inimigoNome} foi brabo e te causou ${danoRecebido} de dano`;
                 return res.redirect('/menu');
             }
 
         } catch (error) {
+            console.error('Erro na caça:', error);
             return res.redirect(`/menu?erro=Erro ao caçar: ${error.message}`);
         }
     }
 
-    static async pegarItem(req, res) {
-        try { const saveId = req.session.save_id;
-            const save = await saveModel.buscarSaveCompleto(saveId);
-            const nivel = save.atributos.nivel;
-            const dinheiro = save.dinheiro;
-            const custo = nivel * 10;
-            if (dinheiro < custo) {
-                return res.redirect('/menu?erro=Dinheiro insuficiente para pegar um item.');
-            }
-            const novoDinheiro = dinheiro - custo;
-            await saveModel.atualizarDinheiro(saveId, novoDinheiro);
-            const item = await saveModel.pegarItemNovo(saveId); 
-            const { atributo_chave } = item;
-            const valorAtributo = GerarAtributoPorNivel(nivel);
-            await saveModel.aplicarAtributoItem(item.id, atributo_chave, valorAtributo);
-            await saveModel.adicionarItemInventario(saveId, item.id);
-            res.redirect('/menu');
+    static async showLoja(req, res) {
+        res.render('loja', { erro: req.query.erro });
+    }
 
+    static async comprar(req, res) {
+        const idItem = req.body.idItem;
+        const saveId = req.session.save_id;
+
+        if (!idItem) {
+            req.session.flash = "ID do item não fornecido";
+            return res.redirect('/loja');
+        }
+
+        try {
+            const save = await saveModel.buscarSaveCompleto(saveId);
+            const itemEstoque = await saveModel.buscarItemNoEstoque(idItem, saveId);
+
+            if (!itemEstoque) {
+                req.session.flash = "Item não encontrado no estoque";
+                return res.redirect('/loja');
+            }
+
+            const custo = itemEstoque.valor_mercado;
+            if (save.dinheiro < custo) {
+                req.session.flash = "Dinheiro insuficiente";
+                return res.redirect('/loja');
+            }
+
+            const novoDinheiro = save.dinheiro - custo;
+            await saveModel.atualizarDinheiro(saveId, novoDinheiro);
+            
+            await saveModel.adicionarItemInventario(saveId, itemEstoque.item_base_id, 1, {
+                raridade: itemEstoque.raridade,
+                valor_mercado: itemEstoque.valor_mercado,
+                atributo_ataque: itemEstoque.atributo_ataque,
+                atributo_defesa: itemEstoque.atributo_defesa,
+                atualizavel: itemEstoque.atualizavel
+            });
+            
+            req.session.flash = `Item ${itemEstoque.nome} comprado com sucesso`;
+            res.redirect('/loja');
         } catch (error) {
-            res.redirect(`/menu?erro=Erro ao pegar item: ${error.message}`);
+            console.error('Erro ao comprar item:', error);
+            req.session.flash = "Erro ao processar compra";
+            res.redirect('/loja');
         }
     }
 
+    static async vender(req, res) {
+        const { itemId } = req.body;
+        const saveId = req.session.save_id;
 
+        try {
+            console.log(`Tentando vender item. ID do Item: ${itemId}, ID do Save: ${saveId}`);
+            const save = await saveModel.buscarSaveCompleto(saveId);
+            const [rows] = await db.execute('SELECT * FROM inventario WHERE id = ? AND save_id = ?', [itemId, saveId]);
+            const item = rows[0];
+
+            if (!item) {
+                req.session.flash = "Item não encontrado no seu inventário";
+                return res.redirect('/loja');
+            }
+
+            const valorVenda = Math.floor(item.valor_mercado * 0.5);
+            const novoDinheiro = save.dinheiro + valorVenda;
+
+            await saveModel.atualizarDinheiro(saveId, novoDinheiro);
+            await saveModel.venderItem(saveId, itemId);
+
+            req.session.flash = "Item vendido com sucesso";
+            res.redirect('/loja');
+        } catch (error) {
+            console.error('Erro ao vender item:', error);
+            req.session.flash = "Erro ao processar venda";
+            res.redirect('/loja');
+        }
+    }
 }
 
 module.exports = saveController

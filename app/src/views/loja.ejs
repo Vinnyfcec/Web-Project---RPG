@@ -1,0 +1,146 @@
+<html lang="pt-br">
+<head>
+    <%- include('partials/head') %>
+</head>
+<body>
+    <%- include('partials/header') %>
+    <main class="container mt-4">
+        <% if (typeof flash !== 'undefined' && flash) { %>
+            <div class="alert alert-info" style="padding: 15px; background-color: #d1ecf1; border: 1px solid #bee5eb; color: #0c5460; margin-bottom: 20px; border-radius: 4px;">
+                <%= flash %>
+            </div>
+        <% } %>
+        <% if (typeof erro !== 'undefined' && erro) { %>
+            <div class="alert alert-danger" style="padding: 15px; background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; margin-bottom: 20px; border-radius: 4px;">
+                <%= erro %>
+            </div>
+        <% } %>
+        <div class="row">
+            <h1> Bem-vindo mochileiro</h1>
+            <h3> Save atual: <%= save.nome_save %> ID:<%= save.id %></h3>
+        </div>
+        <div class="row mt-4" style="display: flex; align-items: flex-start; gap: 20px;">
+            <div id="atrbt" class="menus save-display-menu" style="flex: 0 0 300px; min-height: 700px; display: flex; flex-direction: column;">
+                <p class="nome_reno"> Nome: <%= (typeof save !== 'undefined' && save.atributos) ? save.atributos.nome : '' %></p>
+                <input class="input_reno opcoes-save" type="text" name="novo_nome" placeholder="Novo Nome" value="<%= (typeof save !== 'undefined' && save.atributos) ? save.atributos.nome : '' %>" required form="renomearForm"></input>
+                <p> Nivel: <%= (typeof save !== 'undefined' && save.atributos) ? save.atributos.nivel : '' %></p>
+                <p> Vida: <%= (typeof save !== 'undefined' && save.atributos) ? save.atributos.vida_atual : '' %> / <%= (typeof save !== 'undefined' && save.atributos) ? save.atributos.vida_maxima : '' %></p>
+                <p> Ataque: <%= (typeof save !== 'undefined' && save.atributos) ? save.atributos.ataque : '' %></p>
+                <p> Defesa: <%= (typeof save !== 'undefined' && save.atributos) ? save.atributos.defesa : '' %></p>
+                <p> Dinheiro: <%= save.dinheiro %></p>
+                <% if (save.atributos.vida_atual === 0) { %>
+                    <form action="/saves/<%= save.id %>/adicionarvida" method="POST"> <button> Adicionar Vida </button> </form>
+                <% } %>
+                <%- include('partials/adotarPetForm', { saveId: save.id }) %>
+                
+                <div style="margin-top: auto; padding-top: 20px; border-top: 1px solid #eee;">
+                    <h2 class="bold"> Negociações </h2>
+                    <h4 id="spec-nome"></h4>
+                    <p id="spec-atributo"></p>
+                    <p id="spec-raridade"></p>
+                    <p id="spec-preco" class="bold"></p>
+                    
+                    <form action="/loja/comprar" method="POST" id="form-comprar">
+                        <input type="hidden" name="idItem" id="input-id-item-compra">
+                        <button type="submit" id="btn-comprar" class="btn btn-primary" style="display: none; width: 100%; margin-bottom: 10px;">Comprar</button>
+                    </form>
+                    <form action="/loja/vender" method="POST" id="form-vender">
+                        <input type="hidden" name="itemId" id="itemVenderId">
+                        <button type="submit" id="btn-vender" class="sucess" style="display: none; width: 100%; margin-bottom: 10px;">Vender</button>
+                    </form>
+                    <button onclick="location.href='/menu'" type="button" style="width: 100%;"> Voltar </button>
+                </div>
+            </div>
+
+            <div id="menu" class="menus loja-opcoes-menu" style="flex: 1; display: flex; flex-direction: column; gap: 20px;">
+                <div class="estoque-wrapper">
+                    <%- include('partials/estoque') %>
+                </div>
+
+                <div class="inventario-wrapper">
+                    <%- include('partials/inventario') %>
+                </div>
+            </div>
+        </div>
+    </main>
+    <%- include('partials/footer') %>
+</body>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const itensEstoque = document.querySelectorAll('.estoque-item'); 
+        const itensInventario = document.querySelectorAll('.item-inventario-btn');
+        
+        const displayNome = document.getElementById('spec-nome'); 
+        const displayTipo = document.getElementById('spec-tipo');
+        const displayAtributo = document.getElementById('spec-atributo');
+        const displayRaridade = document.getElementById('spec-raridade');
+        const btnComprar = document.getElementById('btn-comprar');
+        const btnVender = document.getElementById('btn-vender');
+
+        function atualizarDetalhes(dados) {
+            if(displayNome) displayNome.innerText = dados.nome;
+            if(displayTipo) displayTipo.innerText = dados.tipo;
+            if(displayAtributo) displayAtributo.innerText = `${dados.atributo}: ${dados.valor}`;
+            if(displayRaridade) displayRaridade.innerText = dados.raridade;
+            
+            const displayPreco = document.getElementById('spec-preco');
+            if(displayPreco && dados.preco) displayPreco.innerText = `Valor: ${dados.preco} G`;
+            else if(displayPreco) displayPreco.innerText = '';
+        }
+
+        itensEstoque.forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.selecionado').forEach(el => el.classList.remove('selecionado'));
+                btn.classList.add('selecionado');
+
+                atualizarDetalhes({
+                    nome: btn.dataset.nome,
+                    tipo: btn.dataset.tipo,
+                    atributo: btn.dataset.atributo,
+                    valor: btn.dataset.valor,
+                    raridade: btn.dataset.raridade,
+                    preco: btn.dataset.preco || btn.dataset.valor_venda
+                });
+
+                const idDoItem = btn.getAttribute('data-id');
+                const inputCompra = document.getElementById('input-id-item-compra');
+
+                if (inputCompra) {
+                    inputCompra.value = idDoItem;
+                    console.log("ID preparado para compra:", idDoItem);
+                }
+
+                if(btnComprar) btnComprar.style.display = 'block';
+                if(btnVender) btnVender.style.display = 'none';
+            });
+        });
+
+        itensInventario.forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.selecionado').forEach(el => el.classList.remove('selecionado'));
+                btn.classList.add('selecionado');
+
+                atualizarDetalhes({
+                    nome: btn.dataset.nome,
+                    tipo: btn.dataset.tipo,
+                    atributo: btn.dataset.atributo,
+                    valor: btn.dataset.valor,
+                    raridade: btn.dataset.raridade,
+                    preco: btn.dataset.preco || btn.dataset.valor_venda
+                });
+
+                const idDoItem = btn.getAttribute('data-id');
+                const inputVenda = document.getElementById('itemVenderId');
+                if (inputVenda) {
+                    inputVenda.value = idDoItem;
+                    console.log("ID preparado para venda:", idDoItem);
+                }
+
+                if(btnComprar) btnComprar.style.display = 'none';
+                if(btnVender) btnVender.style.display = 'block';
+            });
+        });
+    });
+
+</script>
+</html>

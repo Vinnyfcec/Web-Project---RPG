@@ -5,6 +5,16 @@
 <body>
     <%- include('partials/header') %>
     <main class="ferreiro container mt-4">
+        <% if (typeof flash !== 'undefined' && flash) { %>
+            <div class="alert alert-info" style="padding: 15px; background-color: #d1ecf1; border: 1px solid #bee5eb; color: #0c5460; margin-bottom: 20px; border-radius: 4px;">
+                <%= flash %>
+            </div>
+        <% } %>
+        <% if (typeof erro !== 'undefined' && erro) { %>
+            <div class="alert alert-danger" style="padding: 15px; background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; margin-bottom: 20px; border-radius: 4px;">
+                <%= erro %>
+            </div>
+        <% } %>
         <div class="row">
          <div class="col-4 col-s-2"></div> 
 
@@ -13,8 +23,8 @@
             <h3> Save atual: <%= save.nome_save %> ID:<%= save.id %></h3>
         </div>
 
-        <div class="row mt-4">
-            <div id="atrbt" class="menus save-display-menu col-md-4" >
+        <div class="row mt-4" style="display: flex; align-items: stretch; gap: 20px;">
+            <div id="atrbt" class="menus save-display-menu" style="flex: 0 0 300px;">
                 <p class="nome_reno"> Nome: <%= save.atributos.nome %></p>
                 <input class="input_reno opcoes-save" type="text" name="novo_nome" placeholder="Novo Nome" value="<%= save.atributos.nome %>" required form="renomearForm"></input>
                 <p> Nivel: <%= save.atributos.nivel %></p>
@@ -23,9 +33,9 @@
                 <p> Defesa: <%= save.atributos.defesa %></p>
                 <p> Dinheiro: <%= save.dinheiro %></p>
                 <%- include('partials/adotarPetForm', { saveId: save.id }) %>
+                <button onclick="location.href='/menu'" type="button" style="margin-top: 20px; width: 100%;"> Voltar </button>
             </div>
-            <div id="menu" class="menus ferreiro opcoes-menu col-md-8">
-                <button onclick="location.href='/menu'" type="button"> Voltar </button>
+            <div id="menu" class="menus ferreiro opcoes-menu" style="flex: 1;">
                 <h2> Ferreiro </h2>
                 <p> Aqui você pode melhorar seus equipamentos! </p>
                 <p class="bold"> Custo por melhoria: 10 de dinheiro </p>
@@ -41,7 +51,7 @@
                             <% } else { %>
                                 <% inventario.forEach(item => { %>
                                     <% if (item.atributo_chave !== 'nenhum') { %>
-                                    <li class="inventario-item"> <!-- arrumem dps do jeito q vc querem pq eu n sou bom em design-->
+                                    <li class="inventario-item">
                                         <span class="item-nome"><%= item.nome %></span>
                                         <span class="item-tipo">Tipo: <%= item.tipo %></span>
                                         <span class="item-atributo"> <%= item.atributo_chave %>: <%= item.atributo_chave === 'Ataque' ? item.atributo_ataque : item.atributo_defesa %></span>
@@ -51,7 +61,6 @@
                             <% } %>
                         </ul>
                     </div>
-                    
                 </div>
 
                 <p class="text-melhorar" >selecione um pra melhorar:</p>
@@ -69,7 +78,6 @@
                     <button class="btn-melhorar" >Melhorar</button>
                 </form>
             </div>
-            <div class="col-4 col-s-2"></div>
         </div>
     </main>
     <%- include('partials/footer') %>

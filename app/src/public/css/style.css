@@ -311,6 +311,10 @@ main {
     border: 1px solid #e5e5e5 !important;
     max-width: 350px;
     margin-bottom: 15px;
+    height: auto;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 #atrbt p {
@@ -515,7 +519,7 @@ body.cadastro2 footer {
 
 .inventario-container{
     width: 600px;
-    margin: 20px auto;
+    margin: 0px auto;
 }
 
 .inventario-container h2{
@@ -525,29 +529,197 @@ body.cadastro2 footer {
 .inventario-lista{
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    grid-template-rows: repeat(4, 120px);
+    grid-auto-rows: 120px;
+    max-height: calc(4 * 120px);
+    overflow-y: auto;
     gap: 0;
-    border: 4px solid #b87333;
+    border-top: 5px solid #b87333;
+    border-left: 5px solid #b87333;
+    border-bottom: 5px solid #b87333;
+    border-right: 5px solid #b87333;
     padding: 0px;
+    background-image: url("/img/interiorbau.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.inventario-lista::-webkit-scrollbar {
+    width: 10px;
+}
+
+.inventario-lista::-webkit-scrollbar-track {
+    background: #ff9641;
+    border-left: 2px solid #b87333;
+}
+
+.inventario-lista::-webkit-scrollbar-thumb {
+    background: linear-gradient(
+        180deg,
+        #d98c3a,
+        #b87333
+    );
+    border-radius: 8px;
+    border: 2px solid #1e1e1e;
+}
+
+.inventario-lista::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(
+        180deg,
+        #f0a14a,
+        #d98c3a
+    );
 }
 
 .inventario-item{
-    border: 3px solid #b87333;
-    border-top: none;
-    border-left: none;
+    box-shadow: 
+        5px 0 0 0 #b87333,
+        0 5px 0 0 #b87333;
+    justify-content: flex-start;
+    background: transparent;
+    cursor: pointer;
+    text-align: left;
+    color: inherit;
+    font-family: inherit;
+    outline: none;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
-    padding: 5px;
+    padding: 8px;
     font-size: 12px;
-}
-
-.inventario-item:nth-child(5n) {
-    border-right: none;
+    box-sizing: border-box;
+    border: none;
+    transition: background 0.2s;
 }
 
 .inventario-item span{
     display: block;
+    color: white;
+    text-decoration: beige;
+}
+
+.inventario-item:hover {
+    background-color: rgba(184, 115, 51, 0.2);
+}
+
+.inventario-item.selecionado {
+    background-color: rgba(184, 115, 51, 0.466);
+    box-shadow: 
+        5px 0 0 0 #b87333,   
+        0 5px 0 0 #b87333,
+        inset 0 0 10px rgba(0,0,0,0.5);
+}
+
+.item-nome {
+    margin-bottom: 5px;
+    display: block;
+    color: #ffd700;
+}
+
+.inventario-vazio {
+    grid-column: span 5;
+    padding: 20px;
+    text-align: center;
+    color: #b87333;
+}
+
+.estoque-container{
+    width: 600px;
+    margin: 0px auto;
+}
+
+
+.estoque-container h2{
+    margin-bottom: 10px;
+}
+
+.estoque-lista{
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-auto-rows: 120px;
+    max-height: calc(4 * 120px);
+    overflow-y: auto;
+    gap: 0;
+    border-top: 5px solid #b87333;
+    border-left: 5px solid #b87333;
+    border-bottom: 5px solid #b87333;
+    border-right: 5px solid #b87333;
+    padding: 0px;
+    background-image: url("/img/interiorbau.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.estoque-lista::-webkit-scrollbar {
+    width: 10px;
+}
+
+.estoque-lista::-webkit-scrollbar-track {
+    background: #ff9641;
+    border-left: 2px solid #b87333;
+}
+
+.estoque-lista::-webkit-scrollbar-thumb {
+    background: linear-gradient(
+        180deg,
+        #d98c3a,
+        #b87333
+    );
+    border-radius: 8px;
+    border: 2px solid #1e1e1e;
+}
+
+.estoque-lista::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(
+        180deg,
+        #f0a14a,
+        #d98c3a
+    );
+}
+
+.estoque-item{
+    box-shadow: 
+        5px 0 0 0 #b87333,
+        0 5px 0 0 #b87333;
+    justify-content: flex-start;
+    background: transparent;
+    cursor: pointer;
+    text-align: left;
+    color: inherit;
+    font-family: inherit;
+    outline: none;
+    display: flex;
+    flex-direction: column;
+    padding: 8px;
+    font-size: 12px;
+    box-sizing: border-box;
+    border: none;
+    transition: background 0.2s;
+}
+
+.estoque-item span{
+    display: block;
+    color: white;
+    text-decoration: beige;
+}
+
+.estoque-item:hover {
+    background-color: rgba(184, 115, 51, 0.2);
+}
+
+.estoque-item.selecionado {
+    background-color: rgba(184, 115, 51, 0.466);
+    box-shadow: 
+        5px 0 0 0 #b87333,   
+        0 5px 0 0 #b87333,
+        inset 0 0 10px rgba(0,0,0,0.5);
+}
+
+.estoque-vazio {
+    grid-column: span 5;
+    padding: 20px;
+    text-align: center;
+    color: #b87333;
 }
 
 .btn-ferreiro{
@@ -1066,4 +1238,24 @@ body.cadastro2 footer {
 
 .home main a {
     text-decoration: none;
+}
+
+.right-coluna {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.row.mt-4 {
+    display: flex;
+    align-items: stretch;
+}
+
+.item-inventario-btn.equipado {
+    border: 2px solid gold;
+}
+
+.btn-equipar {
+    margin-top: 10px;
+    padding: 8px 16px;
 }

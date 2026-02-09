@@ -21,6 +21,8 @@ app.use(session({
 app.use((req, res, next) => {
     res.locals.usuario = req.session.usuario;
     res.locals.save = req.session.thesave;
+    res.locals.flash = req.session.flash;
+    delete req.session.flash;
     next();
 });
 

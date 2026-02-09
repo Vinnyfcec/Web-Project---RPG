@@ -13,8 +13,20 @@ class saveModel {
         const [itensBase] = await db.execute("SELECT * FROM itens_base WHERE id IN (1, 2)");
         for (const item of itensBase) {
             const invent = "INSERT INTO `inventario` (`save_id`, `item_base_id`, `quantidade`, `equipado`, `raridade`, `valor_mercado`, `efeito_consumivel`, `atualizavel`, `atributo_ataque`, `atributo_defesa`) VALUES (?, ?, 1, TRUE, ?, ?, ?, ?, ?, ?);"
-            await db.execute(invent, [save_id, item.id, item.raridade, item.valor_mercado, item.efeito_consumivel, item.atualizavel, item.atributo_ataque, item.atributo_defesa]);
+            await db.execute(invent, [
+                save_id, 
+                item.id, 
+                item.raridade, 
+                item.valor_mercado, 
+                item.efeito_consumivel, 
+                item.atualizavel, 
+                item.atributo_ataque, 
+                item.atributo_defesa
+            ]);
         }
+        
+        await this.popularEstoqueInicial(save_id);
+        
         return save_id;
     }
 
@@ -31,7 +43,7 @@ class saveModel {
     }
 
     static async listarInventario(save_id) {
-        const query = `SELECT i.id as inventario_id, i.quantidade, i.equipado, i.raridade, i.atributo_ataque, i.atributo_defesa, i.valor_mercado, ib.nome, ib.tipo, ib.descricao, ib.atributo_chave FROM inventario i JOIN itens_base ib ON i.item_base_id = ib.id WHERE i.save_id = ?`;
+        const query = `SELECT i.id, i.id as inventario_id, i.quantidade, i.equipado, i.raridade, i.atributo_ataque, i.atributo_defesa, i.valor_mercado, ib.nome, ib.tipo, ib.descricao, ib.atributo_chave FROM inventario i JOIN itens_base ib ON i.item_base_id = ib.id WHERE i.save_id = ?`;
         const [rows] = await db.execute(query, [save_id]);
         return rows;
     }
@@ -48,35 +60,31 @@ class saveModel {
         const inventario = await this.listarInventario(save_id);
 
         const attrQuery = `SELECT * FROM atributos_personagem WHERE save_id = ?`;
-        const [atributos] = await db.execute(attrQuery, [save_id]);
+        const [atributosRows] = await db.execute(attrQuery, [save_id]);
+        const atributos = atributosRows.length > 0 ? atributosRows[0] : { ataque: 10, defesa: 10, nivel: 1, vida_atual: 100, vida_maxima: 100 };
 
         const petQuery = `SELECT * FROM pets WHERE save_id = ?`;
         const [pets] = await db.execute(petQuery, [save_id]);
 
-        let ataqueTotal = 0;
-        let defesaTotal = 0;
-        let poder = 0;
-        poder = atributos[0].poder;
-        ataqueTotal = atributos[0].ataque;
-        defesaTotal = atributos[0].defesa;
+        let ataqueTotal = atributos.ataque || 10;
+        let defesaTotal = atributos.defesa || 10;
 
         if (pets && pets.length > 0) {
-            poder += 2;
             defesaTotal += 2;
         }
 
         inventario.forEach(item => {
             if (item.equipado) {
-                ataqueTotal += item.atributo_ataque;
-                defesaTotal += item.atributo_defesa;
-                poder += item.atributo_ataque;
-                poder += item.atributo_defesa;
+                ataqueTotal += (item.atributo_ataque || 0);
+                defesaTotal += (item.atributo_defesa || 0);
             }
         });
         
+        const poderTotal = ataqueTotal + defesaTotal;
+        
         return {
             ...save[0], 
-            atributos: atributos.length > 0 ? {...atributos[0], ataque: ataqueTotal, defesa: defesaTotal, poder: poder } : {},
+            atributos: { ...atributos, ataque: ataqueTotal, defesa: defesaTotal, poder: poderTotal },
             inventario,
             pet: pets.length > 0 ? pets[0] : null
         };
@@ -94,18 +102,36 @@ class saveModel {
     }
 
     static async pegarItemNovo(save_id) {
-    const nivelQuery = `SELECT atributos_personagem.nivel AS nivel_mochileiro FROM atributos_personagem JOIN saves ON atributos_personagem.save_id = saves.id WHERE saves.id = ?`;
-    const [nivelResult] = await db.execute(nivelQuery, [save_id]);
-    const nivel_mochileiro = nivelResult[0]?.nivel_mochileiro || 1;
-    const query = `SELECT * FROM itens_base WHERE nivel_requerido <= ? ORDER BY RAND() LIMIT 1`;
-    const [result] = await db.execute(query, [nivel_mochileiro]);
+        const nivelQuery = `SELECT atributos_personagem.nivel AS nivel_mochileiro FROM atributos_personagem JOIN saves ON atributos_personagem.save_id = saves.id WHERE saves.id = ?`;
+        const [nivelResult] = await db.execute(nivelQuery, [save_id]);
+        const nivel_mochileiro = nivelResult[0]?.nivel_mochileiro || 1;
+        const query = `SELECT * FROM itens_base WHERE nivel_requerido <= ? ORDER BY RAND() LIMIT 1`;
+        const [result] = await db.execute(query, [nivel_mochileiro]);
 
-    return result[0];
-}
+        return result[0];
+    }
 
-    static async adicionarItemInventario(save_id, item_base_id, quantidade = 1) {
-        const query = 'INSERT INTO inventario (save_id, item_base_id, quantidade, equipado, raridade, valor_mercado, efeito_consumivel, atualizavel, atributo_ataque, atributo_defesa) VALUES (?, ?, ?, 0, (SELECT raridade FROM itens_base WHERE id = ?), (SELECT valor_mercado FROM itens_base WHERE id = ?), (SELECT efeito_consumivel FROM itens_base WHERE id = ?), (SELECT atualizavel FROM itens_base WHERE id = ?), (SELECT atributo_ataque FROM itens_base WHERE id = ?), (SELECT atributo_defesa FROM itens_base WHERE id = ?)) ON DUPLICATE KEY UPDATE quantidade = quantidade + ?';
-        await db.execute(query, [save_id, item_base_id, quantidade, item_base_id, item_base_id, item_base_id, item_base_id, item_base_id, item_base_id, quantidade]);
+    static async adicionarItemInventario(save_id, item_base_id, quantidade = 1, dadosExtras = {}) {
+        const query = `
+            INSERT INTO inventario (
+                save_id, item_base_id, quantidade, equipado, raridade, 
+                valor_mercado, efeito_consumivel, atualizavel, 
+                atributo_ataque, atributo_defesa
+            ) VALUES (?, ?, ?, 0, ?, ?, ?, ?, ?, ?)
+            ON DUPLICATE KEY UPDATE quantidade = quantidade + ?`;
+        
+        await db.execute(query, [
+            save_id, 
+            item_base_id, 
+            quantidade, 
+            dadosExtras.raridade || 'Comum',
+            dadosExtras.valor_mercado || 10, 
+            dadosExtras.efeito_consumivel || null, 
+            dadosExtras.atualizavel || false,
+            dadosExtras.atributo_ataque || 0, 
+            dadosExtras.atributo_defesa || 0,
+            quantidade
+        ]);
     }
 
     static async equiparItem(item_id, save_id) {
@@ -153,10 +179,26 @@ class saveModel {
     static async subirNivel(save_id) {
         const query = 'SELECT nivel, experiencia FROM atributos_personagem WHERE save_id = ?';
         const [rows] = await db.execute(query, [save_id]);
-        const usuario = rows[0]
-
-        if (usuario.nivel <5 && usuario.experiencia >= experienciaNivel[usuario.nivel]) {
-            await db.execute('UPDATE atributos_personagem SET nivel = nivel + 1 WHERE save_id = ?', [save_id]);
+        if (rows.length === 0) return false;
+        
+        const usuario = rows[0];
+        const proximoNivel = usuario.nivel + 1;
+        
+        if (proximoNivel <= experienciaNivel.length && usuario.experiencia >= experienciaNivel[usuario.nivel]) {
+            const bonusAtaque = 5;
+            const bonusDefesa = 5;
+            const bonusVida = 20;
+            
+            await db.execute(`
+                UPDATE atributos_personagem 
+                SET nivel = nivel + 1, 
+                    ataque = ataque + ?, 
+                    defesa = defesa + ?, 
+                    vida_maxima = vida_maxima + ?,
+                    vida_atual = vida_maxima + ?
+                WHERE save_id = ?`, 
+                [bonusAtaque, bonusDefesa, bonusVida, bonusVida, save_id]
+            );
             return true;
         }
         return false;
@@ -235,14 +277,156 @@ class saveModel {
         let novoAtaque = 0;
         let novoDefesa = 0;
         
-        if (atributo_chave === 'ataque') {
+        const chave = atributo_chave.toLowerCase();
+        
+        if (chave === 'ataque') {
             novoAtaque = valor;
-        } else if (atributo_chave === 'defesa') {
+        } else if (chave === 'defesa') {
             novoDefesa = valor;
         }
         
         const query = 'UPDATE itens_base SET atributo_ataque = ?, atributo_defesa = ? WHERE id = ?';
         await db.execute(query, [novoAtaque, novoDefesa, item_id]);
+    }
+
+    static async listarEstoque(save_id) {
+        const query = `
+            SELECT 
+                e.id, 
+                e.id as estoque_id, 
+                e.quantidade, 
+                e.raridade, 
+                e.atributo_ataque, 
+                e.atributo_defesa, 
+                e.valor_mercado, 
+                ib.nome, 
+                ib.tipo, 
+                ib.descricao, 
+                ib.atributo_chave 
+            FROM estoque e 
+            JOIN itens_base ib ON e.item_base_id = ib.id 
+            WHERE e.save_id = ?`;
+        const [rows] = await db.execute(query, [save_id]);
+        
+        if (rows.length === 0) {
+            await this.popularEstoqueInicial(save_id);
+            const [newRows] = await db.execute(query, [save_id]);
+            return newRows;
+        }
+        return rows;
+    }
+
+    static async popularEstoqueInicial(save_id) {
+        const [itensBase] = await db.execute('SELECT * FROM itens_base');
+        for (const item of itensBase) {
+            const query = `
+                INSERT INTO estoque (
+                    save_id, item_base_id, quantidade, raridade, 
+                    valor_mercado, atualizavel, atributo_ataque, atributo_defesa
+                ) VALUES (?, ?, 5, ?, ?, ?, ?, ?)`;
+            await db.execute(query, [
+                save_id, 
+                item.id, 
+                item.raridade, 
+                item.valor_mercado, 
+                item.atualizavel, 
+                item.atributo_ataque, 
+                item.atributo_defesa
+            ]);
+        }
+    }
+
+    static async buscarItemNoEstoque(estoqueId, saveId) {
+        const query = `
+            SELECT 
+                e.*, 
+                ib.nome, 
+                ib.tipo, 
+                ib.atributo_chave 
+            FROM estoque e 
+            JOIN itens_base ib ON e.item_base_id = ib.id 
+            WHERE e.id = ? AND e.save_id = ?`;
+        const [rows] = await db.execute(query, [estoqueId, saveId]);
+        return rows.length ? rows[0] : null;
+    }
+
+    static async comprarItem(save_id, estoque_id, quantidade = 1) {
+        
+        if (!save_id || !estoque_id) {
+            throw new Error('Parâmetros inválidos na compra');
+        }
+        const item = await this.buscarItemNoEstoque(estoque_id);
+        if (!item) {
+            throw new Error('Item não encontrado no estoque');
+        }
+
+        const query = `
+            INSERT INTO inventario (
+                save_id,
+                item_base_id,
+                quantidade,
+                equipado,
+                raridade,
+                valor_mercado,
+                atributo_ataque,
+                atributo_defesa
+            )
+            VALUES (?, ?, ?, 0, ?, ?, ?, ?)
+            ON DUPLICATE KEY UPDATE quantidade = quantidade + ?
+        `;
+        await db.execute(query, [
+            save_id,
+            item.item_base_id,
+            quantidade,
+            item.raridade,
+            item.valor_mercado,
+            item.atributo_ataque,
+            item.atributo_defesa,
+            quantidade
+        ]);
+    }
+
+    static async venderItem(save_id, inventario_id) {
+        const query = 'DELETE FROM inventario WHERE id = ? AND save_id = ?';
+        const [result] = await db.execute(query, [inventario_id, save_id]);
+        return result.affectedRows > 0;
+    }
+
+    static async equiparItem(item_id, save_id) {
+        const [[item]] = await db.execute(
+            'SELECT equipado FROM inventario WHERE id = ? AND save_id = ?',
+            [item_id, save_id]
+        );
+
+        if (!item) {
+            throw new Error('Item não encontrado.');
+        }
+        if (item.equipado) {
+            return false;
+        }
+
+        const [[{ total }]] = await db.execute(
+            'SELECT COUNT(*) AS total FROM inventario WHERE save_id = ? AND equipado = 1',
+            [save_id]
+        );
+
+        if (total >= 3) {
+            throw new Error('Limite de itens equipados atingido.');
+        }
+
+        await db.execute(
+            'UPDATE inventario SET equipado = 1 WHERE id = ? AND save_id = ?',
+            [item_id, save_id]
+        );
+
+        return true;
+    }
+
+    static async desequiparItem(item_id, save_id) {
+        await db.execute(
+            'UPDATE inventario SET equipado = 0 WHERE id = ? AND save_id = ?',
+            [item_id, save_id]
+        );
     }
 }
 

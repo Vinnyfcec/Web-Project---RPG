@@ -16,11 +16,14 @@ router.post('/menu/excluirItem', saveController.excluirItem);
 router.post('/menu/:pet_id/soltarPet', saveController.soltarPet);
 router.post('/saves/:id/adotarpet', saveController.adotarPet);
 router.post('/saves/:id/renomearatributos', saveController.renomearAtributos);
-router.post('/saves/:id/adicionarvida', saveController.adicionarVida);
 router.post('/saves/:id/cacar', saveController.cacar);
-router.post('/saves/:id/pegarItem', saveController.pegarItem);
+router.post('/inventario/equipar', saveController.equiparItem);
+router.post('/inventario/desequipar', saveController.desequiparItem);
 
 router.get('/ferreiro', saveController.showFerreiro);
 router.post('/ferreiro/melhorar', saveController.melhorarItem);
+router.get('/loja', saveController.showLoja);
+router.post('/loja/comprar', saveController.comprar);
+router.post('/loja/vender', saveController.vender)
 
 module.exports = router;
