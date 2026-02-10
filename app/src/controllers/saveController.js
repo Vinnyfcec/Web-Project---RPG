@@ -1,13 +1,6 @@
 const saveModel = require('../models/saveModel');
 const db = require('../config/db');
 
-function GerarAtributoPorNivel(nivel) {
-    const min = 3*nivel;
-    const max = 6*nivel;
-    const cap = 33;
-    const valor = Math.floor(Math.random() * (max - min + 1)) + min;
-    return Math.min(valor, cap);
-}
 class saveController {
     static isAuth(req, res, next) {
         if (req.path === '/') return next();
@@ -31,7 +24,6 @@ class saveController {
 
         try {
             const saveCompleto = await saveModel.buscarSaveCompleto(req.session.save_id);
-
             if (!saveCompleto) {
                 req.session.save_id = null;
                 return next();
@@ -56,10 +48,8 @@ class saveController {
             console.error('Erro ao carregar o save:', error);
             req.session.save_id = null;
         }
-
         next();
     }
-
 
     static async listarSaves(req, res) {
         try {
@@ -80,13 +70,6 @@ class saveController {
             }
         res.redirect('/menu');
         });
-    }
-
-    static async mostrarMenu(req, res) {
-        if (!req.session.save_id) {
-            return res.redirect('/saves');
-        }
-        res.render('menu', { erro: req.query.erro });
     }
 
     static async criarSave(req, res) {
@@ -129,14 +112,11 @@ class saveController {
         }
     }
 
-    static async listarInventario(req, res) {
-        const saveId = req.session.save_id;
-        try {
-            const inventario = await saveModel.listarInventario(saveId);
-            res.render('inventario', { inventario })
-        } catch (error) {
-            res.redirect(`/menu?erro=Erro ao carregar inventário: ${error.message}`);
+    static async mostrarMenu(req, res) {
+        if (!req.session.save_id) {
+            return res.redirect('/saves');
         }
+        res.render('menu', { erro: req.query.erro });
     }
 
     static async abrirInventario(req, res) {
@@ -155,17 +135,11 @@ class saveController {
     } 
 
     static async equiparItem(req, res) {
-        try {
-            const { item_id } = req.body;
-            const saveId = req.session.save_id;
-            
-            const [rows] = await db.execute('SELECT COUNT(*) AS total FROM inventario WHERE save_id = ? AND equipado = 1', [saveId]);
-            if (rows[0].total >= 3) {
-                req.session.flash = "Limite de 3 itens equipados atingido";
-                return res.redirect('/menu');
-            }
-            
-            await db.execute('UPDATE inventario SET equipado = 1 WHERE id = ? AND save_id = ?', [item_id, saveId]);
+        const { item_id } = req.body;
+        const saveId = req.session.save_id;
+        
+        try{
+            await saveModel.equiparItem(saveId, item_id);
             req.session.flash = "Item equipado com sucesso";
             res.redirect('/menu');
         } catch (error) {
@@ -176,18 +150,31 @@ class saveController {
     }
 
     static async desequiparItem(req, res) {
+        const { item_id } = req.body;
+        const saveId = req.session.save_id;
         try {
-            const { item_id } = req.body;
-            const saveId = req.session.save_id;
-            await db.execute('UPDATE inventario SET equipado = 0 WHERE id = ? AND save_id = ?', [item_id, saveId]);
+            await saveModel.desequiparItem(saveId, item_id);
             req.session.flash = "Item desequipado";
             res.redirect('/menu');
         } catch (error) {
             console.error('Erro ao desequipar item:', error);
             res.redirect(`/menu?erro=Erro ao desequipar o item`);
         }
-    } 
+    }
 
+    static async excluirItem(req, res) {
+        const saveId = req.session.save_id;
+        const inventarioId = req.body.inventario_id;
+        try {
+            await saveModel.excluirItem(saveId, inventarioId);
+            req.session.flash = "Item excluído com sucesso";
+            res.redirect('/menu');
+        } catch (error) {
+            console.error('Erro ao excluir item:', error);
+            req.session.flash = `Erro ao excluir item: ${error.message}`;
+            res.redirect('/menu');
+        }
+    }
     
     static async adotarPet(req, res) {
         const saveId = req.params.id;
@@ -198,6 +185,22 @@ class saveController {
             res.redirect('/menu?sucesso=Você adotou um pet!');
         } catch (error) {
             res.redirect(`/menu?erro=Erro ao adotar pet: ${error.message}`);
+        }
+    }
+
+    static async soltarPet(req, res) {
+        const petId = req.params.pet_id;
+        const saveId = req.session.save_id;
+        try {
+            const query = 'DELETE FROM pets WHERE id = ? AND save_id = ?';
+            await db.execute(query, [petId, saveId]);
+            if (req.session.thesave) req.session.thesave.pet = null;
+            req.session.flash = "Pet solto com sucesso";
+            res.redirect('/menu');
+        } catch (error) {
+            console.error('Erro ao soltar pet:', error);
+            req.session.flash = `Erro ao soltar pet: ${error.message}`;
+            res.redirect('/menu');
         }
     }
 
@@ -219,55 +222,6 @@ class saveController {
         } catch (error) {
             console.error('Erro ao renomear atributos:', error);
             req.session.flash = `Erro ao renomear atributos: ${error.message}`;
-            res.redirect('/menu');
-        }
-    }
-
-    static async showFerreiro(req, res) {
-        res.render('ferreiro', { erro: req.query.erro });
-    }
-
-    static async melhorarItem(req, res) {
-        const saveId = req.session.save_id;
-        const itemId = req.body.item_id;
-
-        try {
-            await saveModel.melhorarItem(saveId, itemId);
-            req.session.flash = "Item melhorado com sucesso";
-            res.redirect('/ferreiro');
-        } catch (error) {
-            console.error('Erro ao melhorar item:', error);
-            req.session.flash = `Erro ao melhorar item: ${error.message}`;
-            res.redirect('/ferreiro');
-        }
-    }
-
-    static async excluirItem(req, res) {
-        const saveId = req.session.save_id;
-        const inventarioId = req.body.inventario_id;
-        try {
-            await saveModel.excluirItem(saveId, inventarioId);
-            req.session.flash = "Item excluído com sucesso";
-            res.redirect('/menu');
-        } catch (error) {
-            console.error('Erro ao excluir item:', error);
-            req.session.flash = `Erro ao excluir item: ${error.message}`;
-            res.redirect('/menu');
-        }
-    }
-
-    static async soltarPet(req, res) {
-        const petId = req.params.pet_id;
-        const saveId = req.session.save_id;
-        try {
-            const query = 'DELETE FROM pets WHERE id = ? AND save_id = ?';
-            await db.execute(query, [petId, saveId]);
-            if (req.session.thesave) req.session.thesave.pet = null;
-            req.session.flash = "Pet solto com sucesso";
-            res.redirect('/menu');
-        } catch (error) {
-            console.error('Erro ao soltar pet:', error);
-            req.session.flash = `Erro ao soltar pet: ${error.message}`;
             res.redirect('/menu');
         }
     }
@@ -325,6 +279,25 @@ class saveController {
         }
     }
 
+    static async showFerreiro(req, res) {
+        res.render('ferreiro', { erro: req.query.erro });
+    }
+
+    static async melhorarItem(req, res) {
+        const saveId = req.session.save_id;
+        const itemId = req.body.item_id;
+
+        try {
+            await saveModel.melhorarItem(saveId, itemId);
+            req.session.flash = "Item melhorado com sucesso";
+            res.redirect('/ferreiro');
+        } catch (error) {
+            console.error('Erro ao melhorar item:', error);
+            req.session.flash = `Erro ao melhorar item: ${error.message}`;
+            res.redirect('/ferreiro');
+        }
+    }
+
     static async showLoja(req, res) {
         res.render('loja', { erro: req.query.erro });
     }
@@ -378,7 +351,6 @@ class saveController {
         const saveId = req.session.save_id;
 
         try {
-            console.log(`Tentando vender item. ID do Item: ${itemId}, ID do Save: ${saveId}`);
             const save = await saveModel.buscarSaveCompleto(saveId);
             const [rows] = await db.execute('SELECT * FROM inventario WHERE id = ? AND save_id = ?', [itemId, saveId]);
             const item = rows[0];
