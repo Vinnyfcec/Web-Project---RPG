@@ -130,6 +130,8 @@ main {
 
 .form-cadastro label {
     font-weight: bold;
+    display: block;
+    margin-top: 1rem;
 }
 
 .font-cadastro input{
@@ -157,15 +159,18 @@ main {
     place-items: column;
     width: 300px;
     gap: 10px;
-    padding: 20px;
+    margin: 0;
     margin-top: 20px;
     background: rgb(197, 197, 197);
-    border: 1px solid lightgray;
-    border-radius: 10px;  
+    border-radius: 10px;
+    border: none;
+    padding: 0;
 }
 
 .form-login label {
     font-weight: bold;
+    display: block;
+    margin-top: 1rem;
 }
 
 .font-login input{
@@ -353,10 +358,6 @@ main {
     background: #005fcc;
 }
 
-.opcoes-save{
-    display: none !important;
-}
-
 .header{
     display:grid;
     align-items: center;
@@ -379,24 +380,8 @@ main {
     color: inherit;
 }
 
-.header-logout{
-    background:transparent;
-    border: 1px solid #aaa;
-    color: #fff;
-    padding: 4px 8px;
-    font-size: 13px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: 0.2s;
-    margin-left: 4px;
-}
-
 .header-logout:hover{
     background: #333;
-}
-
-.opcoes-save{
-    display: none;
 }
 
 .logout-form, .logout-exclusao-form{
@@ -438,24 +423,15 @@ main {
     height: 100px;
 }
 
-html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-}
-
-
 body.cadastro2 {
     display: grid;
     flex-direction: column;
     min-height: 100vh;
 }
 
-
 body.cadastro2 main {
     flex: 1;
 }
-
 
 body.cadastro2 footer {
     margin-top: auto;
@@ -511,10 +487,6 @@ body.cadastro2 footer {
 .logout-form button:hover, .logout-exclusao-form button:hover .saves{
     background-color: white;
     color: black
-}
-
-.opcoes-save{
-    display: none;
 }
 
 .inventario-container{
@@ -724,12 +696,7 @@ body.cadastro2 footer {
 
 .btn-ferreiro{
     display: block;
-    margin-left: auto;
-    width: fit-content;
     margin-top: 10px;
-    position: absolute;
-    right: -100;
-    top: 150;
     cursor: pointer;
 }
 
@@ -777,11 +744,11 @@ body.cadastro2 footer {
 }
 
 .opcoes-jogo{
-    display : flex;
+    display: flex;
     justify-content: center;
+    gap: 10px;
     margin-top: 10px;
     color:#005fcc;
-    gap:10px;
 }
 
 .menus{
@@ -1065,22 +1032,10 @@ body.cadastro2 footer {
   box-sizing: border-box;
 }
 
-.form-cadastro fieldset {
-  border: none;
-  padding: 0;
-  margin: 0;
-}
-
 .form-cadastro h1 {
   font-size: 1.8rem;
   margin-bottom: 1rem;
   text-align: center;
-}
-
-.form-cadastro label {
-  display: block;
-  margin-top: 1rem;
-  font-weight: bold;
 }
 
 .form-cadastro input {
@@ -1118,22 +1073,10 @@ body.cadastro2 footer {
   box-sizing: border-box;
 }
 
-.form-login fieldset {
-  border: none;
-  padding: 0;
-  margin: 0;
-}
-
 .form-login h1 {
   font-size: 1.8rem;
   margin-bottom: 1rem;
   text-align: center;
-}
-
-.form-login label {
-  display: block;
-  margin-top: 1rem;
-  font-weight: bold;
 }
 
 .form-login input {
