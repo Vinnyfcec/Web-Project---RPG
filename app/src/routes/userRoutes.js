@@ -1,12 +1,16 @@
-const express = require("express");
-const router = express.Router();
-const userController = require("../controllers/userController");
+import express from "express";
+import userController from "../controllers/userController.js";
+import { validateCadastro, validateLogin } from "../middlewares/validationMiddleware.js";
 
-router.post("/cadastro", userController.cadastrarUsuario);
-router.post("/login", userController.fazerLogin);
+const router = express.Router();
+
 router.get("/cadastro", userController.mostrarCadastro);
 router.get("/login", userController.mostrarLogin);
+
+router.post("/cadastro", validateCadastro, userController.cadastrarUsuario);
+router.post("/login", validateLogin, userController.fazerLogin);
+
 router.post("/logout", userController.fazerLogout);
 router.post("/excluirUser", userController.excluirUsuario);
 
-module.exports = router; 
+export default router;

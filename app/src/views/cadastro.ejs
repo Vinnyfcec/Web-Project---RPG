@@ -1,51 +1,36 @@
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <%- include('partials/head') %>
 </head>
 <body class="cadastro2">
     <%- include('partials/header') %>
-<main>
-    <div class="row">
-    <div class="col-4 col-s-2"></div> 
+    <main>
+        <div class="row">
+        <div class="col-4 col-s-2"></div> 
+        <div class="col-4 col-s-8">
+        <form action="/cadastro" method="POST" class="form-cadastro">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <fieldset>
+                <h1> Autenticação do usário </h1>
+                
+                <label for="nome_usuario"> Nome do Jogador </label>
+                <input id="nome_usuario" name="nome_usuario" type="text" placeholder="Digite um apelido de usuário..." required>
+                
+                <label for="email"> E-mail </label>
+                <input type= "email" name= "email" id="email" placeholder="Informe um e-mail..." required>
 
-    <div class="col-4 col-s-8">
-    <form action="/cadastro" method="POST" class="form-cadastro">
-        <fieldset>
-            <h1> Autenticação do usário </h1>
-            
-            <label for="nome_usuario"> Nome do Jogador </label>
-            <input id="nome_usuario" name="nome_usuario" type="text" placeholder="Digite um apelido de usuário..." required>
-            
-            <label for="email"> E-mail </label>
-            <input type= "email" name= "email" id="email" placeholder="Informe um e-mail..." required>
+                <label for="senha_hash"> Senha </label>
+                <input type="password" name="senha" id="senha" placeholder="Digite uma senha..." required>
 
-            <label for="senha_hash"> Senha </label>
-            <input type="password" name="senha" id="senha" placeholder="Digite uma senha..." required>
-
-            <label for="confirmarSenha"> Confirmar Senha </label>
-            <input type="password" name="confirmarSenha" id="confirmarSenha" placeholder="Confirme a senha..." required>
-            
-            <button type="submit"> Criar Cadastro </button>
-            
-        </fieldset>
-
-
-
-    
-    </form>
-     <div class="col-4 col-s-2"></div>
-
-    
-</main>
-
-
-
-
-
-
-
+                <label for="confirmarSenha"> Confirmar Senha </label>
+                <input type="password" name="confirmarSenha" id="confirmarSenha" placeholder="Confirme a senha..." required>
+                
+                <button type="submit"> Criar Cadastro </button>
+            </fieldset>
+        </form>
+        <div class="col-4 col-s-2"></div>
     </main>
-
     <%- include('partials/footer') %>
 </body>
 </html>

@@ -2,21 +2,31 @@
   "name": "rpg-web-project",
   "version": "1.0.0",
   "description": "rpgweb",
+  "type": "module",
   "main": "server.js",
   "scripts": {
-    "start": "node app/server.js"
+    "start": "node app/server.js",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage"
   },
   "keywords": [],
   "author": "David, Joseph, McCaveira, Fcec",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^6.0.0",
+    "csurf": "1.11.0",
     "datenv": "^0.0.0",
     "dotenv": "^17.2.3",
     "ejs": "^3.1.10",
     "express": "^4.22.1",
-    "express-session": "^1.18.2",
-    "mysql2": "^3.15.3"
+    "express-session": "^1.19.0",
+    "express-validator": "^7.3.1",
+    "mysql2": "^3.15.3",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
+  },
+  "overrides": {
+    "cookie": "0.7.2"
   },
   "repository": {
     "type": "git",
@@ -25,5 +35,9 @@
   "bugs": {
     "url": "https://github.com/Vinnyfcec/Web-Project---RPG/issues"
   },
-  "homepage": "https://github.com/Vinnyfcec/Web-Project---RPG#readme"
+  "homepage": "https://github.com/Vinnyfcec/Web-Project---RPG#readme",
+  "devDependencies": {
+    "jest": "^30.2.0",
+    "supertest": "^7.2.2"
+  }
 }

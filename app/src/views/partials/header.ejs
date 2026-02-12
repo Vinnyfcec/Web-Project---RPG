@@ -6,9 +6,11 @@
             <button onclick="location.href='/saves'" class="header-logout"> Trocar de Save </button>
             <button class="header-logout btn-logout-toggle"> Logout </button>
             <form action="/logout" method="POST" class="logout-form opcoes-save">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                 <button type="submit"> Confirmar Logout </button>
             </form>
             <form action="/excluirUser" method="POST" class="logout-exclusao-form opcoes-save">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                 <button type="submit"> Logout e Exclusão</button>
             </form>
         </div>

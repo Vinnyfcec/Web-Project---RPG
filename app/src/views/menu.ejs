@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <%- include('partials/head') %>
@@ -15,7 +16,7 @@
             <h3> Save atual: <%= save.nome_save %> ID:<%= save.id %></h3>
             <button class="btn-editar-toggle"> Editar: </button>
             <button type="submit" class="btn-concluir-toggle opcoes-save" form="renomearForm"> Concluir Edição </button>
-            <form class="opcoes-save" id="renomearForm" action="/saves/<%= save.id %>/renomearatributos" method="POST"></form>
+            <form class="opcoes-save" id="renomearForm" action="/saves/<%= save.id %>/renomearatributos" method="POST"><input type="hidden" name="_csrf" value="<%= csrfToken %>"></form>
         </div>
 
         <div class="row mt-4" style="display: flex; align-items: stretch; gap: 20px;">
@@ -28,7 +29,10 @@
                 <p> Defesa: <%= (typeof save !== 'undefined' && save.atributos) ? save.atributos.defesa : '' %></p>
                 <p> Dinheiro: <%= save.dinheiro %></p>
                 <% if (save.atributos.vida_atual === 0) { %>
-                    <form action="/saves/<%= save.id %>/adicionarvida" method="POST"> <button> Adicionar Vida </button> </form>
+                    <form action="/saves/<%= save.id %>/adicionarvida" method="POST">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                        <button> Adicionar Vida </button>
+                    </form>
                 <% } %>
                 <%- include('partials/adotarPetForm', { saveId: save.id }) %>
             </div>
@@ -37,14 +41,17 @@
                 <%- include('partials/inventario', { inventario: inventario }) %>
                 <div class="opcoes-jogo" style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
                     <form id="form-equipar" method="post" style="display:none;">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                         <input type="hidden" name="item_id" id="itemEquipar">
                         <button id="btn-equipar" class="btn-equipar"></button>
                     </form>
                     <form action="/menu/excluirItem" method="post" id="excluirItem">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                         <input type="hidden" name="inventario_id" id="itemexcluir">
                         <button id="btn-excluir" class="sucess">Excluir</button>
                     </form>
                     <form action="/saves/<%= save.id %>/cacar" method="POST">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                         <button type="submit"> Caçar </button>
                     </form>
                     <form action="/loja" method="get">

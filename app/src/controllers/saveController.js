@@ -1,12 +1,12 @@
-const saveModel = require('../models/saveModel');
-const db = require('../config/db');
+import SaveModel from '../models/saveModel.js';
+import db from '../config/db.js';
 
-class saveController {
+class SaveController {
     static isAuth(req, res, next) {
-        if (req.path === '/') return next();
-        if (req.path === '/login') return next();
-        if (req.path === '/cadastro') return next();
-
+        const publicPaths = ['/', '/login', '/cadastro'];
+        if (publicPaths.includes(req.path)) {
+            return next();
+        }
         if (!req.session.usuario) {
             return res.redirect('/login');
         }
@@ -17,31 +17,29 @@ class saveController {
     static async loadSave(req, res, next) {
         res.locals.save = null;
         res.locals.inventario = [];
-
         if (!req.session.save_id) {
             return next();
         }
 
         try {
-            const saveCompleto = await saveModel.buscarSaveCompleto(req.session.save_id);
+            const saveCompleto = await SaveModel.buscarSaveCompleto(req.session.save_id);
             if (!saveCompleto) {
                 req.session.save_id = null;
                 return next();
             }
-
             res.locals.save = saveCompleto;
 
             try {
-                const inventario = await saveModel.listarInventario(req.session.save_id);
+                const inventario = await SaveModel.listarInventario(req.session.save_id);
                 res.locals.inventario = inventario;
-            } catch (invErr) {
-                console.error('Erro ao carregar inventário:', invErr);
+            } catch (error_) {
+                console.error('Erro ao carregar inventário:', error_);
             }
             try {
-                const estoque = await saveModel.listarEstoque(req.session.save_id);
+                const estoque = await SaveModel.listarEstoque(req.session.save_id);
                 res.locals.estoque = estoque;
-            } catch (estErr) {
-                console.error('Erro ao carregar estoque: ', estErr)
+            } catch (error_) {
+                console.error('Erro ao carregar estoque: ', error_)
             }
 
         } catch (error) {
@@ -53,9 +51,10 @@ class saveController {
 
     static async listarSaves(req, res) {
         try {
-            const saves = await saveModel.listarSavesporUsuario(req.session.usuario.id);
+            const saves = await SaveModel.listarSavesporUsuario(req.session.usuario.id);
             res.render('saves', { saves: saves, erro: req.query.erro});
         } catch (error) {
+            console.error('Erro ao listar saves:', error);
             res.render('saves', { saves: [], erro: 'Erro ao listar saves.' });
         }
     }
@@ -74,14 +73,16 @@ class saveController {
 
     static async criarSave(req, res) {
         const usuario_id = req.session.usuario.id;
-        const nomesave = req.body.nomesave; 
-
-        if (!nomesave || nomesave.trim() === '') {
+        const nome_save = req.body.nome_save; 
+        if (typeof nome_save !== "string") {
+        return res.status(400).send("Nome inválido");
+        }
+        if (!nome_save || nome_save.trim() === '') {
             return res.redirect('/saves?erro=O nome do save não pode ser vazio.');
         }
 
         try {
-            await saveModel.criarSaveInicial(usuario_id, nomesave);
+            await SaveModel.criarSaveInicial(usuario_id, nome_save);
             res.redirect('/saves');
         } catch (error) {
             console.error('Erro ao criar novo save:', error);
@@ -92,10 +93,13 @@ class saveController {
     static async renomearSave(req, res) {
         const saveId = req.params.id;
         const novoNome = req.body.novo_nome;
+        if (typeof novoNome !== "string") {
+            return res.status(400).send("Nome inválido");
+        }
         if (!novoNome || novoNome.trim() === '') {
                 return res.status(400).json({ erro: 'Nome legal, só falta um nome' });}
         try {
-            await saveModel.renomearSave(saveId, novoNome);
+            await SaveModel.renomearSave(saveId, novoNome);
             res.redirect('/saves?sucesso=Save renomeado com sucesso!');
         } catch (error) {
             res.redirect(`/saves?erro=Erro ao renomear save: ${error.message}`);
@@ -105,7 +109,7 @@ class saveController {
     static async excluirSave(req, res) {
         const saveId = req.params.id;
         try {
-            await saveModel.excluirSave(saveId);
+            await SaveModel.excluirSave(saveId);
             res.redirect('/saves?sucesso=Save deletado com sucesso!');
         } catch (error) {
             res.redirect(`/saves?erro=Erro ao deletar save: ${error.message}`);
@@ -122,7 +126,7 @@ class saveController {
     static async abrirInventario(req, res) {
         try {
             const saveId = req.session.save_id;
-            const itens = await saveModel.listarInventario(saveId);
+            const itens = await SaveModel.listarInventario(saveId);
             const slots=20;
             const inventario= [...itens];
             while (inventario.length < slots) {
@@ -139,12 +143,12 @@ class saveController {
         const saveId = req.session.save_id;
         
         try{
-            await saveModel.equiparItem(saveId, item_id);
+            await SaveModel.equiparItem(item_id, saveId);
             req.session.flash = "Item equipado com sucesso";
             res.redirect('/menu');
         } catch (error) {
             console.error('Erro ao equipar item:', error);
-            req.session.flash = "Erro ao equipar o item";
+            req.session.flash = `Erro ao equipar o item: ${error.message}`;
             res.redirect('/menu');
         }
     }
@@ -153,7 +157,7 @@ class saveController {
         const { item_id } = req.body;
         const saveId = req.session.save_id;
         try {
-            await saveModel.desequiparItem(saveId, item_id);
+            await SaveModel.desequiparItem(item_id, saveId);
             req.session.flash = "Item desequipado";
             res.redirect('/menu');
         } catch (error) {
@@ -166,7 +170,7 @@ class saveController {
         const saveId = req.session.save_id;
         const inventarioId = req.body.inventario_id;
         try {
-            await saveModel.excluirItem(saveId, inventarioId);
+            await SaveModel.excluirItem(saveId, inventarioId);
             req.session.flash = "Item excluído com sucesso";
             res.redirect('/menu');
         } catch (error) {
@@ -180,7 +184,7 @@ class saveController {
         const saveId = req.params.id;
         const nome_pet = req.body.nome_pet;
         try {
-            const pet = await saveModel.adotarPet(saveId, nome_pet);
+            const pet = await SaveModel.adotarPet(saveId, nome_pet);
             if (req.session.thesave) req.session.thesave.pet = pet;
             res.redirect('/menu?sucesso=Você adotou um pet!');
         } catch (error) {
@@ -208,6 +212,13 @@ class saveController {
         const saveId = req.params.id;
         const novo_nome = req.body.novo_nome;
         const novo_nome_pet = req.body.novo_nome_pet;
+        if (typeof novo_nome !== "string") {
+            return res.status(400).send("Nome inválido");
+        }
+        if (typeof novo_nome_pet !== "string") {
+            return res.status(400).send("Nome inválido");
+        }
+
         try {
             const queryAttr = 'UPDATE atributos_personagem SET nome = ? WHERE save_id = ?';
             await db.execute(queryAttr, [novo_nome, saveId]);
@@ -229,19 +240,18 @@ class saveController {
     static async cacar(req, res) {
         try {
             const saveId = req.session.save_id;
-            const save = await saveModel.buscarSaveCompleto(saveId);
+            const save = await SaveModel.buscarSaveCompleto(saveId);
             if (save.atributos.vida_atual <= 0) {
                 return res.redirect('/menu?erro=Você está morto');
             }
 
             const { nivel, ataque, defesa } = save.atributos;
-            const inimigoNome = await saveModel.caçar();
+            const inimigoNome = await SaveModel.caçar();
             
             const inimigoNivel = Math.max(1, nivel + Math.floor(Math.random() * 3) - 1);
             const inimigoAtaque = 5 + (inimigoNivel * 4);
             const inimigoDefesa = 2 + (inimigoNivel * 3);
             
-            const danoJogador = Math.max(5, ataque - inimigoDefesa + Math.floor(Math.random() * nivel));
             const danoInimigo = Math.max(3, inimigoAtaque - defesa + Math.floor(Math.random() * nivel));
 
             const poderJogador = ataque + defesa;
@@ -258,16 +268,16 @@ class saveController {
                 
                 const danoRecebido = Math.floor(danoInimigo * 0.3); 
                 
-                await saveModel.atualizarDinheiro(saveId, save.dinheiro + ouroGanho);
-                await saveModel.atualizarExperiencia(saveId, expGanha);
-                if (danoRecebido > 0) await saveModel.perderVida(saveId, danoRecebido);
-                await saveModel.subirNivel(saveId);
+                await SaveModel.atualizarDinheiro(saveId, save.dinheiro + ouroGanho);
+                await SaveModel.atualizarExperiencia(saveId, expGanha);
+                if (danoRecebido > 0) await SaveModel.perderVida(saveId, danoRecebido);
+                await SaveModel.subirNivel(saveId);
 
                 req.session.flash = `Vitória! Você derrotou ${inimigoNome} (Nível ${inimigoNivel}). +${ouroGanho} Ouro, +${expGanha} EXP. Dano recebido: ${danoRecebido}`;
                 return res.redirect('/menu');
             } else {
                 const danoRecebido = danoInimigo;
-                await saveModel.perderVida(saveId, danoRecebido);
+                await SaveModel.perderVida(saveId, danoRecebido);
                 
                 req.session.flash = `Derrota! ${inimigoNome} foi brabo e te causou ${danoRecebido} de dano`;
                 return res.redirect('/menu');
@@ -276,6 +286,19 @@ class saveController {
         } catch (error) {
             console.error('Erro na caça:', error);
             return res.redirect(`/menu?erro=Erro ao caçar: ${error.message}`);
+        }
+    }
+
+    static async adicionarVida(req, res) {
+        const saveId = req.params.id;
+        try {
+            await SaveModel.adicionarVida(saveId, 100);
+            req.session.flash = "Vida adicionada com sucesso";
+            res.redirect('/menu');
+        } catch (error) {
+            console.error('Erro ao adicionar vida:', error);
+            req.session.flash = `Erro ao adicionar vida: ${error.message}`;
+            res.redirect('/menu');
         }
     }
 
@@ -288,7 +311,7 @@ class saveController {
         const itemId = req.body.item_id;
 
         try {
-            await saveModel.melhorarItem(saveId, itemId);
+            await SaveModel.melhorarItem(saveId, itemId);
             req.session.flash = "Item melhorado com sucesso";
             res.redirect('/ferreiro');
         } catch (error) {
@@ -312,8 +335,8 @@ class saveController {
         }
 
         try {
-            const save = await saveModel.buscarSaveCompleto(saveId);
-            const itemEstoque = await saveModel.buscarItemNoEstoque(idItem, saveId);
+            const save = await SaveModel.buscarSaveCompleto(saveId);
+            const itemEstoque = await SaveModel.buscarItemNoEstoque(idItem, saveId);
 
             if (!itemEstoque) {
                 req.session.flash = "Item não encontrado no estoque";
@@ -327,9 +350,9 @@ class saveController {
             }
 
             const novoDinheiro = save.dinheiro - custo;
-            await saveModel.atualizarDinheiro(saveId, novoDinheiro);
+            await SaveModel.atualizarDinheiro(saveId, novoDinheiro);
             
-            await saveModel.adicionarItemInventario(saveId, itemEstoque.item_base_id, 1, {
+            await SaveModel.adicionarItemInventario(saveId, itemEstoque.item_base_id, 1, {
                 raridade: itemEstoque.raridade,
                 valor_mercado: itemEstoque.valor_mercado,
                 atributo_ataque: itemEstoque.atributo_ataque,
@@ -351,7 +374,7 @@ class saveController {
         const saveId = req.session.save_id;
 
         try {
-            const save = await saveModel.buscarSaveCompleto(saveId);
+            const save = await SaveModel.buscarSaveCompleto(saveId);
             const [rows] = await db.execute('SELECT * FROM inventario WHERE id = ? AND save_id = ?', [itemId, saveId]);
             const item = rows[0];
 
@@ -363,8 +386,8 @@ class saveController {
             const valorVenda = Math.floor(item.valor_mercado * 0.5);
             const novoDinheiro = save.dinheiro + valorVenda;
 
-            await saveModel.atualizarDinheiro(saveId, novoDinheiro);
-            await saveModel.venderItem(saveId, itemId);
+            await SaveModel.atualizarDinheiro(saveId, novoDinheiro);
+            await SaveModel.venderItem(saveId, itemId);
 
             req.session.flash = "Item vendido com sucesso";
             res.redirect('/loja');
@@ -376,4 +399,4 @@ class saveController {
     }
 }
 
-module.exports = saveController
+export default SaveController;

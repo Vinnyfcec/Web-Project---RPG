@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <%- include('partials/head') %>
@@ -65,6 +66,7 @@
 
                 <p class="text-melhorar" >selecione um pra melhorar:</p>
                 <form id="melhorarForm" action="/ferreiro/melhorar" method="POST">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                     <select class="selectes" name="item_id" id="itens-disponiveis">
                         <option class="optiones" value="" disabled selected>Selecione um item</option>
                         <% inventario.forEach(item => { %>

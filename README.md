@@ -13,6 +13,12 @@ O projeto tem:
 
 • Renderização Dinâmica: As páginas são renderizadas dinamicamente usando EJS
 
+•   Proteção CSRF: Proteção contra Cross-Site Request Forgery para todas as requisições POST.
+
+•   Validação de Entrada: Validação e sanitização robusta de todos os dados de entrada do usuário usando `express-validator`.
+
+• Tratamento de Erros Centralizado: Middleware de erro global e classes de erro customizadas para uma gestão consistente e informativa de exceções.
+
 
 
 Integrantes do Grupo:
@@ -30,9 +36,10 @@ Siga os passos abaixo para configurar e executar o projeto em seu ambiente local
 Pré-requisitos:
 Certifique-se de ter os seguintes softwares instalados:
 
-• Node.js
-• npm
-• MySQL
+-   Node.js: Versão 18.x ou superior.
+-   pnpm: Gerenciador de pacotes (alternativamente, `npm` ou `yarn` podem ser usados).
+-   MySQL Server: Versão 8.x ou superior.
+-   Git: Para clonar o repositório.
 
 1. Clonagem do Repositório
 
@@ -61,6 +68,7 @@ npm install
 ``` sh
 # configuração do servidor
 PORT=3000
+NODE_ENV=development
 
 # configuração do banco mysql
 DB_HOST=localhost
@@ -71,6 +79,12 @@ DB_NAME=rpg_db
 # chave pras sessões
 SESSION_SECRET=sua_chave_secreta_aqui
 ```
+Para gerar um `SESSION_SECRET` seguro, execute o script:
+
+    ```bash
+    node app/src/utils/generateSecret.js
+    ```
+    Copie o valor gerado e cole no seu arquivo `.env`.
 
 4. Executar o projeto
 

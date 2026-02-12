@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <%- include('partials/head') %>
@@ -29,7 +30,10 @@
                 <p> Defesa: <%= (typeof save !== 'undefined' && save.atributos) ? save.atributos.defesa : '' %></p>
                 <p> Dinheiro: <%= save.dinheiro %></p>
                 <% if (save.atributos.vida_atual === 0) { %>
-                    <form action="/saves/<%= save.id %>/adicionarvida" method="POST"> <button> Adicionar Vida </button> </form>
+                    <form action="/saves/<%= save.id %>/adicionarvida" method="POST"> 
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                        <button> Adicionar Vida </button> 
+                    </form>
                 <% } %>
                 <%- include('partials/adotarPetForm', { saveId: save.id }) %>
                 
@@ -41,10 +45,12 @@
                     <p id="spec-preco" class="bold"></p>
                     
                     <form action="/loja/comprar" method="POST" id="form-comprar">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                         <input type="hidden" name="idItem" id="input-id-item-compra">
                         <button type="submit" id="btn-comprar" class="btn btn-primary" style="display: none; width: 100%; margin-bottom: 10px;">Comprar</button>
                     </form>
                     <form action="/loja/vender" method="POST" id="form-vender">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                         <input type="hidden" name="itemId" id="itemVenderId">
                         <button type="submit" id="btn-vender" class="sucess" style="display: none; width: 100%; margin-bottom: 10px;">Vender</button>
                     </form>
@@ -56,7 +62,6 @@
                 <div class="estoque-wrapper">
                     <%- include('partials/estoque') %>
                 </div>
-
                 <div class="inventario-wrapper">
                     <%- include('partials/inventario') %>
                 </div>
@@ -107,7 +112,6 @@
 
                 if (inputCompra) {
                     inputCompra.value = idDoItem;
-                    console.log("ID preparado para compra:", idDoItem);
                 }
 
                 if(btnComprar) btnComprar.style.display = 'block';
@@ -133,7 +137,6 @@
                 const inputVenda = document.getElementById('itemVenderId');
                 if (inputVenda) {
                     inputVenda.value = idDoItem;
-                    console.log("ID preparado para venda:", idDoItem);
                 }
 
                 if(btnComprar) btnComprar.style.display = 'none';
@@ -141,6 +144,5 @@
             });
         });
     });
-
 </script>
 </html>

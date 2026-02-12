@@ -3,8 +3,8 @@
      <p> clique aqui para criar um novo save</p>
      <button class="btn-save btn-criar-toggle save-display-mode"> Criar Save </button>
      <form class="opcoes-save criar-form" action="/saves/criar" method="POST" class="d-inline">
-          <input name="nomesave" type="text" placeholder="Nome do save.." required></input>
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <input name="nome_save" type="text" placeholder="Nome do save.." required></input>
           <button class="btn-save" type="submit"> Criar </button>
-  
      </form>
 </div>

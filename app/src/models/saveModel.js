@@ -1,7 +1,7 @@
-const db = require('../config/db');
+import db from '../config/db.js';
 const experienciaNivel = [0, 300, 900, 2700, 6500];
 
-class saveModel {
+class SaveModel {
     static async criarSaveInicial(usuario_id, nomesave) {
         const query = "INSERT INTO saves (usuario_id, nome_save, dinheiro, nivel, itens_adquiridos) VALUES (?, ?, 100, 1, 0)";
         const [result] = await db.execute(query, [usuario_id, nomesave]);
@@ -62,13 +62,13 @@ class saveModel {
 
         const attrQuery = `SELECT * FROM atributos_personagem WHERE save_id = ?`;
         const [atributosRows] = await db.execute(attrQuery, [save_id]);
-        const atributos = atributosRows.length > 0 ? atributosRows[0] : { ataque: 10, defesa: 10, nivel: 1, vida_atual: 100, vida_maxima: 100 };
+        const atributos = atributosRows.length > 0 ? atributosRows[0] : { ataque: 0, defesa: 0, nivel: 1, vida_atual: 100, vida_maxima: 100 };
 
         const petQuery = `SELECT * FROM pets WHERE save_id = ?`;
         const [pets] = await db.execute(petQuery, [save_id]);
 
-        let ataqueTotal = atributos.ataque || 10;
-        let defesaTotal = atributos.defesa || 10;
+        let ataqueTotal = atributos.ataque || 0;
+        let defesaTotal = atributos.defesa || 0;
 
         if (pets && pets.length > 0) {
             defesaTotal += 2;
@@ -198,6 +198,11 @@ class saveModel {
         await db.execute(query, [dano, save_id]);
     }
 
+    static async adicionarVida(save_id, cura) {
+        const query = 'UPDATE atributos_personagem SET vida_atual = LEAST(vida_atual + ?, vida_maxima) WHERE save_id = ?';
+        await db.execute(query, [cura, save_id]);
+    }
+
     static async atualizarDinheiro(save_id, valor) {
         const query = 'UPDATE saves SET dinheiro = ? WHERE id = ?';
         await db.execute(query, [valor, save_id]);
@@ -325,9 +330,7 @@ class saveModel {
     }
 
     static async venderItem(save_id, inventario_id) {
-        const query = 'DELETE FROM inventario WHERE id = ? AND save_id = ?';
-        const [result] = await db.execute(query, [inventario_id, save_id]);
-        return result.affectedRows > 0;
+        return await this.excluirItem(save_id, inventario_id);
     }
 
     static async pegarItemNovo(save_id) {
@@ -366,11 +369,6 @@ class saveModel {
         const query = 'UPDATE itens_base SET atributo_ataque = ?, atributo_defesa = ? WHERE id = ?';
         await db.execute(query, [novoAtaque, novoDefesa, item_id]);
     }
-
-    static async excluirUsuario(user_id) {
-        const query = 'DELETE FROM usuarios WHERE id = ?';
-        await db.execute(query, [user_id]);
-    }
 }
 
-module.exports = saveModel;
+export default SaveModel;

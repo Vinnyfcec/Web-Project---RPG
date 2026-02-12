@@ -1,52 +1,32 @@
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <%- include('partials/head') %>
 </head>
-
 <body>
-
     <%- include('partials/header') %>
-
     <div class="row">
-
-        
         <div class="col-4 col-s-2"></div>
-
-       
         <div class="col-4 col-s-8">
             <div class="conteudo-central">
-
                 <h1 class="titulo">Seleção de Save</h1>
-
                 <div class="menu">
-
                     <% saves.sort((a, b) => a.id - b.id); %>
-
                     <% for(let i = 1; i <= 4; i++){ %>
                         <% const save = saves[i-1]; %>
-
                         <% if(save) { %>
                             <%- include('partials/savesCriados', {save}) %>
                         <% } else { %>
                             <%- include('partials/savesVazios') %>
                         <% } %>
                     <% } %>
-
                 </div>
-
             </div> 
-
         </div>
-
-       
         <div class="col-4 col-s-2"></div>
-
     </div>
-
     <%- include('partials/footer') %>
-
 </body>
-
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const saveCards = document.querySelectorAll('.Savecard');

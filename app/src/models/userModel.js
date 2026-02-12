@@ -1,7 +1,7 @@
-const db = require('../config/db');
-const bcrypt = require('bcrypt');
+import db from '../config/db.js';
+import bcrypt from 'bcrypt';
 
-class userModel {
+class UserModel {
     static async criarUsuario(nome_usuario, email, senha) {
         const saltRounds = 10;
         const senhaHash = await bcrypt.hash(senha, saltRounds);
@@ -35,4 +35,4 @@ class userModel {
     }
 }
 
-module.exports = userModel;
+export default UserModel;
