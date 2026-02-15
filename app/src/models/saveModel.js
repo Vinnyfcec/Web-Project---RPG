@@ -166,7 +166,7 @@ class SaveModel {
     }
 
     static async subirNivel(save_id) {
-        const query = 'SELECT nivel, experiencia FROM atributos_personagem WHERE save_id = ?';
+        const query = 'SELECT nivel, experiencia, vida_atual, vida_maxima FROM atributos_personagem WHERE save_id = ?';
         const [rows] = await db.execute(query, [save_id]);
         if (rows.length === 0) return false;
         
@@ -177,6 +177,12 @@ class SaveModel {
             const bonusAtaque = 5;
             const bonusDefesa = 5;
             const bonusVida = 20;
+
+            if (usuario.vida_atual + bonusVida > usuario.vida_maxima + bonusVida) {
+                usuario.vida_atual = usuario.vida_maxima;
+            } else {
+                usuario.vida_atual += bonusVida;
+            }
             
             await db.execute(`
                 UPDATE atributos_personagem 
@@ -184,9 +190,9 @@ class SaveModel {
                     ataque = ataque + ?, 
                     defesa = defesa + ?, 
                     vida_maxima = vida_maxima + ?,
-                    vida_atual = vida_maxima + ?
+                    vida_atual = ?
                 WHERE save_id = ?`, 
-                [bonusAtaque, bonusDefesa, bonusVida, bonusVida, save_id]
+                [bonusAtaque, bonusDefesa, bonusVida, usuario.vida_atual, save_id]
             );
             return true;
         }
