@@ -48,14 +48,14 @@
                     <form action="/menu/excluirItem" method="post" id="excluirItem">
                         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                         <input type="hidden" name="inventario_id" id="itemexcluir">
-                        <button id="btn-excluir" class="sucess">Excluir</button>
+                        <button id="btn-excluir" class="excluir-btn">Excluir</button>
                     </form>
                     <form action="/saves/<%= save.id %>/cacar" method="POST">
                         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                        <button type="submit"> Caçar </button>
+                        <button type="submit" class="cacar-btn"> Caçar </button>
                     </form>
                     <form action="/loja" method="get">
-                        <button type="submit"> Loja </button>
+                        <button type="submit" class="loja-btn"> Loja </button>
                     </form>
                     <a href="/ferreiro" class="btn-ferreiro">
                         <img src="/img/ferreiro.jpeg" alt="ferreiro" style="width: 80px; height: 80px; border-radius: 5px;">
