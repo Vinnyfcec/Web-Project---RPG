@@ -308,7 +308,7 @@ class SaveController {
 
     static async melhorarItem(req, res) {
         const saveId = req.session.save_id;
-        const itemId = req.body.item_id;
+        const itemId = req.body.inventario_id;
 
         try {
             await SaveModel.melhorarItem(saveId, itemId);

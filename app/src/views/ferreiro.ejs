@@ -44,40 +44,40 @@
 
                 <div class="disponiveis">
                     <h3> Itens Disponíveis para Melhoria: </h3>
-                    <% inventario = inventario || []; %>
+                    <% inventario = inventario || [] %>
                     <div class="inventario-container">
-                        <ul class="inventario-lista">
+                        <div class="inventario-lista">
                             <% if (inventario.length === 0) { %>
-                                <li>O inventário não tem itens disponiveis para melhora.</li>
+                                <p class="inventario-vazio">O inventário está vazio.</p>
                             <% } else { %>
                                 <% inventario.forEach(item => { %>
                                     <% if (item.atributo_chave !== 'nenhum') { %>
-                                    <li class="inventario-item">
-                                        <span class="item-nome"><%= item.nome %></span>
-                                        <span class="item-tipo">Tipo: <%= item.tipo %></span>
-                                        <span class="item-atributo"> <%= item.atributo_chave %>: <%= item.atributo_chave === 'Ataque' ? item.atributo_ataque : item.atributo_defesa %></span>
-                                    </li>
+                                        <button type="button" 
+                                                class="inventario-item item-inventario-btn <%= item.equipado ? 'equipado' : '' %>"
+                                                data-id="<%= item.inventario_id %>"
+                                                data-equipado="<%= item.equipado ? 1 : 0 %>"
+                                                data-nome="<%= item.nome %>"
+                                                data-tipo="<%= item.tipo %>"
+                                                data-descricao="<%= item.descricao %>"
+                                                data-atributo="<%= item.atributo_chave %>"
+                                                data-valor="<%= item.atributo_chave === 'Ataque' ? item.atributo_ataque : item.atributo_defesa %>"
+                                                data-raridade="<%= item.raridade %>">
+                                            <span class="item-nome"><strong><%= item.nome %></strong></span>
+                                            <span class="item-tipo"><%= item.tipo %></span>
+                                            <span class="item-valor"><%= item.atributo_chave %>: <%= item.atributo_chave === 'Ataque' ? item.atributo_ataque : item.atributo_defesa %></span>
+                                            <span class="item-raridade"><%= item.raridade %></span>
+                                        </button>
                                     <% } %>
                                 <% }); %>
                             <% } %>
-                        </ul>
+                        </div>
                     </div>
                 </div>
 
-                <p class="text-melhorar" >selecione um pra melhorar:</p>
-                <form id="melhorarForm" action="/ferreiro/melhorar" method="POST">
-                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                    <select class="selectes" name="item_id" id="itens-disponiveis">
-                        <option class="optiones" value="" disabled selected>Selecione um item</option>
-                        <% inventario.forEach(item => { %>
-                            <% if (item.atributo_chave !== 'nenhum') { %>
-                                <option value="<%= item.inventario_id %>"> 
-                                    <%= item.inventario_id %> <%= item.nome %> - <%= item.atributo_chave %>: <%= item.atributo_chave === 'Ataque' ? item.atributo_ataque : item.atributo_defesa %>
-                                </option>
-                            <% } %>
-                        <% }); %>
-                    </select>
-                    <button class="btn-melhorar" >Melhorar</button>
+                <form action="/ferreiro/melhorar" method="post" id="melhorarForm">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                        <input type="hidden" name="inventario_id" id="itemmelhorar">
+                        <button id="btn-melhorar" class="btn-melhorar">Melhorar</button>
                 </form>
             </div>
         </div>
@@ -86,6 +86,7 @@
 </body>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
+    const itensInventario = document.querySelectorAll('.item-inventario-btn');
     const infoPet = document.querySelectorAll('.pet-info');
     const btnAdotar = document.querySelectorAll('.btn-adotar-toggle');
     const btnEditar = document.querySelectorAll('.btn-editar-toggle');
@@ -94,6 +95,15 @@
     const inputPetReno = document.querySelectorAll('.input_pet_reno');
     const nomeReno = document.querySelectorAll('.nome_reno');
     const nomePetReno = document.querySelectorAll('.nome_pet_reno');
+
+    itensInventario.forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.selecionado').forEach(el => el.classList.remove('selecionado'));
+            btn.classList.add('selecionado');
+            const idDoItem = btn.getAttribute('data-id');
+            document.getElementById('itemmelhorar').value = idDoItem;
+        });
+    });
 
     btnEditar.forEach(button => {
         button.addEventListener('click', () => {
