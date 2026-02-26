@@ -372,6 +372,21 @@ main {
     font-weight: 600;
 }
 
+.titulo-header {
+  background: url("../img/pergaminho.png") no-repeat center center;
+  background-repeat: no-repeat;
+  background-position: top;
+  width: 199px;
+  height: 119px;
+  border: none;
+  color: rgb(16, 42, 44);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 14px;
+  text-align: center;
+  cursor: pointer;
+  image-rendering: pixelated;
+}
+
 .header-link{
     display: grid;
     align-items: center;
@@ -405,7 +420,7 @@ main {
 
 .pag-login .header{
     padding: 10px 10px;
-    height: 100px;
+    height: 140px;
 }
 
 .pag-saves .container{
@@ -420,7 +435,7 @@ main {
 }
 
 .home .header{
-    height: 100px;
+    height: 140px;
 }
 
 body.cadastro2 {
