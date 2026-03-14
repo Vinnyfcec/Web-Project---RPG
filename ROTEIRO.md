@@ -9,15 +9,111 @@
 - Git
 - Bycript
 
-### Objetivo:
-A intenção dos desenvolvedores é criar um jogo multiplayer de categoria RPG baseado no tema medieval. O jogo e sua temática vão conter recursos, magias e itens de origem de histórias, livros medievais e campanhas de RPG.
-O jogo deverá:
-- ter um modo campanha com uma história simples para introduzir o personagem.
-- ter um modo aventura onde explorará um combate infinito para desenvolver habilidades e recuperar recursos.
-- ter um modo multiplayer para combate 1v1 entre jogadores ou coop.
-- rodar na web hospedado na hostinger.
+### Conceitos do jogo:
+Gênero: Idle, com foco em economia e progressão
 
-### Funcionalidades:
-O jogo possui um sistema de autenticação própria.
-Há uma grande base de movimentação de itens e recursos em Inventario, Loja e Ferreiro.
+Premissa:
+O protagonista meio que sobrevive ao um ataque de traficantes de escravos, e toda a aldeia dele é sequestrada.
+
+
+O tempo todo ele vai fazer um ciclo:
+- explorar áreas
+- coletar recursos
+- vender ou craftar itens
+- juntar dinheiro
+- libertar NPC
+- desbloquear sistema novo na vila
+
+
+### Arquitetura:
+Modelo Client x Server
+
+No lado do cliente será toda a visualização gráfica e o input
+No lado do server vai ter toda a simulação, progressão e salvamento
+
+Para visualização gráfica vamos utilizar o phaser.js para <canvas>
+(o resto do site será REST)
+Pro server é o Node.js com o express
+Pra fazer online vamos usar os WebSockets
+
+
+### Estrutura:
+O diretório por enquanto tá:
+
+app/
+│
+├── server.js
+│
+└── src/
+    │
+    ├── app.js
+    │
+    ├── config/
+    │   └── db.js
+    │
+    ├── controllers/
+    │   ├── saveController.js
+    │   └── userController.js
+    │
+    ├── database/
+    │   └── setup.sql
+    │
+    ├── middlewares/
+    │   ├── errorMiddleware.js
+    │   └── validationMiddleware.js
+    │
+    ├── models/
+    │   ├── saveModel.js
+    │   └── userModel.js
+    │
+    ├── public/
+    │   ├── css/
+    │   │   └── style.css
+    │   │
+    │   └── img/
+    │       ├── cacar.png
+    │       ├── excluir.png
+    │       ├── ferreiro.jpeg
+    │       ├── interiorbau.png
+    │       ├── loja.png
+    │       └── pergaminho.png
+    │
+    ├── routes/
+    │   ├── saveRoutes.js
+    │   └── userRoutes.js
+    │
+    ├── utils/
+    │   ├── customErrors.js
+    │   └── generateSecret.js
+    │
+    └── views/
+        │
+        ├── cadastro.ejs
+        ├── ferreiro.ejs
+        ├── home.ejs
+        ├── login.ejs
+        ├── loja.ejs
+        ├── menu.ejs
+        └── saves.ejs
+        │
+        └── partials/
+            ├── adotarPetForm.ejs
+            ├── estoque.ejs
+            ├── footer.ejs
+            ├── head.ejs
+            ├── header.ejs
+            ├── inventario.ejs
+            ├── savesCriados.ejs
+            └── savesVazios.ejs
+
+### Planejamento:
+Os próximos passos são:
+Iniciar o desenvolvimento do game loop com phaser.js
+- Inventário
+- Exploração
+- Venda e Compra
+- NPCs
+- Profissionalizações
+- economia offline, mapas etc
+
 ...
