@@ -31,7 +31,7 @@ Modelo Client x Server
 No lado do cliente será toda a visualização gráfica e o input
 No lado do server vai ter toda a simulação, progressão e salvamento
 
-Para visualização gráfica vamos utilizar o phaser.js para <canvas>
+Para visualização gráfica vamos utilizar o phaser.js para canvas
 (o resto do site será REST)
 Pro server é o Node.js com o express
 Pra fazer online vamos usar os WebSockets
